@@ -144,13 +144,15 @@ class product {
         var query = "SELECT products.id, products.name, products.model, products.arabic_name, products.description, products.arabic_description,\
         products.quantity, products.images, COALESCE(products.price_1 - ((products.price_1/100) * promotions.reduction_amount)) AS price_1, products.arabic_images, products.price_1 AS actual_price\
                     FROM saidalia_js.gc_promotions as promotions\
-                    INNER JOIN saidalia_js.gc_promotions_products as promo_prods ON  promotions.id = promo_prods.on_offer_product_id\
+                    INNER JOIN saidalia_js.gc_promotions_products as promo_prods ON  promotions.id = promo_prods.coupon_id\
                     INNER JOIN saidalia_js.gc_products as products ON promo_prods.product_id = products.id\
                     WHERE promotions.id = " + offerId;
+                    console.log("query",query);
         mySql.getConnection(function(err, connection){
             if(err){
                 throw err;
             }
+
             connection.query(query, function(err, results){
                 if(err){
                     throw err;
