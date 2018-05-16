@@ -134,7 +134,7 @@ exports.getSubCatProductsController = function (req, res) {
                 //Extract image filename from image first property object
                 var imageLink = imageFirstProp.filename;
                 //Concatenate image name with remote repository url
-                result[i].images = "http://hikvisionsaudi.com/9/uploads/images/full/" + imageLink;
+                result[i].images = "http://www.saidaliah.com/uploads/images/full/" + imageLink;
             }
             res.json({
                 status: 200,
@@ -190,7 +190,7 @@ exports.getProductSearchController = function (req, res) {
                     //Extract image filename from image first property object
                     var imageLink = imageFirstProp.filename;
                     //Concatenate image name with remote repository url
-                    result[i].images = "http://hikvisionsaudi.com/9/uploads/images/full/" + imageLink;
+                    result[i].images = "http://www.saidaliah.com/uploads/images/full/" + imageLink;
                     // for Arabic
 
                     var productImageObj = result[i].arabic_images;
@@ -201,7 +201,7 @@ exports.getProductSearchController = function (req, res) {
                     //Extract image filename from image first property object
                     var imageLink = imageFirstProp.arabic_filename;
                     //Concatenate image name with remote repository url
-                    result[i].arabic_images = "http://hikvisionsaudi.com/9/uploads/images/full/" + imageLink;
+                    result[i].arabic_images = "http://www.saidaliah.com/uploads/images/full/" + imageLink;
 
 
                 }
