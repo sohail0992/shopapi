@@ -110,7 +110,7 @@ class product {
                             imageFirstProp = imageFirstProp[Object.keys(imageFirstProp)[0]];
                             //Extract image filename from image first property object
                             var imageLink = imageFirstProp.filename;
-                            rows[i] = "http://hikvisionsaudi.com/9/uploads/images/full/" + imageLink
+                            rows[i] = "http://www.saidaliah.com/uploads/images/full/" + imageLink
                         }
                         resolve(rows);
                     }
