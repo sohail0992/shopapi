@@ -5,12 +5,10 @@ const mySql = require('mysql');
 var pool = mySql.createPool({
     connectionLimit: 30,
     host: "192.185.155.25",
-    user: "hiksaudi_hassam",
-    password: "MujeeB789",
-    database: "hiksaudi_js",
+    user: "saidalia_mirza1",
+    password: "Learnfor@99",
+    database: "saidalia_js",
     port:"3306"
-
 });
-
 
 module.exports = pool;

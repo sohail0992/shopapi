@@ -9,7 +9,7 @@ class user{
     findById(id, callback){
 
         var query = "SELECT id, firstname, lastname, email, phone, password \
-                     FROM hiksaudi_js.gc_customers\
+                     FROM saidalia_js.gc_customers\
                      WHERE id = " + "\"" + id + "\"";
 
         mySql.getConnection(function(err, connection){
@@ -24,7 +24,7 @@ class user{
     }
 
     updateVerificationStatus(userId, status, callback){
-        var query = "UPDATE hiksaudi_js.gc_customers SET verification_status = " + status + " WHERE id = " + userId; //+ userId;
+        var query = "UPDATE saidalia_js.gc_customers SET verification_status = " + status + " WHERE id = " + userId; //+ userId;
 
         mySql.getConnection(function(err, connection){
             if(err){
@@ -40,7 +40,7 @@ class user{
     findByEmail(email, callback){
 
         var query = "SELECT id, firstname, lastname, email, phone, password, verification_code, verification_status \
-                     FROM hiksaudi_js.gc_customers\
+                     FROM saidalia_js.gc_customers\
                      WHERE email = " + "\"" + email + "\"";
 
         mySql.getConnection(function(err, connection){
@@ -61,7 +61,7 @@ class user{
     setNewUser(userData, callback){
         console.log("inside set new user");
         console.log(userData);
-        var query = "INSERT into hiksaudi_js.gc_customers" +   
+        var query = "INSERT into saidalia_js.gc_customers" +   
                     "(firstname,  email, phone, password, verification_status, verification_code)" +
                     "VALUES" + "(" + "\"" + userData.name + "\"" + "," + "\"" + userData.email + "\"" + "," + "\"" + userData.mobile + "\"" + "," + "\"" + userData.password + "\"" + "," + "\"" + userData.verificationStatus + "\"" + ","+ userData.verificationCode +")";
         
@@ -89,8 +89,8 @@ class user{
 
     getUserAddresses(userId, callback){
         var query = "SELECT address.AdressID, address.latitude, address.longitude, address.address\
-                     FROM hiksaudi_js.gc_address AS address\
-                     INNER JOIN hiksaudi_js.gc_customers AS customers\
+                     FROM saidalia_js.gc_address AS address\
+                     INNER JOIN saidalia_js.gc_customers AS customers\
                      ON customers.id = address.CustomerId\
                      WHERE address.CustomerId =  " + userId;
        
@@ -106,7 +106,7 @@ class user{
     }
 
     addUserAddress(userId, addressData, callback){
-        var query = "INSERT INTO hiksaudi_js.gc_address\
+        var query = "INSERT INTO saidalia_js.gc_address\
                      (CustomerId, latitude, longitude, address)\
                      VALUES (" + userId + "," + addressData.latitude + "," + addressData.longitude 
                      + "," + "\"" + addressData.addressDesc + "\"" + ")";
@@ -125,7 +125,7 @@ class user{
 
     getUserAddressById(addressId, callback){
         console.log("Inside get user address model123");
-        var query = "SELECT address FROM hiksaudi_js.gc_address\
+        var query = "SELECT address FROM saidalia_js.gc_address\
                      WHERE AdressID = " + addressId;
         console.log("Above query executed");
 
@@ -145,7 +145,7 @@ class user{
         console.log(typeof time);
         console.log(typeof userId);
 
-        var query = "UPDATE  hiksaudi_js.gc_customers SET resetPasswordToken = " + "\"" + token + "\"" + "," + "resetPasswordDate = " + time + " WHERE id = " + userId;
+        var query = "UPDATE  saidalia_js.gc_customers SET resetPasswordToken = " + "\"" + token + "\"" + "," + "resetPasswordDate = " + time + " WHERE id = " + userId;
 
         mySql.getConnection(function(err, connection){
             if(err){
@@ -159,7 +159,7 @@ class user{
     }
 
     setUserPassword(id, password, callback){
-        var query = "UPDATE  hiksaudi_js.gc_customers SET password = " + "\"" + password + "\"" + " WHERE id = " + userId;
+        var query = "UPDATE  saidalia_js.gc_customers SET password = " + "\"" + password + "\"" + " WHERE id = " + userId;
 
         mySql.getConnection(function(err, connection){
             if(err){

@@ -8,7 +8,7 @@ class category{
     getSubCatPromise(parentCategory){
         return new Promise(function(resolve){
             var query = "SELECT id, name, arabic_name\
-                     FROM hiksaudi_js.gc_categories \
+                     FROM saidalia_js.gc_categories \
                      WHERE parent_id = " + parentCategory;
             
             mySql.getConnection(function(err, connection){
@@ -30,7 +30,7 @@ class category{
     */
     getCategories(callback) {
         var query = "SELECT id, name, arabic_name, image\
-                     FROM hiksaudi_js.gc_categories\
+                     FROM saidalia_js.gc_categories\
                      WHERE parent_id = 0";
 
         mySql.getConnection(function(err, connection){
@@ -52,7 +52,7 @@ class category{
     */
     getSubCategories(parentCategory, callback) {
         var query = "SELECT id, name, arabic_name\
-                     FROM hiksaudi_js.gc_categories \
+                     FROM saidalia_js.gc_categories \
                      WHERE parent_id = " + parentCategory;
 
         mySql.getConnection(function(err, connection){

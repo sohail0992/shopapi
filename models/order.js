@@ -14,7 +14,7 @@ class Order{
             }
             console.log(orderItemsArray);
             console.log("inside add order items function");
-            var query = "INSERT INTO hiksaudi_js.gc_order_items (order_id, product_id, quantity, name,  price, total_price) VALUES ?";
+            var query = "INSERT INTO saidalia_js.gc_order_items (order_id, product_id, quantity, name,  price, total_price) VALUES ?";
             
             mySql.getConnection(function(err, connection){
                 if(err){
@@ -79,7 +79,7 @@ class Order{
         console.log("Inside add New Order model");
         var productsInCart = cart.generateArray();
 
-        var newOrderQuery = "INSERT INTO hiksaudi_js.gc_orders (customer_id, order_number, status, total, subtotal, ordered_on, address)\
+        var newOrderQuery = "INSERT INTO saidalia_js.gc_orders (customer_id, order_number, status, total, subtotal, ordered_on, address)\
                              VALUES (" + userId + "," + "\"" + microtime.now() + "\"" + "," + "\"cart\"" + "," + cart.totalPrice + "," + cart.totalPrice + "," + Date.now() + "," + "\"" + address + "\"" + ")";
         /*
             Insert a new order and get the id of the row inserted in order table
