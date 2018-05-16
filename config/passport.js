@@ -85,12 +85,8 @@ passport.use('local-register', new localStrategy({
                 // return done(null, false);
                     done(null, newAddedUser[0]);
                 }
-
             })
         });
-    
-    
-    
 }));
 
 passport.use('local-signin', new localStrategy({
@@ -114,6 +110,7 @@ function(req, username, password, done){
             return done(null, false, {message: "No user found"});
         }
         if(!user.validPassword(password, result[0].password)){
+                console.log("password",password,"checking Password",result[0].password)
             console.log("Incorrect password entered");
             return done(null, false, {message: "Incorrect password"});
         }

@@ -173,13 +173,14 @@ class user{
     }
 
     generatePasswordHash(password){
-        return bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
+        console.log("password",password);
+        return bcrypt.hashSync(password, bcrypt.genSaltSync(10), null);
     }
 
     validPassword(password, localPassword){
-        return bcrypt.compareSync(password, localPassword); 
+        console.log("password",password,"localPassword",localPassword);
+        return bcrypt.compareSync(password,localPassword); 
     }
-
 }
 
 module.exports = user;
