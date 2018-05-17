@@ -85,7 +85,7 @@ class Order{
             Insert a new order and get the id of the row inserted in order table
             The id would be used to add order items in order items table
          */
-
+            console.log("address",newOrderQuery);
         var orderItemFunction = this.addOrderItems;
 
         mySql.getConnection(function(err, connection){

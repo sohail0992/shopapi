@@ -51,14 +51,7 @@ class Cart {
 		console.log("Discount price",discount_price);
 		storedItem.qty += Number(quantity);
 		storedItem.price += Number(discount_price);
-		console.log("Following Items in the List");
-		console.log(typeof(storedItem.qty))
-		console.log(typeof(storedItem.price))
-		console.log(Number(discount_price))
-		console.log(parseFloat(discount_price))
-		console.log(parseInt(discount_price))
-		console.log(discount_price)
-		
+		console.log("Following Items in the List");		
 		this.totalQty += Number(quantity);
 		this.totalPrice += Number(discount_price * quantity);
 		// console.log("item data",item);

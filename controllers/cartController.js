@@ -121,19 +121,14 @@ exports.finalCheckoutController = function(req, res){
     var addressId = req.body.addressId;
     var user = new User();    
     var order = new Order();
-
-
     console.log("executed 1");
     if(req.session.cart == null) {
         return res.json({
                     status: 500,
                     message: "Cannot proceed with empty cart"
                 });
-
     }
-
     var cart = new Cart(req.session.cart);
-
     user.getUserAddressById(addressId, function(err, addressRow){
         if(err){
             res.json({
