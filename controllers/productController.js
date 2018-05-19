@@ -221,11 +221,49 @@ exports.getProductSearchController = function (req, res) {
         }
     });
 }
+async function concatArrays(arr1,arr2) {
+    //Return a promise when all subcategories are fetched for parent categories
+    return new Promise(async function (resolve) {
+        let arr3 = [];
+        for(var i in arr1){
+           var shared = false;
+           for (var j in arr2)
+               if (arr2[j].name == arr1[i].name) {
+                   shared = true;
+                   break;
+               }
+           if(!shared) arr3.push(arr1[i])
+        }
+        arr3 = arr3.concat(arr2);
+
+        resolve(offerData); //Returning parent and subcategories when every thing executes correctly
+    });
+}
+async function getofferData(result) {
+    //Return a promise when all subcategories are fetched for parent categories
+    return new Promise(async function (resolve) {
+        let offerData=[];
+        let ProductWise=[];
+        let CategoryWise=[];
+        var products = new product();
+        for (var i=0 ;i<result.length;i++){
+            if(result[i].type==='product_wise'){
+                offerData[i] = await products.getProductWiseOffers(result[i].id);      
+            }
+            if(result[i].type==="category_wise"){
+                offerData[i] = await products.getCategoryWiseOffers(result[i].secondary_category,result[i].reduction_amount);      
+            }
+        }
+        //let offers = await concatArrays(ProductWise,CategoryWise); 
+        Array.prototype.push.apply(ProductWise,CategoryWise) 
+        resolve(offerData); //Returning All offers
+    });
+}
 exports.getOffers = function (req, res) {
     var products = new product();
 
-    console.log("inside offers controller");
-    products.getOffers(async function (err, result) {
+    console.log("inside offers controller"); 
+    products.getAllOffers(async function (err, result) {
         if (err) {
             res.json({
                 status: 500,
@@ -233,30 +271,37 @@ exports.getOffers = function (req, res) {
             });
         }
         else {
-            //Fetch images for offers
-            console.log("Inside else");
-            var offerWithImagesProm = await getOffersWithImages(result);
-            res.json({
-                status: 200,
-                message: offerWithImagesProm
-            });
+            if (result.length != 0) {
+                var availableOffers = await getofferData(result);  
+                res.json({
+                    status: 200,
+                     productWise: availableOffers,
+                     
+                });
+            }else {
+                res.json({
+                    status: 200,
+                     message: "Currently No Offer is Available"
+                });
+            }
+
         }
     })
 }
-exports.getOfferDetailsController = function(req, res){
+exports.getOfferDetailsController = function (req, res) {
     console.log("inside controller");
     var offerId = req.query.offerId;
     var products = new product();
-    products.getOfferDetails(offerId, function(err, result){
-        if(err){
+    products.getOfferDetails(offerId, function (err, result) {
+        if (err) {
             res.json({
                 status: 500,
                 message: err
             });
         } else {
-            console.log("after",result);
+            console.log("after", result);
             res.json({
-                status:200,
+                status: 200,
                 message: result
             })
         }

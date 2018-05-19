@@ -1,5 +1,5 @@
 var mySql = require('../config/database');
-
+var moment = require('moment');
 class product {
 
     constructor() {
@@ -43,8 +43,8 @@ class product {
     getProductDetails(productId, callback) {
 
         var query = "SELECT a.id, a.name, a.model, a.arabic_name, a.description, a.arabic_description, \
-	                        a.quantity, a.images, a.price_1, a.arabic_images, b.name as brand_name, \
-                            b.arabic_name as brand_arabic_name \
+                    a.quantity, a.images, a.price_1, a.arabic_images, b.name as brand_name, \
+                    b.arabic_name as brand_arabic_name \
                      FROM saidalia_js.gc_products a, saidalia_js.gc_brands b \
                      WHERE a.brand = b.id AND a.id = " + productId;
 
@@ -117,12 +117,10 @@ class product {
                 });
             });
         });
-
     }
-
-    getOffers(callback) {
-        var query = "SELECT promotions.id, timestampdiff(HOUR, promotions.start_date, promotions.end_date) as time_remaining, promotions.offer_name\
-                     FROM saidalia_js.gc_promotions as promotions";
+    getAllOffers(callback) {
+        var query = `SELECT * FROM saidalia_js.gc_promotions WHERE end_date >= NOW()`;
+        console.log("query", query);
 
         mySql.getConnection(function (err, connection) {
             if (err) {
@@ -132,32 +130,87 @@ class product {
                 if (err) {
                     throw err;
                 }
-                else {
+                else { 
                     connection.release();
                     console.log(results);
                     callback(err, results);
                 }
             });
         });
-    }
-    getOfferDetails(offerId, callback){
-        var query = "SELECT products.id, products.name, products.model, products.arabic_name, products.description, products.arabic_description,\
-        products.quantity, products.images, COALESCE(products.price_1 - ((products.price_1/100) * promotions.reduction_amount)) AS price_1, products.arabic_images, products.price_1 AS actual_price\
-                    FROM saidalia_js.gc_promotions as promotions\
-                    INNER JOIN saidalia_js.gc_promotions_products as promo_prods ON  promotions.id = promo_prods.coupon_id\
-                    INNER JOIN saidalia_js.gc_products as products ON promo_prods.product_id = products.id\
-                    WHERE promotions.id = " + offerId;
-                    console.log("query",query);
-        mySql.getConnection(function(err, connection){
-            if(err){
-                throw err;
-            }
+    } 
 
-            connection.query(query, function(err, results){
-                if(err){
+    getProductWiseOffers(offerId) {
+        return new Promise(function (resolve) {
+            var query = "SELECT products.id, products.name, products.model, products.arabic_name, products.description, products.arabic_description,\
+                        products.quantity, products.images, COALESCE(products.price_1 - ((products.price_1/100) * promotions.reduction_amount)) AS price_1, products.arabic_images, products.price_1 AS actual_price\
+                        FROM saidalia_js.gc_promotions as promotions\
+                        INNER JOIN saidalia_js.gc_promotions_products as promo_prods ON  promotions.id = promo_prods.coupon_id\
+                        INNER JOIN saidalia_js.gc_products as products ON promo_prods.product_id = products.id\
+                        WHERE promotions.id = " + offerId;
+
+            mySql.getConnection(function (err, connection) {
+                if (err) {
                     throw err;
                 }
-                else{
+                connection.query(query, function (err, rows) {
+                    if (err) {
+                        throw err;
+                    }
+                    else {
+                        connection.release();
+                        console.log("Promise going to be resolved");
+
+                        resolve(rows);
+                    }
+                });
+            });
+        });
+    }
+    getCategoryWiseOffers(subCategoryId,deductedAmount) {
+        return new Promise(function (resolve) {
+                var query = "SELECT id, name, model, arabic_name, quantity, price_1, images \
+                FROM saidalia_js.gc_products \
+                WHERE secondary_category = " + subCategoryId;
+            mySql.getConnection(function (err, connection) {
+                if (err) {
+                    throw err;
+                }
+                connection.query(query, function (err, rows) {
+                    if (err) {
+                        throw err;
+                    }
+                    else {
+                        connection.release();
+                        console.log("Promise going to be resolved");
+                        for (let j=0;j<rows.length;j++){
+                            rows[j].quantity=((rows[j].price_1 - ((rows[j].price_1/100) * deductedAmount)));
+                        }
+                        resolve(rows);
+                    }
+                });
+            });
+        });
+    }
+    getOfferDetails(offerId, callback) {
+        var datecheck = moment().format('YYYY-MM-DD HH:mm:ss');
+        console.log(typeof (datecheck));
+        var query = `SELECT products.id, products.name, products.model, products.arabic_name, products.description, products.arabic_description,
+                            products.quantity, products.images, COALESCE(products.price_1 - ((products.price_1/100) * promotions.reduction_amount)) AS price_1,
+                            products.arabic_images, products.price_1 AS actual_price
+                            FROM saidalia_js.gc_promotions as promotions
+                            INNER JOIN saidalia_js.gc_promotions_products as promo_prods ON  promotions.id = promo_prods.coupon_id
+                            INNER JOIN saidalia_js.gc_products as products ON promo_prods.product_id = products.id
+                            WHERE promotions.id = ${offerId} and promotions.end_date >= 2018-05-19`;
+        console.log("query", query);
+        mySql.getConnection(function (err, connection) {
+            if (err) {
+                throw err;
+            }
+            connection.query(query, function (err, results) {
+                if (err) {
+                    throw err;
+                }
+                else {
                     connection.release();
                     console.log(results);
                     callback(err, results);

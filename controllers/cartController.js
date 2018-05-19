@@ -130,6 +130,7 @@ exports.finalCheckoutController = function(req, res){
     }
     var cart = new Cart(req.session.cart);
     user.getUserAddressById(addressId, function(err, addressRow){
+        console.log("address",addressRow);
         if(err){
             res.json({
                 status: 500,
