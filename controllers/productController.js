@@ -309,3 +309,26 @@ exports.getOfferDetailsController = function (req, res) {
 
 }
 
+
+exports.setProductReiview = function (req, res) {
+    console.log("inside controller");
+    var review = req.body.review;
+    var productId=req.body.productId
+    var products = new product();
+    products.insertReview(review,productId,req.body.rating, function (err, result) {
+        if (err) {
+            res.json({
+                status: 500,
+                message: err
+            });
+        } else {
+            console.log("after", result);
+            res.json({
+                status: 200,
+                message: "Thanks for the feedback "
+            })
+        }
+    })
+
+}
+

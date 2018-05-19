@@ -14,6 +14,9 @@ router.get('/shopping-cart', function(req, res){
 router.get('/AddOfferToCart', function(req, res){
     cartController.addOfferToCartController(req, res);
 })
+router.get('/checkCoupun', function(req, res){
+    cartController.checkCoupunController(req, res);
+})
 /*
 router.get('/final-checkout', isLoggedIn, function(req, res){
     cartController.finalCheckoutController(req, res);

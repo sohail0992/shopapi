@@ -44,10 +44,12 @@ class product {
 
         var query = "SELECT a.id, a.name, a.model, a.arabic_name, a.description, a.arabic_description, \
                     a.quantity, a.images, a.price_1, a.arabic_images, b.name as brand_name, \
-                    b.arabic_name as brand_arabic_name \
-                     FROM saidalia_js.gc_products a, saidalia_js.gc_brands b \
-                     WHERE a.brand = b.id AND a.id = " + productId;
-
+                    b.arabic_name as brand_arabic_name,r.rating,r.Review as review_discricption\
+                    FROM  gc_products a\
+                    left join gc_review r on r.productId = a.id \
+                    left join gc_brands b on a.brand = b.id \
+                    WHERE a.id = " + productId;
+console.log(", saidalia_js.gc_brands b ")
         mySql.getConnection(function (err, connection) {
             if (err) {
                 throw err;
@@ -148,16 +150,17 @@ class product {
                         INNER JOIN saidalia_js.gc_products as products ON promo_prods.product_id = products.id\
                         WHERE promotions.id = " + offerId;
 
-          
+
             var ehourData = new Date(end);
-            var currentDates= new Date();
-            var  currentDatesH= currentDates.getHours()
+            var currentDates = new Date();
+            var currentDatesH = currentDates.getHours()
             var currentDatesM = currentDates.getMinutes();
-            console.log("date",ehourData,"date",end)
+            console.log("date", ehourData, "date", end)
             var EH = ehourData.getHours()
             var eminutesData = ehourData.getMinutes();
-            var remainingHours= EH-currentDatesH;
-            var remainingMinutes=eminutesData-currentDatesM;
+            var remainingHours = EH - currentDatesH;
+            var remainingMinutes = eminutesData - currentDatesM;
+            console.log("date", ehourData, "date", currentDates)
             mySql.getConnection(function (err, connection) {
                 if (err) {
                     throw err;
@@ -184,15 +187,16 @@ class product {
             var query = "SELECT p.id,p.enable_date as Hours,p.disable_date as Minutes, p.name,b.name as brand_name,p.arabic_description, p.model,p.description,p.fixed_quantity as discount_price, p.arabic_name, p.quantity, p.price_1, p.images \
                 FROM saidalia_js.gc_products p inner join saidalia_js.gc_brands b on b.id = p.brand \
                 WHERE secondary_category = " + subCategoryId;
-                var ehourData = new Date(end);
-                var currentDates= new Date();
-                var  currentDatesH= currentDates.getHours()
-                var currentDatesM = currentDates.getMinutes();
-                console.log("date",ehourData,"date",end)
-                var EH = ehourData.getHours()
-                var eminutesData = ehourData.getMinutes();
-                var remainingHours= EH-currentDatesH;
-                var remainingMinutes=eminutesData-currentDatesM;
+            var ehourData = new Date(end);
+            var currentDates = new Date();
+            var currentDatesH = currentDates.getHours()
+            var currentDatesM = currentDates.getMinutes();
+            console.log("date", ehourData, "date", end)
+            var EH = ehourData.getHours()
+            var eminutesData = ehourData.getMinutes();
+            var remainingHours = EH - currentDatesH;
+            var remainingMinutes = eminutesData - currentDatesM;
+            console.log("date", ehourData, "date", currentDates)
             mySql.getConnection(function (err, connection) {
                 if (err) {
                     throw err;
@@ -242,6 +246,33 @@ class product {
             });
         });
     }
+
+    insertReview(review, productId,rating, callback) {
+      //  var query = "INSERT INTO saidalia_js.gc_review (Review,productId) VALUES (" +review+ "," + productId +"")";
+       var query ="Insert INTO saidalia_js.gc_review set ?" 
+                     console.log("query",query);
+                     let data1={
+                        Review:review,
+                        productId:productId,
+                        rating:rating
+                     }
+        mySql.getConnection(function (err, connection) {
+            if (err) {
+                throw err;
+            }
+            connection.query(query,data1 ,function (err, results) {
+                if (err) {
+                    throw err;
+                }
+                else {
+                    connection.release();
+                    console.log(results);
+                    callback(err, results);
+                }
+            });
+        });
+    }
+
 }
 
 module.exports = product;
