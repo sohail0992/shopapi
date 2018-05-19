@@ -248,10 +248,10 @@ async function getofferData(result) {
         var products = new product();
         for (var i=0 ;i<result.length;i++){
             if(result[i].type==='product_wise'){
-                offerData[i] = await products.getProductWiseOffers(result[i].id);      
+                offerData[i] = await products.getProductWiseOffers(result[i].start_date,result[i].end_date,result[i].id);
             }
             if(result[i].type==="category_wise"){
-                offerData[i] = await products.getCategoryWiseOffers(result[i].secondary_category,result[i].reduction_amount);      
+                offerData[i] = await products.getCategoryWiseOffers(result[i].start_date,result[i].end_date,result[i].secondary_category,result[i].reduction_amount);         
             }
         }
         //let offers = await concatArrays(ProductWise,CategoryWise); 

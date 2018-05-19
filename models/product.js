@@ -139,9 +139,9 @@ class product {
         });
     } 
 
-    getProductWiseOffers(offerId) {
+    getProductWiseOffers(start,end,offerId) {
         return new Promise(function (resolve) {
-            var query = "SELECT products.id, products.name, products.model, products.arabic_name, products.description, products.arabic_description,\
+            var query = "SELECT products.id,products.enable_date as startTime,products.disable_date as endTime, products.name, products.model, products.arabic_name, products.description, products.arabic_description,\
                         products.quantity, products.images, COALESCE(products.price_1 - ((products.price_1/100) * promotions.reduction_amount)) AS price_1, products.arabic_images, products.price_1 AS actual_price\
                         FROM saidalia_js.gc_promotions as promotions\
                         INNER JOIN saidalia_js.gc_promotions_products as promo_prods ON  promotions.id = promo_prods.coupon_id\
@@ -159,17 +159,20 @@ class product {
                     else {
                         connection.release();
                         console.log("Promise going to be resolved");
-
+                        for(var i=0;i<rows.length;i++){
+                            rows[i].startTime=start;
+                            rows[i].endTime=end;
+                        }
                         resolve(rows);
                     }
                 });
             });
         });
     }
-    getCategoryWiseOffers(subCategoryId,deductedAmount) {
+    getCategoryWiseOffers(start,end,subCategoryId,deductedAmount) {
         return new Promise(function (resolve) {
-                var query = "SELECT id, name, model, arabic_name, quantity, price_1, images \
-                FROM saidalia_js.gc_products \
+                var query = "SELECT p.id,p.enable_date as startTime,p.disable_date as endTime_date, p.name,b.name as brand_name,p.arabic_description, p.model,p.description,p.fixed_quantity as discount_price, p.arabic_name, p.quantity, p.price_1, p.images \
+                FROM saidalia_js.gc_products p inner join saidalia_js.gc_brands b on b.id = p.brand \
                 WHERE secondary_category = " + subCategoryId;
             mySql.getConnection(function (err, connection) {
                 if (err) {
@@ -183,7 +186,9 @@ class product {
                         connection.release();
                         console.log("Promise going to be resolved");
                         for (let j=0;j<rows.length;j++){
-                            rows[j].quantity=((rows[j].price_1 - ((rows[j].price_1/100) * deductedAmount)));
+                            rows[j].discount_price=((rows[j].price_1 - ((rows[j].price_1/100) * deductedAmount)));
+                            rows[j].startTime=start;
+                            rows[j].endTime_date=end;
                         }
                         resolve(rows);
                     }
