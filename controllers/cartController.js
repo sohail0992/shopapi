@@ -156,3 +156,21 @@ exports.finalCheckoutController = function(req, res){
         }
     });
 }
+
+exports.checkCoupunController = function(req, res){
+    // var product = new product();
+    // console.log("Product id entered " + req.query.productId);
+    // product.checkCoupun(req.query.productId, function (err, result) {
+    //     if (err) {
+    //         res.json({
+    //             status: 500,
+    //             message: err
+    //         });
+    //     } else {
+    //         res.json({
+    //             status: 200,
+    //             data: result
+    //         });
+    //     }
+    // });
+}

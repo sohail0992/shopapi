@@ -1,11 +1,8 @@
 var mySql = require('../config/database');
 var moment = require('moment');
 class product {
-
     constructor() {
-
     }
-
     findById(id, callback) {
         var query = "SELECT id, name, arabic_name, price_1\
                      FROM saidalia_js.gc_products\
@@ -39,9 +36,7 @@ class product {
             });
         });
     }
-
     getProductDetails(productId, callback) {
-
         var query = "SELECT a.id, a.name, a.model, a.arabic_name, a.description, a.arabic_description, \
                     a.quantity, a.images, a.price_1, a.arabic_images, b.name as brand_name, \
                     b.arabic_name as brand_arabic_name,r.rating,r.Review as review_discricption\
@@ -49,7 +44,7 @@ class product {
                     left join gc_review r on r.productId = a.id \
                     left join gc_brands b on a.brand = b.id \
                     WHERE a.id = " + productId;
-console.log(", saidalia_js.gc_brands b ")
+        console.log(", saidalia_js.gc_brands b ")
         mySql.getConnection(function (err, connection) {
             if (err) {
                 throw err;
@@ -155,12 +150,25 @@ console.log(", saidalia_js.gc_brands b ")
             var currentDates = new Date();
             var currentDatesH = currentDates.getHours()
             var currentDatesM = currentDates.getMinutes();
-            console.log("date", ehourData, "date", end)
             var EH = ehourData.getHours()
             var eminutesData = ehourData.getMinutes();
             var remainingHours = EH - currentDatesH;
             var remainingMinutes = eminutesData - currentDatesM;
-            console.log("date", ehourData, "date", currentDates)
+
+            var seconds = Math.floor((ehourData - (currentDates)) / 1000);
+            var minutes = Math.floor(seconds / 60);
+            var hours = Math.floor(minutes / 60);
+            var days = Math.floor(hours / 24);
+
+            hours = hours - (days * 24);
+            minutes = minutes - (days * 24 * 60) - (hours * 60);
+            seconds = seconds - (days * 24 * 60 * 60) - (hours * 60 * 60) - (minutes * 60);
+            console.log("Hours", hours, "minutes", minutes, "seconds", seconds);
+
+
+
+            // console.log("Current Hour", currentDatesH, "Offer date Hours", EH)
+            // console.log("Current Minute", currentDatesM, "offer date min", remainingHours)
             mySql.getConnection(function (err, connection) {
                 if (err) {
                     throw err;
@@ -173,8 +181,8 @@ console.log(", saidalia_js.gc_brands b ")
                         connection.release();
                         console.log("Promise going to be resolved");
                         for (var i = 0; i < rows.length; i++) {
-                            rows[i].Hours = remainingHours;
-                            rows[i].Minutes = remainingMinutes;
+                            rows[i].Hours = hours;
+                            rows[i].Minutes = minutes;
                         }
                         resolve(rows);
                     }
@@ -191,12 +199,22 @@ console.log(", saidalia_js.gc_brands b ")
             var currentDates = new Date();
             var currentDatesH = currentDates.getHours()
             var currentDatesM = currentDates.getMinutes();
-            console.log("date", ehourData, "date", end)
             var EH = ehourData.getHours()
             var eminutesData = ehourData.getMinutes();
             var remainingHours = EH - currentDatesH;
-            var remainingMinutes = eminutesData - currentDatesM;
-            console.log("date", ehourData, "date", currentDates)
+            var remainingMinutes = eminutesData - eminutesData;
+            // get total seconds between the times
+
+
+            var seconds = Math.floor((ehourData - (currentDates)) / 1000);
+            var minutes = Math.floor(seconds / 60);
+            var hours = Math.floor(minutes / 60);
+            var days = Math.floor(hours / 24);
+
+            hours = hours - (days * 24);
+            minutes = minutes - (days * 24 * 60) - (hours * 60);
+            seconds = seconds - (days * 24 * 60 * 60) - (hours * 60 * 60) - (minutes * 60);
+            console.log("Hours", hours, "minutes", minutes, "seconds", seconds);
             mySql.getConnection(function (err, connection) {
                 if (err) {
                     throw err;
@@ -210,8 +228,8 @@ console.log(", saidalia_js.gc_brands b ")
                         console.log("Promise going to be resolved");
                         for (let j = 0; j < rows.length; j++) {
                             rows[j].discount_price = ((rows[j].price_1 - ((rows[j].price_1 / 100) * deductedAmount)));
-                            rows[j].Hours = remainingHours;
-                            rows[j].Minutes = remainingMinutes;
+                            rows[j].Hours = hours;
+                            rows[j].Minutes = minutes;
                         }
                         resolve(rows);
                     }
@@ -247,20 +265,20 @@ console.log(", saidalia_js.gc_brands b ")
         });
     }
 
-    insertReview(review, productId,rating, callback) {
-      //  var query = "INSERT INTO saidalia_js.gc_review (Review,productId) VALUES (" +review+ "," + productId +"")";
-       var query ="Insert INTO saidalia_js.gc_review set ?" 
-                     console.log("query",query);
-                     let data1={
-                        Review:review,
-                        productId:productId,
-                        rating:rating
-                     }
+    insertReview(review, productId, rating, callback) {
+        //  var query = "INSERT INTO saidalia_js.gc_review (Review,productId) VALUES (" +review+ "," + productId +"")";
+        var query = "Insert INTO saidalia_js.gc_review set ?"
+        console.log("query", query);
+        let data1 = {
+            Review: review,
+            productId: productId,
+            rating: rating
+        }
         mySql.getConnection(function (err, connection) {
             if (err) {
                 throw err;
             }
-            connection.query(query,data1 ,function (err, results) {
+            connection.query(query, data1, function (err, results) {
                 if (err) {
                     throw err;
                 }
@@ -272,6 +290,27 @@ console.log(", saidalia_js.gc_brands b ")
             });
         });
     }
+    checkCoupun(callback) {
+        var query = `SELECT * `;
+        // console.log("query", query);
+
+        mySql.getConnection(function (err, connection) {
+            if (err) {
+                throw err;
+            }
+            connection.query(query, function (err, results) {
+                if (err) {
+                    throw err;
+                }
+                else {
+                    connection.release();
+                    //  console.log(results);
+                    callback(err, results);
+                }
+            });
+        });
+    }
+
 
 }
 
