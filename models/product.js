@@ -120,7 +120,7 @@ class product {
     }
     getAllOffers(callback) {
         var query = `SELECT * FROM saidalia_js.gc_promotions WHERE end_date >= NOW()`;
-        console.log("query", query);
+        // console.log("query", query);
 
         mySql.getConnection(function (err, connection) {
             if (err) {
@@ -130,24 +130,34 @@ class product {
                 if (err) {
                     throw err;
                 }
-                else { 
+                else {
                     connection.release();
-                    console.log(results);
+                    //  console.log(results);
                     callback(err, results);
                 }
             });
         });
-    } 
+    }
 
-    getProductWiseOffers(start,end,offerId) {
+    getProductWiseOffers(end, offerId) {
         return new Promise(function (resolve) {
-            var query = "SELECT products.id,products.enable_date as startTime,products.disable_date as endTime, products.name, products.model, products.arabic_name, products.description, products.arabic_description,\
+            var query = "SELECT products.id,products.enable_date as Hours,products.disable_date as Minutes, products.name, products.model, products.arabic_name, products.description, products.arabic_description,\
                         products.quantity, products.images, COALESCE(products.price_1 - ((products.price_1/100) * promotions.reduction_amount)) AS price_1, products.arabic_images, products.price_1 AS actual_price\
                         FROM saidalia_js.gc_promotions as promotions\
                         INNER JOIN saidalia_js.gc_promotions_products as promo_prods ON  promotions.id = promo_prods.coupon_id\
                         INNER JOIN saidalia_js.gc_products as products ON promo_prods.product_id = products.id\
                         WHERE promotions.id = " + offerId;
 
+          
+            var ehourData = new Date(end);
+            var currentDates= new Date();
+            var  currentDatesH= currentDates.getHours()
+            var currentDatesM = currentDates.getMinutes();
+            console.log("date",ehourData,"date",end)
+            var EH = ehourData.getHours()
+            var eminutesData = ehourData.getMinutes();
+            var remainingHours= EH-currentDatesH;
+            var remainingMinutes=eminutesData-currentDatesM;
             mySql.getConnection(function (err, connection) {
                 if (err) {
                     throw err;
@@ -159,9 +169,9 @@ class product {
                     else {
                         connection.release();
                         console.log("Promise going to be resolved");
-                        for(var i=0;i<rows.length;i++){
-                            rows[i].startTime=start;
-                            rows[i].endTime=end;
+                        for (var i = 0; i < rows.length; i++) {
+                            rows[i].Hours = remainingHours;
+                            rows[i].Minutes = remainingMinutes;
                         }
                         resolve(rows);
                     }
@@ -169,11 +179,20 @@ class product {
             });
         });
     }
-    getCategoryWiseOffers(start,end,subCategoryId,deductedAmount) {
+    getCategoryWiseOffers(end, subCategoryId, deductedAmount) {
         return new Promise(function (resolve) {
-                var query = "SELECT p.id,p.enable_date as startTime,p.disable_date as endTime_date, p.name,b.name as brand_name,p.arabic_description, p.model,p.description,p.fixed_quantity as discount_price, p.arabic_name, p.quantity, p.price_1, p.images \
+            var query = "SELECT p.id,p.enable_date as Hours,p.disable_date as Minutes, p.name,b.name as brand_name,p.arabic_description, p.model,p.description,p.fixed_quantity as discount_price, p.arabic_name, p.quantity, p.price_1, p.images \
                 FROM saidalia_js.gc_products p inner join saidalia_js.gc_brands b on b.id = p.brand \
                 WHERE secondary_category = " + subCategoryId;
+                var ehourData = new Date(end);
+                var currentDates= new Date();
+                var  currentDatesH= currentDates.getHours()
+                var currentDatesM = currentDates.getMinutes();
+                console.log("date",ehourData,"date",end)
+                var EH = ehourData.getHours()
+                var eminutesData = ehourData.getMinutes();
+                var remainingHours= EH-currentDatesH;
+                var remainingMinutes=eminutesData-currentDatesM;
             mySql.getConnection(function (err, connection) {
                 if (err) {
                     throw err;
@@ -185,10 +204,10 @@ class product {
                     else {
                         connection.release();
                         console.log("Promise going to be resolved");
-                        for (let j=0;j<rows.length;j++){
-                            rows[j].discount_price=((rows[j].price_1 - ((rows[j].price_1/100) * deductedAmount)));
-                            rows[j].startTime=start;
-                            rows[j].endTime_date=end;
+                        for (let j = 0; j < rows.length; j++) {
+                            rows[j].discount_price = ((rows[j].price_1 - ((rows[j].price_1 / 100) * deductedAmount)));
+                            rows[j].Hours = remainingHours;
+                            rows[j].Minutes = remainingMinutes;
                         }
                         resolve(rows);
                     }
