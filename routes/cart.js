@@ -11,6 +11,10 @@ router.get('/shopping-cart', function(req, res){
     cartController.shoppingCartController(req, res);
 });
 
+router.get('/delete-from-cart', function(req, res){
+    cartController.deleteShoppingCartController(req, res);
+});
+
 router.get('/AddOfferToCart', function(req, res){
     cartController.addOfferToCartController(req, res);
 })

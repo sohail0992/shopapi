@@ -246,6 +246,7 @@ async function getofferData(result) {
         let ProductWise=[];
         let CategoryWise=[];
         var products = new product();
+        console.log("In offer data controller");
         for (var i=0 ;i<result.length;i++){
             if(result[i].type==='product_wise'){
                 offerData[i] = await products.getProductWiseOffers(result[i].end_date,result[i].id);

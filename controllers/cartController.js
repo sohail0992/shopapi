@@ -116,6 +116,41 @@ exports.shoppingCartController = function(req, res){
     });
     return;
 }
+exports.deleteShoppingCartController = function(req, res){
+    console.log("Inside delete to cart controller");
+    
+    //req.assert("");
+    /*
+      If cart is already present in session then pass that old cart
+      into the new Cart obj. Else create a new cart and pass it to 
+      the new Cart 
+    */
+    var cart = new Cart(req.session.cart ? req.session.cart : {});
+    
+    var product = new Product();
+    var productId=req.query.productId;
+    var price_1=req.query.price_1;
+    product.findById(productId, function(err, prod){
+        if(err){
+            res.json({
+                status: 500,
+                message: err
+            });
+        } else {
+       
+                cart.deleteProductfromCart(productId,price_1);
+            req.session.cart = cart;
+            
+            console.log("Following items in session cart");
+            console.log(req.session.cart);
+
+            res.json({
+                status: 200,
+                message: "Product deleted successfully"
+            })
+        }
+    })    
+}
 
 exports.finalCheckoutController = function(req, res){
     var addressId = req.body.addressId;

@@ -138,13 +138,12 @@ class product {
 
     getProductWiseOffers(end, offerId) {
         return new Promise(function (resolve) {
-            var query = "SELECT products.id,products.enable_date as Hours,products.disable_date as Minutes, products.name, products.model, products.arabic_name, products.description, products.arabic_description,\
-                        products.quantity, products.images, COALESCE(products.price_1 - ((products.price_1/100) * promotions.reduction_amount)) AS price_1, products.arabic_images, products.price_1 AS actual_price\
+            var query = "SELECT products.id,products.excerpt as days,products.enable_date as Hours,products.disable_date as Minutes, products.name, products.model, products.arabic_name, products.description, products.arabic_description,\
+                        products.quantity,promotions.reduction_amount as Reduction_Percentage, products.images, COALESCE(products.price_1 - ((products.price_1/100) * promotions.reduction_amount)) AS price_1, products.arabic_images, products.price_1 AS actual_price\
                         FROM saidalia_js.gc_promotions as promotions\
                         INNER JOIN saidalia_js.gc_promotions_products as promo_prods ON  promotions.id = promo_prods.coupon_id\
                         INNER JOIN saidalia_js.gc_products as products ON promo_prods.product_id = products.id\
                         WHERE promotions.id = " + offerId;
-
 
             var ehourData = new Date(end);
             var currentDates = new Date();
@@ -163,9 +162,7 @@ class product {
             hours = hours - (days * 24);
             minutes = minutes - (days * 24 * 60) - (hours * 60);
             seconds = seconds - (days * 24 * 60 * 60) - (hours * 60 * 60) - (minutes * 60);
-            console.log("Hours", hours, "minutes", minutes, "seconds", seconds);
-
-
+            console.log("days",days,"Hours", hours, "minutes", minutes, "seconds", seconds);
 
             // console.log("Current Hour", currentDatesH, "Offer date Hours", EH)
             // console.log("Current Minute", currentDatesM, "offer date min", remainingHours)
@@ -183,6 +180,8 @@ class product {
                         for (var i = 0; i < rows.length; i++) {
                             rows[i].Hours = hours;
                             rows[i].Minutes = minutes;
+                            rows[i].days=days;
+                            rows[i].Reduction_Percentage= rows[i].Reduction_Percentage+"%"
                         }
                         resolve(rows);
                     }
@@ -192,7 +191,7 @@ class product {
     }
     getCategoryWiseOffers(end, subCategoryId, deductedAmount) {
         return new Promise(function (resolve) {
-            var query = "SELECT p.id,p.enable_date as Hours,p.disable_date as Minutes, p.name,b.name as brand_name,p.arabic_description, p.model,p.description,p.fixed_quantity as discount_price, p.arabic_name, p.quantity, p.price_1, p.images \
+            var query = "SELECT p.id,p.weight as Reduction_Percentage,p.excerpt as days,p.enable_date as Hours,p.disable_date as Minutes, p.name,b.name as brand_name,p.arabic_description, p.model,p.description,p.fixed_quantity as discount_price, p.arabic_name, p.quantity, p.price_1, p.images \
                 FROM saidalia_js.gc_products p inner join saidalia_js.gc_brands b on b.id = p.brand \
                 WHERE secondary_category = " + subCategoryId;
             var ehourData = new Date(end);
@@ -230,6 +229,8 @@ class product {
                             rows[j].discount_price = ((rows[j].price_1 - ((rows[j].price_1 / 100) * deductedAmount)));
                             rows[j].Hours = hours;
                             rows[j].Minutes = minutes;
+                            rows[j].days=days;
+                            rows[j].Reduction_Percentage=deductedAmount+"%";
                         }
                         resolve(rows);
                     }
