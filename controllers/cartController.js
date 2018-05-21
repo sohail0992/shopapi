@@ -207,7 +207,8 @@ exports.checkCoupunController = function(req, res){
            if(result!=0){
             res.json({
                 status: 200,
-                message: "Coupun matches Congratulations"
+                message: "Coupun matches Congratulations",
+                data:result,
             })
            }else{
             res.json({
