@@ -43,18 +43,23 @@ class Cart {
 		this.totalPrice += (item.price_1 * quantity);
 
 	}
-	deleteProductfromCart(id, price_1) {
+	deleteProductfromCart(id, price_1,cart) {
 		console.log("in delete cart model");
 		var storedItem = this.items[id];
-		for (var i = 0; i < this.items.length; i++) {
-			if ((this.items[i].item.id == id) && (this.items[i].item.price_1 == price_1)) {
-				this.totalQty -= this.items[i].qty;
-				this.totalPrice -= this.items[i].price ;
+		for (var i = 0; i < cart.length; i++) {
+			// if ((this.items[i].item.id == id) && (this.items[i].item.price_1 == price_1)) {
+			// 	this.totalQty -= this.items[i].qty;
+			// 	this.totalPrice -= this.items[i].price ;
 
-				this.items.splice(i, 1);
-				break;
-			}
+			// 	this.items.splice(i, 1);
+			// 	break;
+			// }
+			// console.log("Complete Cart",this.items);
+			// console.log("this.items[i].item.id == id",this.items[i].item.id == id)
+			// console.log("this.items[i].item.price_1",this.items[i].item.price_1)
 		}
+		console.log("Complete Cart",req.session.cart );
+	
 
 	}
 	addOfferToCart(item, id, quantity, discount_price) {

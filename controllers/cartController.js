@@ -138,7 +138,7 @@ exports.deleteShoppingCartController = function(req, res){
             });
         } else {
        
-                cart.deleteProductfromCart(productId,price_1);
+                cart.deleteProductfromCart(productId,price_1,req.session.cart );
             req.session.cart = cart;
             
             console.log("Following items in session cart");
@@ -193,19 +193,29 @@ exports.finalCheckoutController = function(req, res){
 }
 
 exports.checkCoupunController = function(req, res){
-    // var product = new product();
-    // console.log("Product id entered " + req.query.productId);
-    // product.checkCoupun(req.query.productId, function (err, result) {
-    //     if (err) {
-    //         res.json({
-    //             status: 500,
-    //             message: err
-    //         });
-    //     } else {
-    //         res.json({
-    //             status: 200,
-    //             data: result
-    //         });
-    //     }
-    // });
+    console.log("inside controller");
+    var coupun = req.query.coupun;
+    var cart = req.session.cart;
+    var products = new Product();
+    products.checkCoupun(coupun,cart, function (err, result) {
+        if (err) {
+            res.json({
+                status: 500,
+                message: err
+            });
+        } else {
+           if(result!=0){
+            res.json({
+                status: 200,
+                message: "Coupun matches Congratulations"
+            })
+           }else{
+            res.json({
+                status: 200,
+                message: "Coupun did not matched Please try again with different Coupon"
+            })
+           }
+           
+        }
+    })
 }

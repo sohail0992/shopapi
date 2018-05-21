@@ -54,7 +54,6 @@ class product {
                 callback(err, rows); //Passing results to callback function
             });
         });
-
     }
     getReviewOnProduct(productId) {
         return new Promise(function (resolve) {
@@ -310,10 +309,13 @@ class product {
             });
         });
     }
-    checkCoupun(callback) {
-        var query = `SELECT * `;
-        // console.log("query", query);
-
+    checkCoupun(coupun,cart,callback) {
+       var query =  'select code '+
+       ' from saidalia_js.gc_coupons ' +
+       ' where code = "' + coupun + '" and end_date >=NOW()';
+    //  var query = `SELECT code from saidalia_js.gc_coupons where code = coupun 
+    //  and end_date >=NOW()`;
+         console.log("query", query);
         mySql.getConnection(function (err, connection) {
             if (err) {
                 throw err;
