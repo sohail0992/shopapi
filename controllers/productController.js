@@ -339,6 +339,35 @@ exports.getOfferDetailsController = function (req, res) {
     })
 
 }
+exports.getMyOrderdetails = function (req, res) {
+    console.log("inside controller");
+    var products = new product();
+    console.log("andr he nai gaya ");
+    products.getOrderHistory(req.query.Id,function (err, result) {
+        if (err) {
+            res.json({
+                status: 500,
+                message:"y error hai ajeeb ", err,
+            });
+        }else {
+            console.log("after", result);
+            if(result!=0){
+                res.json({
+                    status: 200,
+                    data: result,
+                })
+            }
+            else{
+                res.json({
+                    status: 200,
+                    message: "No previous orders",
+                })
+            }
+           
+        }
+    })
+
+}
 
 
 exports.setProductReiview = function (req, res) {

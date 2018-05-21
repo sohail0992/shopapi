@@ -256,6 +256,31 @@ class product {
             });
         });
     }
+    getOrderHistory(Id,callback) {
+ 
+        var query =  'select ordered_on ,order_number,order_status '+
+        ' from saidalia_js.gc_orders ' +
+        ' where customer_id = "' + Id + '" ';
+        console.log("query", query);
+        mySql.getConnection(function (err, connection) {
+            if (err) {
+                throw err;
+            }
+            connection.query(query, function (err, results) {
+                if (err) {
+                    console.log(err);
+                    throw err;
+                }
+                else {
+                    connection.release();
+                    console.log(results);
+                    callback(err, results);
+                }
+            });
+        });
+
+    }
+
     getOfferDetails(offerId, callback) {
         var datecheck = moment().format('YYYY-MM-DD HH:mm:ss');
         console.log(typeof (datecheck));

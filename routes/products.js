@@ -27,6 +27,11 @@ router.get('/offers-details', function (req, res) {
     productsController.getOfferDetailsController(req, res);
 });
 
+router.get('/myOrder', function (req, res) {
+    productsController.getMyOrderdetails(req,res);
+});
+
+
 router.post('/product-review', function (req, res) {
     console.log("Inside product review route");
     req.assert("review", "Write any review to submit").notEmpty();
