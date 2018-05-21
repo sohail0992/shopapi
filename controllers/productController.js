@@ -143,6 +143,27 @@ exports.getSubCatProductsController = function (req, res) {
         }
     });
 }
+async function getReviewData(productId,result) {
+    //Return a promise when all subcategories are fetched for parent categories
+    return new Promise(async function (resolve) {
+        var description=[]; 
+        var rating =0;
+        var products = new product();
+        review_details= await products.getReviewOnProduct(productId);
+        if(review_details!=0){
+            console.log("review_details",review_details);
+            for (var j=0;j<review_details.length;j++){
+             description[j]=review_details[j].Review;
+             rating += review_details[j].rating;
+            console.log("details review",review_details[j].Review);
+            }
+            var rationRating=rating/review_details.length;
+            result[0].Review_decription=description;
+            result[0].rating=Math.floor(rationRating);
+         }
+        resolve(review_details); //Returning All offers
+    });
+}
 
 /*
     This controller takes a single product id
@@ -150,19 +171,28 @@ exports.getSubCatProductsController = function (req, res) {
  */
 exports.getProductDetailsController = function (req, res) {
     var products = new product();
-
+    var review_details="";
     console.log("Product id entered " + req.query.productId);
-    products.getProductDetails(req.query.productId, function (err, result) {
+    products.getProductDetails(req.query.productId,async function (err, result) {
         if (err) {
             res.json({
                 status: 500,
                 message: err
             });
         } else {
-            res.json({
-                status: 200,
-                data: result
-            });
+              if(result.lenth!=0){
+                review_details= await getReviewData(req.query.productId,result);
+                res.json({
+                    status: 200,
+                    data: result
+                });
+                }else{
+                    res.json({
+                        status: 200,
+                        Message: "No Details are Avialable "
+                    });
+                }
+           
         }
     });
 }

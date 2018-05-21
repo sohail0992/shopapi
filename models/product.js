@@ -37,12 +37,11 @@ class product {
         });
     }
     getProductDetails(productId, callback) {
-        var query = "SELECT a.id, a.name, a.model, a.arabic_name, a.description, a.arabic_description, \
+        var query = "SELECT a.id, a.name,a.excerpt as rating,free_shipping as Review_decription, a.model, a.arabic_name, a.description, a.arabic_description, \
                     a.quantity, a.images, a.price_1, a.arabic_images, b.name as brand_name, \
-                    b.arabic_name as brand_arabic_name,r.rating,r.Review as review_discricption\
+                    b.arabic_name as brand_arabic_name\
                     FROM  gc_products a\
-                    left join gc_review r on r.productId = a.id \
-                    left join gc_brands b on a.brand = b.id \
+                    Right join gc_brands b on a.brand = b.id \
                     WHERE a.id = " + productId;
         console.log(", saidalia_js.gc_brands b ")
         mySql.getConnection(function (err, connection) {
@@ -56,6 +55,26 @@ class product {
             });
         });
 
+    }
+    getReviewOnProduct(productId) {
+        return new Promise(function (resolve) {
+            var query =`select rating,Review from saidalia_js.gc_review where productId = ${productId}`
+            mySql.getConnection(function (err, connection) {
+                if (err) {
+                    throw err;
+                }
+                connection.query(query, function (err, rows) {
+                    if (err) {
+                        throw err;
+                    }
+                    else {
+                        connection.release();
+                        console.log("Promise going to be resolved");
+                        resolve(rows);
+                    }
+                });
+            });
+        });
     }
 
     getProductBySearch(productName, callback) {
