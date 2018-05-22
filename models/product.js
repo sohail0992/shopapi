@@ -258,7 +258,7 @@ class product {
     }
     getOrderHistory(Id,callback) {
  
-        var query =  'select ordered_on ,order_number,order_status '+
+        var query =  'select order_status,order_started ,order_number,status '+
         ' from saidalia_js.gc_orders ' +
         ' where customer_id = "' + Id + '" ';
         console.log("query", query);

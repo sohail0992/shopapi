@@ -1,6 +1,7 @@
 var mySql = require("../config/database");
 var bcrypt = require('bcryptjs');
-
+var crypto = require('crypto');
+var sha1 = require('sha1');
 class user{
     constructor() {
         
@@ -174,13 +175,23 @@ class user{
 
     generatePasswordHash(password){
         console.log("password",password);
-        return bcrypt.hashSync(password, bcrypt.genSaltSync(10), null);
+        //var sha1 = crypto.createHash('sha1').update(password).digest("hex");
+        var sha =sha1(password)
+        console.log("sha1",sha);
+       // return bcrypt.hashSync(password, bcrypt.genSaltSync(10), null);
+        return sha;
     }
 
     validPassword(password, localPassword){
-        console.log("password",password,"localPassword",localPassword);
-        return bcrypt.compareSync(password,localPassword); 
+      //  console.log("password",password,"localPassword",localPassword);
+       // var sha1 = crypto.createHash('sha1').update(password).digest("hex");
+       var sha =sha1(password) 
+       if(sha==localPassword){
+            return true;
+        }else{
+            return false;
+        }
+      //  return bcrypt.compareSync(password,localPassword); 
     }
 }
-
 module.exports = user;
