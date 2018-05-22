@@ -33,9 +33,6 @@ exports.addToCartController = function (req, res) {
                 message: err
             });
         } else {
-
-
-
             if (req.query.quantity == null) {
                 cart.addProductToCart(prod, productId);
             } else {
@@ -55,7 +52,7 @@ exports.addToCartController = function (req, res) {
 }
 exports.addOfferToCartController = function (req, res) {
     console.log("Inside add to cart controller");
-    var productId = req.query.id;
+    var productId = Number(req.query.id);
     var quantity = Number(req.query.quantity);
     var number = Number(req.query.discount_price);
     if (!(/^[0-9]+$/.test(quantity))) {
@@ -64,8 +61,7 @@ exports.addOfferToCartController = function (req, res) {
             message: "Invalid quantity"
         })
     }
-    console.log("The value of product id is" + productId);
-    console.log("Discount price " + req.query.discount_price + typeof (number));
+
     /*
       If cart is already present in session then pass that old cart
       into the new Cart obj. Else create a new cart and pass it to 
@@ -116,19 +112,57 @@ exports.shoppingCartController = function (req, res) {
     });
     return;
 }
+exports.editShoppingCartController = function (req, res) {
+    console.log("Inside Edit to cart controller");
+    //req.assert("");
+    /*
+    
+      If cart is already present in session then pass that old cart
+      into the new Cart obj. Else create a new cart and pass it to 
+      the new Cart
+
+    */
+    var cart = new Cart(req.session.cart ? req.session.cart : {});
+
+    var product = new Product();
+    var productId = Number(req.query.productId);
+    var qty = Number(req.query.quantity);
+    var price=Number(req.query.price)
+    product.findById(productId, function (err, prod) {
+        if (err) {
+            res.json({
+                status: 500,
+                message: err
+            });
+        } else {
+            req.session.cart = cart;
+            cart.editProductfromCart(productId,qty,price,req.session.cart);
+            console.log("Following items in session cart");
+            console.log(req.session.cart);
+
+            res.json({
+                status: 200,
+                message: "Product Edit successfully",
+                data:req.session.cart,
+            })
+        }
+    })
+}
 exports.deleteShoppingCartController = function (req, res) {
     console.log("Inside delete to cart controller");
 
     //req.assert("");
     /*
+    
       If cart is already present in session then pass that old cart
       into the new Cart obj. Else create a new cart and pass it to 
-      the new Cart 
+      the new Cart
+
     */
     var cart = new Cart(req.session.cart ? req.session.cart : {});
 
     var product = new Product();
-    var productId = req.query.productId;
+    var productId = Number(req.query.productId);
     var price_1 = req.query.price_1;
     product.findById(productId, function (err, prod) {
         if (err) {
@@ -137,15 +171,15 @@ exports.deleteShoppingCartController = function (req, res) {
                 message: err
             });
         } else {
-            cart.deleteProductfromCart(productId, price_1, cart);
             req.session.cart = cart;
-
+            cart.deleteProductfromCart(productId, price_1, req.session.cart);
             console.log("Following items in session cart");
             console.log(req.session.cart);
 
             res.json({
                 status: 200,
-                message: "Product deleted successfully"
+                message: "Product deleted successfully",
+                data:req.session.cart,
             })
         }
     })

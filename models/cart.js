@@ -9,10 +9,8 @@ class Cart {
 		this.totalQty = oldCart.totalQty || 0;
 		this.totalPrice = oldCart.totalPrice || 0;
 	}
-
 	addProductToCart(item, id) {
 		var storedItem = this.items[id];
-
 		//Create a new item if its not present in items list
 		if (!storedItem) {
 			storedItem = this.items[id] = { item: item, qty: 1, price: Number(item.price_1) };
@@ -33,7 +31,7 @@ class Cart {
 		//Create a new item if its not present in items list
 		if (!storedItem) {
 			storedItem = this.items[id] = { item: item, qty: Number(quantity), price: Number(item.price_1) };
-		}else {
+		} else {
 			//Increment qty by 1 and set price to item price
 			storedItem.qty++;
 			storedItem.price = item.price_1 * storedItem.qty;
@@ -42,36 +40,71 @@ class Cart {
 		this.totalQty += Number(quantity);
 		this.totalPrice += (item.price_1 * quantity);
 	}
+	addOfferToCart(item, id, quantity, discount_price) {
+		var discount_priceD = item.price_1 - ((item.price_1 / 100) * discount_price)
+		console.log("actual amount ", item.price_1, "Concession", discount_priceD);
+		var storedItem = this.items[id + 100];
+		//Create a new item if its not present in items list
+		if (!storedItem) {
+			item.id += 100;
+			storedItem = this.items[id + 100] = { item: item, qty: Number(quantity), price: Number(discount_priceD), type: "Offer" };
+			console.log("Newly Stored Item")
+		} else {
+			storedItem.qty++;
+			storedItem.price = discount_priceD * storedItem.qty;
+		}
+		//Increment qty by 1 and set price to item price
+		this.totalQty += Number(quantity);
+		this.totalPrice += discount_priceD * quantity;
+	}
+
+	//Object.assign([...this.state.editTarget], {[id]: {[target]: value}})
+
 	deleteProductfromCart(id, price_1, cart) {
-		console.log("in delete cart model");
+
+		var int_id = Number(id)
 		var storedItem = this.items[id];
-		for (var i = 0; i < cart.length; i++) {
-			if ((storedItem[i].item.id == id) && (storedItem[i].item.price_1 == price_1)) {
-				console.log(id,"ID",storedItem.item.id);
-				console.log(price_1,"PRice",storedItem[i].item.price_1)
-				this.totalQty -= this.items[i].qty;
-				this.totalPrice -= this.items[i].price;
-				storedItem.splice(i, 1);
-				break;
-			}
-			// console.log("Complete Cart",this.items);
-			// console.log("this.items[i].item.id == id",this.items[i].item.id == id)
-			// console.log("this.items[i].item.price_1",this.items[i].item.price_1)
+		console.log("in delete cart model cart.length", typeof (id), id);
+		console.log(storedItem, "storedItem")
+		if (storedItem) {
+			this.totalQty -= Number(storedItem.qty);
+			this.totalPrice -= storedItem.price;
+
+			delete this.items[id];
+		} else {
+			console.log("in delete cart model cart data", cart);
 		}
 		console.log("Complete Cart", cart);
 	}
-	addOfferToCart(item, id, quantity, discount_price) {
-		var storedItem = this.items[id];
-		//Create a new item if its not present in items list
-		storedItem = this.items[id] = { item: item, qty: Number(quantity), price: Number(item.price_1),type:"Offer" };
-		//Increment qty by 1 and set price to item price
-		// storedItem.qty += Number(quantity);
-		// storedItem.price += Number(discount_price);
-		console.log("Following Items in the List");
-		this.totalQty += Number(quantity);
-		this.totalPrice += Number(discount_price * quantity);
 
+	editProductfromCart(id, changeQty,price, cart) {
+
+		var storedItem = this.items[id];
+		var qty_decission = 0;
+		console.log("in edit cart model ", typeof (id), id);
+		console.log(storedItem, "storedItem")
+		if (storedItem) {
+			if (changeQty < storedItem.qty) {
+				storedItem.qty -= changeQty;
+				storedItem.price = price * storedItem.qty;
+				this.totalQty -= changeQty;
+				this.totalPrice -= price * changeQty ;
+				console.log("in if ",cart)
+			} else {
+				storedItem.qty += changeQty;
+				storedItem.price = price * storedItem.qty;
+				this.totalQty += changeQty;
+				this.totalPrice += price * changeQty ;
+				console.log("in else ",cart)
+			}
+		} else {
+			
+			console.log("do nothig")
+		}
+		console.log("Complete Cart", cart);
 	}
+
+
 	generateArray() {
 		var arr = [];
 

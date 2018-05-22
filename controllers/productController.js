@@ -337,8 +337,8 @@ exports.getOfferDetailsController = function (req, res) {
             })
         }
     })
-
 }
+
 exports.getMyOrderdetails = function (req, res) {
     console.log("inside controller");
     var products = new product();
@@ -368,8 +368,6 @@ exports.getMyOrderdetails = function (req, res) {
     })
 
 }
-
-
 exports.setProductReiview = function (req, res) {
     console.log("inside controller");
     var review = req.body.review;
