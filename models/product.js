@@ -57,7 +57,7 @@ class product {
     }
     getReviewOnProduct(productId) {
         return new Promise(function (resolve) {
-            var query =`select rating,Review from saidalia_js.gc_review where productId = ${productId}`
+            var query = `select rating,Review from saidalia_js.gc_review where productId = ${productId}`
             mySql.getConnection(function (err, connection) {
                 if (err) {
                     throw err;
@@ -180,7 +180,7 @@ class product {
             hours = hours - (days * 24);
             minutes = minutes - (days * 24 * 60) - (hours * 60);
             seconds = seconds - (days * 24 * 60 * 60) - (hours * 60 * 60) - (minutes * 60);
-            console.log("days",days,"Hours", hours, "minutes", minutes, "seconds", seconds);
+            console.log("days", days, "Hours", hours, "minutes", minutes, "seconds", seconds);
 
             // console.log("Current Hour", currentDatesH, "Offer date Hours", EH)
             // console.log("Current Minute", currentDatesM, "offer date min", remainingHours)
@@ -198,8 +198,8 @@ class product {
                         for (var i = 0; i < rows.length; i++) {
                             rows[i].Hours = hours;
                             rows[i].Minutes = minutes;
-                            rows[i].days=days;
-                            rows[i].Reduction_Percentage= rows[i].Reduction_Percentage+"%"
+                            rows[i].days = days;
+                            rows[i].Reduction_Percentage = rows[i].Reduction_Percentage + "%"
                         }
                         resolve(rows);
                     }
@@ -247,8 +247,8 @@ class product {
                             rows[j].discount_price = ((rows[j].price_1 - ((rows[j].price_1 / 100) * deductedAmount)));
                             rows[j].Hours = hours;
                             rows[j].Minutes = minutes;
-                            rows[j].days=days;
-                            rows[j].Reduction_Percentage=deductedAmount+"%";
+                            rows[j].days = days;
+                            rows[j].Reduction_Percentage = deductedAmount + "%";
                         }
                         resolve(rows);
                     }
@@ -256,16 +256,42 @@ class product {
             });
         });
     }
-    getOrderHistory(Id,callback) {
- 
-        var query =  'select order_status,order_started ,order_number,status '+
-        ' from saidalia_js.gc_orders ' +
-        ' where customer_id = "' + Id + '" ';
+    getOrderHistory(Id, callback) {
+
+        var query = 'select order_status,order_started ,order_number,status ' +
+            ' from saidalia_js.gc_orders ' +
+            ' where customer_id = "' + Id + '" ';
         console.log("query", query);
         mySql.getConnection(function (err, connection) {
             if (err) {
                 throw err;
             }
+            connection.query(query, function (err, results) {
+                if (err) {
+                    console.log(err);
+                    throw err;
+                }
+                else {
+                    connection.release();
+                    console.log(results);
+                    callback(err, results);
+                }
+            });
+        });
+
+    }
+    getOrderDetailHistory(Id, callback) {
+
+        var query = 'select o.order_number,o.address,d.price_1,o.order_started,d.quantity,d.name,d.description,d.total_price,d.images,d.arabic_name,d.arabic_description ' +
+            '   from saidalia_js.gc_orders o' +
+            '  inner join saidalia_js.gc_order_items d on o.id= d.order_id'+
+            ' where o.id = "' + Id + '" ';
+        console.log("query", query);
+        mySql.getConnection(function (err, connection) {
+            if (err) {
+                throw err;
+            }
+
             connection.query(query, function (err, results) {
                 if (err) {
                     console.log(err);
@@ -334,13 +360,13 @@ class product {
             });
         });
     }
-    checkCoupun(coupun,cart,callback) {
-       var query =  'select reduction_amount '+
-       ' from saidalia_js.gc_coupons ' +
-       ' where code = "' + coupun + '" and end_date >=NOW()';
-    //  var query = `SELECT code from saidalia_js.gc_coupons where code = coupun 
-    //  and end_date >=NOW()`;
-         console.log("query", query);
+    checkCoupun(coupun, cart, callback) {
+        var query = 'select reduction_amount ' +
+            ' from saidalia_js.gc_coupons ' +
+            ' where code = "' + coupun + '" and end_date >=NOW()';
+        //  var query = `SELECT code from saidalia_js.gc_coupons where code = coupun 
+        //  and end_date >=NOW()`;
+        console.log("query", query);
         mySql.getConnection(function (err, connection) {
             if (err) {
                 throw err;

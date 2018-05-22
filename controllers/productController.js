@@ -371,6 +371,40 @@ exports.getMyOrderdetails = function (req, res) {
     })
 
 }
+
+exports.getMyOrderdetailsproductwise = function (req, res) {
+    console.log("inside controller");
+    var products = new product();
+    console.log("andr he nai gaya ");
+    var id=Number(req.query.id);
+    products.getOrderDetailHistory(id,function (err, result) {
+        if (err) {
+            res.json({
+                status: 500,
+                message:"y error hai ajeeb ", err,
+            });
+        }else {
+            console.log("after", result);
+            if(result!=0){
+                    for(var i=0 ;i<result.length;i++){
+                        result[i].order_status="Pending";
+                    }
+                res.json({
+                    status: 200,
+                    data: result,
+                })
+            }
+            else{
+                res.json({
+                    status: 200,
+                    message: "No previous orders",
+                })
+            }
+           
+        }
+    })
+
+}
 exports.setProductReiview = function (req, res) {
     console.log("inside controller");
     var review = req.body.review;
