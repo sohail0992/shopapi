@@ -5,8 +5,6 @@ var User = require('../models/user');
 var Mail = require('../models/mail');
 //import the local strategy
 var localStrategy = require('passport-local').Strategy;
-
-
 //Passport will serialize a unique session with the user id from which the request has been made
 //Serialize the session by user id
 //Done is a callback function

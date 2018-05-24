@@ -42,14 +42,13 @@ class category{
                 callback(err, rows); //Passing results to callback function
             });
         })
-        
-    
     }
 
     /*
         This function will retrieve categories having a 
         parent id. These categories are known as sub categories
     */
+   
     getSubCategories(parentCategory, callback) {
         var query = "SELECT id, name, arabic_name\
                      FROM saidalia_js.gc_categories \

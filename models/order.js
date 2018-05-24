@@ -80,7 +80,7 @@ class Order{
         var productsInCart = cart.generateArray();
 
         var newOrderQuery = "INSERT INTO saidalia_js.gc_orders (customer_id, order_number, order_status, total, subtotal, ordered_on, address)\
-                             VALUES (" + userId + "," + "\"" + microtime.now() + "\"" + "," + "\"cart\"" + "," + cart.totalPrice + "," + cart.totalPrice + "," + Date.now() + "," + "\"" + address + "\"" + ")";
+                             VALUES (" + userId + "," + "\"" + microtime.now() + "\"" + "," + "\"Pending\"" + "," + cart.totalPrice + "," + cart.totalPrice + "," + Date.now() + "," + "\"" + address + "\"" + ")";
         /*
             Insert a new order and get the id of the row inserted in order table
             The id would be used to add order items in order items table

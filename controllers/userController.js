@@ -26,15 +26,13 @@ exports.getUserAddressController = function(req, res){
 }
 
 exports.addUserAddressController = function(req, res){
-    
-    
 
     var user = new User();
     
     var addressData = {
         latitude: req.body.latitude,
         longitude: req.body.longitude,
-        addressDesc: req.body.addressDesc
+        addressDesc: req.body.adressDesc
     }
     
     console.log("Printing req.user.id" + req.user.id);

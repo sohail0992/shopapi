@@ -89,11 +89,11 @@ class user{
     }
 
     getUserAddresses(userId, callback){
-        var query = "SELECT address.AdressID, address.latitude, address.longitude, address.address\
-                     FROM saidalia_js.gc_address AS address\
+        var query = "SELECT address.id, address.latitude, address.longitude, address.address1\
+                     FROM saidalia_js.gc_customers_address_bank AS address\
                      INNER JOIN saidalia_js.gc_customers AS customers\
-                     ON customers.id = address.CustomerId\
-                     WHERE address.CustomerId =  " + userId;
+                     ON customers.id = address.customer_id\
+                     WHERE address.customer_id =  " + userId;
        
         mySql.getConnection(function(err, connection){
             if(err){
@@ -105,10 +105,10 @@ class user{
             });
         });
     }
-
+ 
     addUserAddress(userId, addressData, callback){
-        var query = "INSERT INTO saidalia_js.gc_address\
-                     (CustomerId, latitude, longitude, address)\
+        var query = "INSERT INTO saidalia_js.gc_customers_address_bank\
+                     (customer_id, latitude, longitude, address1)\
                      VALUES (" + userId + "," + addressData.latitude + "," + addressData.longitude 
                      + "," + "\"" + addressData.addressDesc + "\"" + ")";
         
@@ -126,8 +126,8 @@ class user{
 
     getUserAddressById(addressId, callback){
         console.log("Inside get user address model123");
-        var query = "SELECT address FROM saidalia_js.gc_address\
-                     WHERE AdressID = " + addressId;
+        var query = "SELECT address FROM saidalia_js.gc_customers_address_bank\
+                     WHERE id = " + addressId;
         console.log("Above query executed");
 
         mySql.getConnection(function(err, connection){
