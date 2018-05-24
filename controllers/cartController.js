@@ -175,7 +175,6 @@ exports.deleteShoppingCartController = function (req, res) {
             cart.deleteProductfromCart(productId, price_1, req.session.cart);
             console.log("Following items in session cart");
             console.log(req.session.cart);
-
             res.json({
                 status: 200,
                 message: "Product deleted successfully",
@@ -186,6 +185,7 @@ exports.deleteShoppingCartController = function (req, res) {
 }
 exports.finalCheckoutController = function (req, res) {
     var addressId = req.body.addressId;
+    var checkType = req.body.type;
     var user = new User();
     var order = new Order();
     console.log("executed 1");
@@ -205,14 +205,16 @@ exports.finalCheckoutController = function (req, res) {
             });
         }
         else {
-            order.addNewOrder(cart, req.user.id, addressRow[0].address, function (err) {
+            order.addNewOrder(cart, req.user.id, addressId,checkType,async function (err) {
                 if (err) {
                     res.json({
                         status: 500,
                         message: err
                     })
                 } else {
-                    req.session.cart = null;
+                   
+                 // var paymentData = await order.setPaymentTable(cart,req.user.id,addressId,checkType)
+                  req.session.cart = null;
                     res.json({
                         status: 200,
                         message: "order placed successfully"
@@ -223,7 +225,7 @@ exports.finalCheckoutController = function (req, res) {
         }
     });
 }
-
+ 
 exports.checkCoupunController = function (req, res) {
     console.log("inside controller");
     var coupun = req.query.coupun;

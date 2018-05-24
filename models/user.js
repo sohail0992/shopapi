@@ -126,7 +126,7 @@ class user{
 
     getUserAddressById(addressId, callback){
         console.log("Inside get user address model123");
-        var query = "SELECT address FROM saidalia_js.gc_customers_address_bank\
+        var query = "SELECT address1 FROM saidalia_js.gc_customers_address_bank\
                      WHERE id = " + addressId;
         console.log("Above query executed");
 

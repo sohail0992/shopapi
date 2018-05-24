@@ -47,6 +47,7 @@ class Cart {
 		//Create a new item if its not present in items list
 		if (!storedItem) {
 			item.id += 100;
+			item.price_1=discount_priceD
 			storedItem = this.items[id + 100] = { item: item, qty: Number(quantity), price: Number(discount_priceD), type: "Offer" };
 			console.log("Newly Stored Item")
 		} else {
