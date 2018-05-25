@@ -30,11 +30,11 @@ class Cart {
 
 		//Create a new item if its not present in items list
 		if (!storedItem) {
-			storedItem = this.items[id] = { item: item, qty: Number(quantity), price: Number(item.price_1) };
+			storedItem = this.items[id] = { item: item, qty: Number(quantity), price: Number(item.price_1*quantity) };
 		} else {
 			//Increment qty by 1 and set price to item price
-			storedItem.qty++;
-			storedItem.price = item.price_1 * storedItem.qty;
+			storedItem.qty += Number(quantity);
+			storedItem.price = storedItem.item.price_1  * storedItem.qty;
 
 		}
 		this.totalQty += Number(quantity);
@@ -48,11 +48,11 @@ class Cart {
 		if (!storedItem) {
 			item.id += 100;
 			item.price_1 = discount_priceD
-			storedItem = this.items[id + 100] = { item: item, qty: Number(quantity), price: Number(discount_priceD), type: "Offer" };
+			storedItem = this.items[id + 100] = { item: item, qty: Number(quantity), price: Number(discount_priceD*quantity), type: "Offer" };
 			console.log("Newly Stored Item")
 		} else {
-			storedItem.qty++;
-			storedItem.price = discount_priceD * storedItem.qty;
+			storedItem.qty+= Number(quantity);
+			storedItem.price = storedItem.item.price_1 * storedItem.qty;
 		}
 		//Increment qty by 1 and set price to item price
 		this.totalQty += Number(quantity);
@@ -70,7 +70,6 @@ class Cart {
 		if (storedItem) {
 			this.totalQty -= Number(storedItem.qty);
 			this.totalPrice -= storedItem.price;
-
 			delete this.items[id];
 		} else {
 			console.log("in delete cart model cart data", cart);
@@ -78,32 +77,19 @@ class Cart {
 		console.log("Complete Cart", cart);
 	}
 
-	editProductfromCart(id, changeQty, price, cart) {
+	editProductfromCart(id, changeQty, cart) {
 
 		var storedItem = this.items[id];
 		var qty_decission = 0;
 		console.log("in edit cart model ", typeof (id), id);
 		console.log(storedItem, "storedItem")
-		if (storedItem) {
-			// if (changeQty < storedItem.qty) {
-			// 	storedItem.qty -= changeQty;
-			// 	storedItem.price = price * storedItem.qty;
-			// 	this.totalQty -= changeQty;
-			// 	this.totalPrice -= price * changeQty ;
-			// 	console.log("in if ",cart)
-			// } else {
-			// 	storedItem.qty += changeQty;
-			// 	storedItem.price = price * storedItem.qty;
-			// 	this.totalQty += changeQty;
-			// 	this.totalPrice += price * changeQty ;
-			// 	console.log("in else ",cart)
-			// }
+		if (storedItem) { 
 			this.totalQty -= storedItem.qty;
-			this.totalPrice -= price * storedItem.qty;
+			this.totalPrice -= storedItem.item.price_1 * storedItem.qty;
 			storedItem.qty = changeQty;
-			storedItem.price = price * storedItem.qty;
+			storedItem.price = storedItem.item.price_1 * storedItem.qty;
 			this.totalQty += storedItem.qty;
-			this.totalPrice += price * storedItem.qty;
+			this.totalPrice += storedItem.item.price_1 * storedItem.qty;
 		} else {
 			console.log("do nothig")
 		}

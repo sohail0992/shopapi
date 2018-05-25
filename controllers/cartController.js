@@ -127,7 +127,7 @@ exports.editShoppingCartController = function (req, res) {
     var product = new Product();
     var productId = Number(req.query.productId);
     var qty = Number(req.query.quantity);
-    var price=Number(req.query.price)
+   // var price=Number(req.query.price)
     product.findById(productId, function (err, prod) {
         if (err) {
             res.json({
@@ -136,7 +136,7 @@ exports.editShoppingCartController = function (req, res) {
             });
         } else {
             req.session.cart = cart;
-            cart.editProductfromCart(productId,qty,price,req.session.cart);
+            cart.editProductfromCart(productId,qty,req.session.cart);
             console.log("Following items in session cart");
             console.log(req.session.cart);
 

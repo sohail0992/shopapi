@@ -87,7 +87,6 @@ class user{
         })
 
     }
-
     getUserAddresses(userId, callback){
         var query = "SELECT address.id, address.latitude, address.longitude, address.address1\
                      FROM saidalia_js.gc_customers_address_bank AS address\
@@ -105,7 +104,6 @@ class user{
             });
         });
     }
- 
     addUserAddress(userId, addressData, callback){
         var query = "INSERT INTO saidalia_js.gc_customers_address_bank\
                      (customer_id, latitude, longitude, address1)\
@@ -136,7 +134,6 @@ class user{
             });
         });   
     }
-
     getUserAddressById(addressId, callback){
         console.log("Inside get user address model123");
         var query = "SELECT address1 FROM saidalia_js.gc_customers_address_bank\

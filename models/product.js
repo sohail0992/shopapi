@@ -282,7 +282,7 @@ class product {
     }
     getOrderDetailHistory(Id, callback) {
 
-        var query = 'select o.order_number,o.address,o.order_started,d.quantity,d.price,d.total_price,d.name,d.description,d.images,d.arabic_name,d.arabic_description ' +
+        var query='select o.total as Grand_total,o.vat as VAT, o.order_number,o.address,o.order_started,d.quantity as product_quantity,d.price as product_price,d.total_price as product_total,d.name,d.description,d.images,d.arabic_name,d.arabic_description ' +
             '   from saidalia_js.gc_orders o' +
             '  inner join saidalia_js.gc_order_items d on o.id= d.order_id'+
             ' where o.id = "' + Id + '" ';
