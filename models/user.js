@@ -123,6 +123,19 @@ class user{
             });
         });   
     }
+    editInfo(userId,addressData,callback){
+       console.log("agaya");
+        mySql.getConnection(function(err, connection){
+            if(err){
+                throw err;
+            }
+            connection.query('update saidalia_js.gc_customers set ? where id = ?', [addressData,userId], function(err, rows){
+                connection.release()
+                console.log(rows);
+                callback(err, rows); //Passing results to callback function
+            });
+        });   
+    }
 
     getUserAddressById(addressId, callback){
         console.log("Inside get user address model123");

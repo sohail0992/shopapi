@@ -154,8 +154,10 @@ router.get('/addresses', isLoggedIn, function(req, res){
 
 router.post('/addresses', isLoggedIn, function(req, res){
     userController.addUserAddressController(req, res);
+}); 
+router.post('/accountUpdate', isLoggedIn, function(req, res){
+    userController.EditAccountInformation(req, res);
 });
-
 
 router.get('/forgot', function(req, res){
     res.render('forgetPasswordMain', {});

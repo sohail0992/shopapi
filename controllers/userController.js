@@ -50,6 +50,30 @@ exports.addUserAddressController = function(req, res){
         }
     })
 }
+exports.EditAccountInformation = function(req, res){
+    var user = new User();
+    var addressData = {
+        firstname: req.body.firstname,
+        email: req.body.email,
+        phone: req.body.phone
+    }
+    
+    console.log("Printing req.user.id" + req.user.id);
+    user.editInfo(req.user.id, addressData, function(err, result){
+        if(err){
+            res.json({
+                status: 500,
+                message: err
+            });
+        } else {
+            res.json({
+                status: 200,
+                message: "Account Info Updated successfully",
+                data:result,
+            });
+        }
+    })
+}
 
 
 exports.forgotPassController = function(req, res){
