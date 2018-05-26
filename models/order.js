@@ -12,11 +12,13 @@ class Order{
             for(var i = 0; i < productsInCart.length; i++){
                 if(productsInCart[i].item.id>=100){
                     productsInCart[i].item.id=productsInCart[i].item.id-100;
-                    var newItem = [orderedId, productsInCart[i].item.id, productsInCart[i].qty, productsInCart[i].item.name, productsInCart[i].item.price_1, productsInCart[i].price];
+                    var newItem = [orderedId, productsInCart[i].item.id, productsInCart[i].qty, productsInCart[i].item.name,productsInCart[i].item.arabic_name,productsInCart[i].item.description,productsInCart[i].item.arabic_description, productsInCart[i].item.price_1, productsInCart[i].price];
+                    orderItemsArray.push(newItem);
                 }else{
-                    var newItem = [orderedId, productsInCart[i].item.id, productsInCart[i].qty, productsInCart[i].item.name, productsInCart[i].item.price_1, productsInCart[i].price];
+                    var newItem = [orderedId, productsInCart[i].item.id, productsInCart[i].qty, productsInCart[i].item.name,productsInCart[i].item.arabic_name,productsInCart[i].item.description,productsInCart[i].item.arabic_description, productsInCart[i].item.price_1, productsInCart[i].price];
+                    orderItemsArray.push(newItem);
                 }
-                orderItemsArray.push(newItem);
+              
             }
             let paymentData={
                 order_id:orderedId,
@@ -27,7 +29,7 @@ class Order{
             }
           //  console.log(orderItemsArray);
            // console.log("inside add order items function");
-            var query = "INSERT INTO saidalia_js.gc_order_items (order_id, product_id, quantity, name,  price, total_price) VALUES ?";
+            var query = "INSERT INTO saidalia_js.gc_order_items (order_id, product_id, quantity, name,arabic_name,description,arabic_description,price, total_price) VALUES ?";
             var paymentQuery ="INSERT INTO saidalia_js.gc_payments set ?";
             mySql.getConnection(function(err, connection){
                 if(err){
@@ -108,16 +110,16 @@ class Order{
     //     });
     // }
 
-    addNewOrder(cart, userId, addressId,type,temp2, callback){
+    addNewOrder(cart, userId, addressId,type,temp2,addressRow, callback){
         /*
             The generate array in Cart class would return
             all the products present in the cart.
          */
         console.log("Inside add New Order model");
         var productsInCart = cart.generateArray();
-
-        var newOrderQuery = "INSERT INTO saidalia_js.gc_orders (vat,customer_id, order_number, order_status, total, subtotal, ordered_on, billing_address_id)\
-                             VALUES ("+ temp2 + "," + userId + "," + microtime.now() + "," + "'Pending'" + "," + cart.totalPrice + "," + cart.totalPrice + "," + Date.now() + "," + addressId +")";
+        addressRow=JSON.stringify(addressRow);
+        var newOrderQuery = "INSERT INTO saidalia_js.gc_orders (vat,customer_id, order_number, order_status, total, subtotal, ordered_on, billing_address_id,address)\
+                             VALUES ("+ temp2 + "," + userId + "," + microtime.now() + "," + "'Pending'" + "," + cart.totalPrice + "," + cart.totalPrice + "," + Date.now() + "," + addressId + "," + addressRow + ")";
         /*
             Insert a new order and get the id of the row inserted in order table
             The id would be used to add order items in order items table

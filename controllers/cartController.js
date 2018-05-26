@@ -143,6 +143,7 @@ exports.editShoppingCartController = function (req, res) {
         } else {
             req.session.cart = cart;
             var VatAmount= await cart.getVatPrice();
+            cart.editProductfromCart(productId,qty,cart);
             console.log("Following items in session cart");
             console.log(req.session.cart);
             res.json({
@@ -212,7 +213,7 @@ exports.finalCheckoutController = function (req, res) {
         else {
             var temp=  await cart.getVatPrice();
             var temp2= Number(temp.setting);
-            order.addNewOrder(cart, req.user.id, addressId,checkType,temp2,async function (err) {
+            order.addNewOrder(cart, req.user.id, addressId,checkType,temp2,addressRow[0].address1,async function (err) {
                 if (err) {
                     res.json({
                         status: 500,

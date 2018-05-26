@@ -19,7 +19,6 @@ class Cart {
 			//Increment qty by 1 and set price to item price
 			storedItem.qty++;
 			storedItem.price = item.price_1 * storedItem.qty;
-
 		}
 		this.totalQty++;
 		this.totalPrice += storedItem.item.price_1;
@@ -59,7 +58,6 @@ class Cart {
 		//Increment qty by 1 and set price to item price
 		this.totalQty += Number(quantity);
 		this.totalPrice += discount_priceD * quantity;
-		
 	}
 
 	//Object.assign([...this.state.editTarget], {[id]: {[target]: value}})
