@@ -25,7 +25,7 @@ exports.addToCartController = function (req, res) {
     var cart = new Cart(req.session.cart ? req.session.cart : {});
 
     var product = new Product();
-
+    
     product.findById(productId, function (err, prod) {
         if (err) {
             res.json({
@@ -33,6 +33,7 @@ exports.addToCartController = function (req, res) {
                 message: err
             });
         } else {
+           
             if (req.query.quantity == null) {
                 cart.addProductToCart(prod, productId);
             } else {
@@ -77,6 +78,7 @@ exports.addOfferToCartController = function (req, res) {
                 message: err
             });
         } else {
+           
             if (req.query.quantity == null) {
                 cart.addOfferToCart(prod, productId);
             } else {
@@ -93,7 +95,7 @@ exports.addOfferToCartController = function (req, res) {
         }
     })
 }
-exports.shoppingCartController = function (req, res) {
+exports.shoppingCartController =async function (req, res) {
     console.log("inside cart controller");
     if (!req.session.cart) {
         res.json({
@@ -104,11 +106,15 @@ exports.shoppingCartController = function (req, res) {
     }
 
     var cart = new Cart(req.session.cart);
+   var temp=  await cart.getVatPrice();
+   var temp2= Number(temp.setting);
+  
     res.json({
         status: 200,
         cartProducts: cart.generateArray(),
         totalQty: cart.totalQty,
-        totalPrice: cart.totalPrice
+        totalPrice: cart.totalPrice + ((cart.totalPrice/100) * temp2),
+        VAT :temp.setting +"%",
     });
     return;
 }
@@ -128,7 +134,7 @@ exports.editShoppingCartController = function (req, res) {
     var productId = Number(req.query.productId);
     var qty = Number(req.query.quantity);
    // var price=Number(req.query.price)
-    product.findById(productId, function (err, prod) {
+    product.findById(productId,async function (err, prod) {
         if (err) {
             res.json({
                 status: 500,
@@ -136,10 +142,9 @@ exports.editShoppingCartController = function (req, res) {
             });
         } else {
             req.session.cart = cart;
-            cart.editProductfromCart(productId,qty,req.session.cart);
+            var VatAmount= await cart.getVatPrice();
             console.log("Following items in session cart");
             console.log(req.session.cart);
-
             res.json({
                 status: 200,
                 message: "Product Edit successfully",
@@ -196,7 +201,7 @@ exports.finalCheckoutController = function (req, res) {
         });
     }
     var cart = new Cart(req.session.cart);
-    user.getUserAddressById(addressId, function (err, addressRow) {
+    user.getUserAddressById(addressId,async function (err, addressRow) {
         console.log("address", addressRow);
         if (err) {
             res.json({
@@ -205,7 +210,9 @@ exports.finalCheckoutController = function (req, res) {
             });
         }
         else {
-            order.addNewOrder(cart, req.user.id, addressId,checkType,async function (err) {
+            var temp=  await cart.getVatPrice();
+            var temp2= Number(temp.setting);
+            order.addNewOrder(cart, req.user.id, addressId,checkType,temp2,async function (err) {
                 if (err) {
                     res.json({
                         status: 500,

@@ -10,7 +10,12 @@ class Order{
         console.log("Order Id",orderedId)
             //Creating array of order items so that it can be added asynchronously
             for(var i = 0; i < productsInCart.length; i++){
-                var newItem = [orderedId, productsInCart[i].item.id, productsInCart[i].qty, productsInCart[i].item.name, productsInCart[i].item.price_1, productsInCart[i].price];
+                if(productsInCart[i].item.id>=100){
+                    productsInCart[i].item.id=productsInCart[i].item.id-100;
+                    var newItem = [orderedId, productsInCart[i].item.id, productsInCart[i].qty, productsInCart[i].item.name, productsInCart[i].item.price_1, productsInCart[i].price];
+                }else{
+                    var newItem = [orderedId, productsInCart[i].item.id, productsInCart[i].qty, productsInCart[i].item.name, productsInCart[i].item.price_1, productsInCart[i].price];
+                }
                 orderItemsArray.push(newItem);
             }
             let paymentData={
@@ -103,7 +108,7 @@ class Order{
     //     });
     // }
 
-    addNewOrder(cart, userId, addressId,type, callback){
+    addNewOrder(cart, userId, addressId,type,temp2, callback){
         /*
             The generate array in Cart class would return
             all the products present in the cart.
@@ -111,8 +116,8 @@ class Order{
         console.log("Inside add New Order model");
         var productsInCart = cart.generateArray();
 
-        var newOrderQuery = "INSERT INTO saidalia_js.gc_orders (customer_id, order_number, order_status, total, subtotal, ordered_on, billing_address_id)\
-                             VALUES (" + userId + "," + "\"" + microtime.now() + "\"" + "," + "\"Pending\"" + "," + cart.totalPrice + "," + cart.totalPrice + "," + Date.now() + "," + "\"" + addressId + "\"" + ")";
+        var newOrderQuery = "INSERT INTO saidalia_js.gc_orders (vat,customer_id, order_number, order_status, total, subtotal, ordered_on, billing_address_id)\
+                             VALUES ("+ temp2 + "," + userId + "," + microtime.now() + "," + "'Pending'" + "," + cart.totalPrice + "," + cart.totalPrice + "," + Date.now() + "," + addressId +")";
         /*
             Insert a new order and get the id of the row inserted in order table
             The id would be used to add order items in order items table

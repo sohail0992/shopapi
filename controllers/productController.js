@@ -307,7 +307,6 @@ exports.getOffers = function (req, res) {
                 res.json({
                     status: 200,
                      productWise: availableOffers,
-                     
                 });
             }else {
                 res.json({

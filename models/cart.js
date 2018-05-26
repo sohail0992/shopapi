@@ -1,3 +1,4 @@
+var mySql = require('../config/database');
 class Cart {
 	constructor(oldCart) {
 		console.log("Inside cart constructor");
@@ -39,6 +40,7 @@ class Cart {
 		}
 		this.totalQty += Number(quantity);
 		this.totalPrice += (item.price_1 * quantity);
+	
 	}
 	addOfferToCart(item, id, quantity, discount_price) {
 		var discount_priceD = item.price_1 - ((item.price_1 / 100) * discount_price)
@@ -57,6 +59,7 @@ class Cart {
 		//Increment qty by 1 and set price to item price
 		this.totalQty += Number(quantity);
 		this.totalPrice += discount_priceD * quantity;
+		
 	}
 
 	//Object.assign([...this.state.editTarget], {[id]: {[target]: value}})
@@ -96,6 +99,29 @@ class Cart {
 		
 		console.log("Complete Cart", cart);
 	}
+
+	getVatPrice() {
+        return new Promise(function (resolve) {
+			var rate='" + rate + "';
+            var query = `select setting from saidalia_js.gc_settings where id = 102`
+
+            mySql.getConnection(function (err, connection) {
+                if (err) {
+                    throw err;
+                }
+                connection.query(query, function (err, rows) {
+                    if (err) {
+                        throw err;
+                    }
+                    else {
+                        connection.release();
+                        console.log("Promise going to be resolved");
+                        resolve(rows[0]);
+                    }
+                });
+            });
+        });
+    }
 
 
 	generateArray() {
