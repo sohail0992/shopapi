@@ -88,7 +88,7 @@ class user{
 
     }
     getUserAddresses(userId, callback){
-        var query = "SELECT address.id, address.latitude, address.longitude, address.address1\
+        var query = "SELECT address.id, address.latitude, address.longitude, address.address1,address.addressDesc\
                      FROM saidalia_js.gc_customers_address_bank AS address\
                      INNER JOIN saidalia_js.gc_customers AS customers\
                      ON customers.id = address.customer_id\
@@ -103,12 +103,12 @@ class user{
                 callback(err, rows); //Passing results to callback function
             });
         });
-    }
+    } 
     addUserAddress(userId, addressData, callback){
         var query = "INSERT INTO saidalia_js.gc_customers_address_bank\
-                     (customer_id, latitude, longitude, address1)\
+                     (customer_id, latitude, longitude,addressDesc,address1)\
                      VALUES (" + userId + "," + addressData.latitude + "," + addressData.longitude 
-                     + "," + "\"" + addressData.addressDesc + "\"" + ")";
+                     + "," +addressData.locName + "," + "\"" + addressData.addressDesc + "\"" + ")";
         
         mySql.getConnection(function(err, connection){
             if(err){
