@@ -165,7 +165,7 @@ class product {
 
             var ehourData = new Date(end);
             var currentDates = new Date();
-            var currentDatesH = currentDates.getHours()
+            var currentDatesH = currentDates.getHours();
             var currentDatesM = currentDates.getMinutes();
             var EH = ehourData.getHours()
             var eminutesData = ehourData.getMinutes();

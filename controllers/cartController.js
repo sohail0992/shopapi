@@ -107,15 +107,19 @@ exports.shoppingCartController =async function (req, res) {
 
     var cart = new Cart(req.session.cart);
    var temp=  await cart.getVatPrice();
+   var Shipping= await cart.getShippingRate();
+   var shippingRate= Number(Shipping.setting)
    var temp2= Number(temp.setting);
-  
+    var cart_total= cart.totalPrice + ((cart.totalPrice/100) * temp2);
+    cart_total+=shippingRate;
     res.json({
         status: 200,
         cartProducts: cart.generateArray(),
         totalQty: cart.totalQty,
-        totalPrice: cart.totalPrice + ((cart.totalPrice/100) * temp2),
+        totalPrice: cart_total,
         VAT :temp.setting +"%",
-    });
+        ShippingRate: shippingRate ,
+      });
     return;
 }
 exports.editShoppingCartController = function (req, res) {
@@ -142,7 +146,7 @@ exports.editShoppingCartController = function (req, res) {
             });
         } else {
             req.session.cart = cart;
-            var VatAmount= await cart.getVatPrice();
+           
             cart.editProductfromCart(productId,qty,cart);
             console.log("Following items in session cart");
             console.log(req.session.cart);
