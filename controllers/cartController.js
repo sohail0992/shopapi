@@ -216,8 +216,12 @@ exports.finalCheckoutController = function (req, res) {
         }
         else {
             var temp=  await cart.getVatPrice();
+            var Shipping= await cart.getShippingRate();
+            var shippingRate= Number(Shipping.setting)
             var temp2= Number(temp.setting);
-            order.addNewOrder(cart, req.user.id, addressId,checkType,temp2,addressRow[0].address1,async function (err) {
+            cart.totalPrice =cart.totalPrice +shippingRate ;
+            var cart_total = cart.totalPrice + ((cart.totalPrice/100) * temp2);
+            order.addNewOrder(cart_total,cart, req.user.id, addressId,checkType,temp2,shippingRate,addressRow[0].address1,async function (err) {
                 if (err) {
                     res.json({
                         status: 500,
@@ -253,7 +257,7 @@ exports.checkCoupunController = function (req, res) {
             if (result != 0) {
                 res.json({
                     status: 200,
-                    message: "Coupun matches Congratulations",
+                    message: "Coupun matched",
                     data: result,
                 })
             } else {

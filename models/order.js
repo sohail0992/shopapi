@@ -110,7 +110,7 @@ class Order{
     //     });
     // }
 
-    addNewOrder(cart, userId, addressId,type,temp2,addressRow, callback){
+    addNewOrder(cart_total,cart, userId, addressId,type,temp2,shippingRate,addressRow,callback){
         /*
             The generate array in Cart class would return
             all the products present in the cart.
@@ -118,8 +118,9 @@ class Order{
         console.log("Inside add New Order model");
         var productsInCart = cart.generateArray();
         addressRow=JSON.stringify(addressRow);
-        var newOrderQuery = "INSERT INTO saidalia_js.gc_orders (vat,customer_id, order_number, order_status, total, subtotal, ordered_on, billing_address_id,address)\
-                             VALUES ("+ temp2 + "," + userId + "," + microtime.now() + "," + "'Pending'" + "," + cart.totalPrice + "," + cart.totalPrice + "," + Date.now() + "," + addressId + "," + addressRow + ")";
+
+        var newOrderQuery = "INSERT INTO saidalia_js.gc_orders (shipping,vat,customer_id, order_number, order_status, total, subtotal, ordered_on, billing_address_id,address)\
+                             VALUES ("+ shippingRate + "," + temp2 + "," + userId + "," + microtime.now() + "," + "'Pending'" + "," + cart_total + "," + cart.totalPrice + "," + Date.now() + "," + addressId + "," + addressRow + ")";
         /*
             Insert a new order and get the id of the row inserted in order table
             The id would be used to add order items in order items table

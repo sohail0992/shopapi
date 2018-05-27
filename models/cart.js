@@ -52,8 +52,8 @@ class Cart {
 			storedItem = this.items[id + 100] = { item: item, qty: Number(quantity), price: Number(discount_priceD*quantity), type: "Offer" };
 			console.log("Newly Stored Item")
 		} else {
-			storedItem.qty+= Number(quantity);
-			storedItem.price = storedItem.item.price_1 * storedItem.qty;
+				storedItem.qty+= Number(quantity);
+				storedItem.price = storedItem.item.price_1 * storedItem.qty; 
 		}
 		//Increment qty by 1 and set price to item price
 		this.totalQty += Number(quantity);
