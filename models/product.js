@@ -166,7 +166,7 @@ class product {
             var ehourData = new Date(end);
             var currentDates = new Date();
             var currentDatesH = currentDates.getHours();
-            var currentDatesM = currentDates.getMinutes();
+            var currentDatesM = currentDates.getMinutes()+5;
             var EH = ehourData.getHours()
             var eminutesData = ehourData.getMinutes();
             var remainingHours = EH - currentDatesH;
@@ -182,8 +182,8 @@ class product {
             seconds = seconds - (days * 24 * 60 * 60) - (hours * 60 * 60) - (minutes * 60);
             console.log("days", days, "Hours", hours, "minutes", minutes, "seconds", seconds);
 
-            // console.log("Current Hour", currentDatesH, "Offer date Hours", EH)
-            // console.log("Current Minute", currentDatesM, "offer date min", remainingHours)
+             console.log("Current Hour", currentDatesH, "Offer date Hours", EH)
+             console.log("Current Minute", currentDatesM, "offer date min", remainingHours)
             mySql.getConnection(function (err, connection) {
                 if (err) {
                     throw err;
@@ -215,7 +215,7 @@ class product {
             var ehourData = new Date(end);
             var currentDates = new Date();
             var currentDatesH = currentDates.getHours()
-            var currentDatesM = currentDates.getMinutes();
+            var currentDatesM = currentDates.getMinutes()+5;
             var EH = ehourData.getHours()
             var eminutesData = ehourData.getMinutes();
             var remainingHours = EH - currentDatesH;
