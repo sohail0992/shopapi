@@ -165,7 +165,7 @@ class product {
 
             var ehourData = new Date(end);
             var currentDates = new Date();
-            var currentDatesH = currentDates.getHours()-5;
+            var currentDatesH = currentDates.getHours()+9;
             var currentDatesM = currentDates.getMinutes();
             var EH = ehourData.getHours()
             var eminutesData = ehourData.getMinutes();
@@ -214,15 +214,13 @@ class product {
                 WHERE secondary_category = " + subCategoryId;
             var ehourData = new Date(end);
             var currentDates = new Date();
-            var currentDatesH = currentDates.getHours()-5
+            var currentDatesH = currentDates.getHours()+9
             var currentDatesM = currentDates.getMinutes();
             var EH = ehourData.getHours()
             var eminutesData = ehourData.getMinutes();
             var remainingHours = EH - currentDatesH;
             var remainingMinutes = eminutesData - eminutesData;
             // get total seconds between the times
-
-
             var seconds = Math.floor((ehourData - (currentDates)) / 1000);
             var minutes = Math.floor(seconds / 60);
             var hours = Math.floor(minutes / 60);
