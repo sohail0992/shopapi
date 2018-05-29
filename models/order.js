@@ -3,7 +3,7 @@ var microtime = require('microtime');
 
 class Order{
     constructor(){ 
-        this.addOrderItems = function(cart, orderedId,type, callback){
+        this.addOrderItems = function(cart_total,cart, orderedId,type, callback){
              var productsInCart = cart.generateArray();
             console.log(cart,'productsInCart');
             var orderItemsArray = [];
@@ -23,7 +23,7 @@ class Order{
             let paymentData={
                 order_id:orderedId,
                 status:"Pending",
-                amount:cart.totalPrice,
+                amount:cart_total,
                 description:type,
                 payment_module:type
             }
@@ -110,7 +110,7 @@ class Order{
     //     });
     // }
 
-    addNewOrder(cart_total,cart, userId, addressId,type,temp2,shippingRate,addressRow,callback){
+    addNewOrder(cart_total,cart, userId, addressId,cargoType,temp2,shippingRate,addressRow,callback){
         /*
             The generate array in Cart class would return
             all the products present in the cart.
@@ -118,9 +118,9 @@ class Order{
         console.log("Inside add New Order model");
         var productsInCart = cart.generateArray();
         addressRow=JSON.stringify(addressRow);
-
-        var newOrderQuery = "INSERT INTO saidalia_js.gc_orders (shipping,vat,customer_id, order_number, order_status, total, subtotal, ordered_on, billing_address_id,address)\
-                             VALUES ("+ shippingRate + "," + temp2 + "," + userId + "," + microtime.now() + "," + "'Pending'" + "," + cart_total + "," + cart.totalPrice + "," + Date.now() + "," + addressId + "," + addressRow + ")";
+        cargoType=JSON.stringify(cargoType);
+        var newOrderQuery = "INSERT INTO saidalia_js.gc_orders (Type,shipping,vat,customer_id, order_number, order_status, total, subtotal, ordered_on, billing_address_id,address)\
+                             VALUES ("+ cargoType + ","+ shippingRate + "," + temp2 + "," + userId + "," + microtime.now() + "," + "'Pending'" + "," + cart_total + "," + cart.totalPrice + "," + Date.now() + "," + addressId + "," + addressRow + ")";
         /*
             Insert a new order and get the id of the row inserted in order table
             The id would be used to add order items in order items table
@@ -137,7 +137,7 @@ class Order{
                 if(err){
                     callback(err);
                 } else {
-                    orderItemFunction(cart, result.insertId,type, (err) => {
+                    orderItemFunction(cart_total,cart, result.insertId,cargoType, (err) => {
                         if(err)
                             callback(err);
                         else 
