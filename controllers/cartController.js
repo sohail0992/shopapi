@@ -104,23 +104,28 @@ exports.shoppingCartController =async function (req, res) {
         });
         return;
     }
-
+ 
     var cart = new Cart(req.session.cart);
+    var flatRate= await cart.getFlatRate();
    var temp=  await cart.getVatPrice();
    var Shipping= await cart.getShippingRate();
+   var FlatRateConverstion= Number(flatRate.setting);
    var shippingRate= Number(Shipping.setting)
    var temp2= Number(temp.setting);
     var cart_total= cart.totalPrice + ((cart.totalPrice/100) * temp2);
-    cart_total+=shippingRate;
+    if(shippingRate>cart_total){
+        cart_total+=FlatRateConverstion;
+    }
+  
     res.json({
         status: 200,
         cartProducts: cart.generateArray(),
         totalQty: cart.totalQty,
         totalPrice: cart_total,
         VAT :temp.setting +"%",
-        ShippingRate: shippingRate ,
+        FlatRate: FlatRateConverstion ,
       });
-    return;
+    return;   
 }
 exports.editShoppingCartController = function (req, res) {
     console.log("Inside Edit to cart controller");
@@ -193,6 +198,7 @@ exports.deleteShoppingCartController = function (req, res) {
         }
     })
 }
+
 exports.finalCheckoutController = function (req, res) {
     var addressId = req.body.addressId;
     var checkType = req.body.type;

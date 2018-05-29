@@ -23,7 +23,7 @@ async function getMainAndSubCat(parentCategories) {
         "/sadaliaCatsArabic/Perfumes.png",
         "/sadaliaCatsArabic/ElectricalDevices.png",
     ];
-
+ 
     //Return a promise when all subcategories are fetched for parent categories
     return new Promise(async function (resolve) {
         var catMainAndSub = []; //Array to save parent and their sub categories
@@ -284,6 +284,7 @@ async function getofferData(result) {
             if(result[i].type==="category_wise"){
                 offerData[i] = await products.getCategoryWiseOffers(result[i].end_date,result[i].secondary_category,result[i].reduction_amount);         
             }
+            
         }
         //let offers = await concatArrays(ProductWise,CategoryWise); 
         Array.prototype.push.apply(ProductWise,CategoryWise) 
