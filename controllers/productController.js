@@ -42,6 +42,22 @@ async function getMainAndSubCat(parentCategories) {
         resolve(catMainAndSub); //Returning parent and subcategories when every thing executes correctly
     });
 }
+async function getCountryAndCity(parentCategories) {
+
+    //Return a promise when all subcategories are fetched for parent categories
+    return new Promise(async function (resolve) {
+        var catMainAndSub = []; //Array to save parent and their sub categories
+        let categories1 = new category();   //Category class object
+        for (i = 0; i < parentCategories.length; i++) {
+            var subCategories = await categories1.getCity(parentCategories[i].id); //The execution would wait until subcategories are fetched
+            catMainAndSub.push({
+                "Country": parentCategories[i],
+                "City": subCategories
+            });
+        }
+        resolve(catMainAndSub); //Returning parent and subcategories when every thing executes correctly
+    });
+}
 function getOffersWithImages(offers) {
     return new Promise(async function (resolve) {
         var products = new product();
@@ -100,6 +116,22 @@ exports.getAllCategoriesController = function (req, res) {
         var parentCategories = result;
         //Now this function will call another async function and await to get the result
         var catAndTheirSubCat = await getMainAndSubCat(parentCategories);   //execution awaiting until all parent and subcategories are fetched
+        console.log("Outside loop");
+        res.json({
+            status: 200,
+            data: catAndTheirSubCat
+        });
+    });
+
+}
+exports.getAllCountriesAndSities = function (req, res) {
+    var categories = new category();
+
+    categories.getCountries(async function (err, result) {
+        //Get parent categories
+        var parentCategories = result;
+        //Now this function will call another async function and await to get the result
+        var catAndTheirSubCat = await getCountryAndCity(parentCategories);   //execution awaiting until all parent and subcategories are fetched
         console.log("Outside loop");
         res.json({
             status: 200,

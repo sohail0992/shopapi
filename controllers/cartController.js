@@ -116,7 +116,6 @@ exports.shoppingCartController =async function (req, res) {
     if(shippingRate>cart_total){
         cart_total+=FlatRateConverstion;
     }
-  
     res.json({
         status: 200,
         cartProducts: cart.generateArray(),
@@ -202,6 +201,7 @@ exports.deleteShoppingCartController = function (req, res) {
 exports.finalCheckoutController = function (req, res) {
     var addressId = req.body.addressId;
     var checkType = req.body.type;
+    var Country = req.query.country;
     var user = new User();
     var order = new Order();
     console.log("executed 1");
@@ -225,15 +225,15 @@ exports.finalCheckoutController = function (req, res) {
             var Shipping= await cart.getShippingRate();
             var shippingRate= Number(Shipping.setting)
             var temp2= Number(temp.setting);
-            cart.totalPrice =cart.totalPrice +shippingRate ;
+            cart.totalPrice =cart.totalPrice +shippingRate;
             var cart_total = cart.totalPrice + ((cart.totalPrice/100) * temp2);
             order.addNewOrder(cart_total,cart, req.user.id, addressId,checkType,temp2,shippingRate,addressRow[0].address1,async function (err) {
-                if (err) {
+                if (err){
                     res.json({
                         status: 500,
                         message: err
                     })
-                } else {
+                }else {
                    
                  // var paymentData = await order.setPaymentTable(cart,req.user.id,addressId,checkType)
                   req.session.cart = null;

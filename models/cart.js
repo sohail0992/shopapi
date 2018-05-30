@@ -163,6 +163,29 @@ class Cart {
                 });
             });
         });
+	}
+	getCountryAndCityRate() {
+        return new Promise(function (resolve) {
+			var rate='" + rate + "';
+            var query = `select setting from saidalia_js.gc_settings where id = 116`
+			var query = `select setting from saidalia_js.gc_settings where id = 116`
+
+            mySql.getConnection(function (err, connection) {
+                if (err) {
+                    throw err;
+                }
+                connection.query(query, function (err, rows) {
+                    if (err) {
+                        throw err;
+                    }
+                    else {
+                        connection.release();
+                        console.log("Promise going to be resolved");
+                        resolve(rows[0]);
+                    }
+                });
+            });
+        });
     }
 
 	generateArray() {

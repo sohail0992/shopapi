@@ -12,5 +12,8 @@ router.get('/', function(req, res){
 router.get('/categories', function(req, res){
     productsController.getAllCategoriesController(req, res);    
 })
+router.get('/Countries', function(req, res){
+    productsController.getAllCountriesAndSities(req, res);    
+})
 
 module.exports = router;
