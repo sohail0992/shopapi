@@ -122,7 +122,6 @@ exports.getAllCategoriesController = function (req, res) {
             data: catAndTheirSubCat
         });
     });
-
 }
 exports.getAllCountriesAndSities = function (req, res) {
     var categories = new category();
