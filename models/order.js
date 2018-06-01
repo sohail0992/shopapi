@@ -11,10 +11,10 @@ class Order{
             for(var i = 0; i < productsInCart.length; i++){
                 if(productsInCart[i].item.id>=100){
                     productsInCart[i].item.id=productsInCart[i].item.id-100;
-                    var newItem = [orderedId, productsInCart[i].item.id, productsInCart[i].qty, productsInCart[i].item.name,productsInCart[i].item.arabic_name,productsInCart[i].item.description,productsInCart[i].item.arabic_description, productsInCart[i].item.price_1, productsInCart[i].price];
+                    var newItem = [orderedId, productsInCart[i].item.id, productsInCart[i].qty, productsInCart[i].item.name,productsInCart[i].item.arabic_name,productsInCart[i].item.description,productsInCart[i].item.arabic_description, productsInCart[i].item.price_1, productsInCart[i].price,productsInCart[i].item.images];
                     orderItemsArray.push(newItem);
                 }else{
-                    var newItem = [orderedId, productsInCart[i].item.id, productsInCart[i].qty, productsInCart[i].item.name,productsInCart[i].item.arabic_name,productsInCart[i].item.description,productsInCart[i].item.arabic_description, productsInCart[i].item.price_1, productsInCart[i].price];
+                    var newItem = [orderedId, productsInCart[i].item.id, productsInCart[i].qty, productsInCart[i].item.name,productsInCart[i].item.arabic_name,productsInCart[i].item.description,productsInCart[i].item.arabic_description, productsInCart[i].item.price_1, productsInCart[i].price,productsInCart[i].item.images];
                     orderItemsArray.push(newItem);
                 }
             }
@@ -32,7 +32,7 @@ class Order{
             }
           //  console.log(orderItemsArray);
            // console.log("inside add order items function");
-            var query = "INSERT INTO saidalia_js.gc_order_items (order_id, product_id, quantity, name,arabic_name,description,arabic_description,price, total_price) VALUES ?";
+            var query = "INSERT INTO saidalia_js.gc_order_items (order_id, product_id, quantity, name,arabic_name,description,arabic_description,price, total_price,images) VALUES ?";
             var paymentQuery ="INSERT INTO saidalia_js.gc_payments set ?";
             var transactions= "insert into saidalia_js.gc_transactions set ?";
             mySql.getConnection(function(err, connection){
