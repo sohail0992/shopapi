@@ -315,6 +315,9 @@ async function getofferData(result) {
             if(result[i].type==="category_wise"){
                 offerData[i] = await products.getCategoryWiseOffers(result[i].end_date,result[i].secondary_category,result[i].reduction_amount);         
             }
+            if(result[i].type==="brand_wise"){
+                offerData[i] = await products.getBrandWiseOffer(result[i].end_date,result[i].brand_id,result[i].reduction_amount);         
+            }
             
         }
         //let offers = await concatArrays(ProductWise,CategoryWise); 

@@ -23,7 +23,7 @@ class user{
             });
         });
     }
-
+ 
     updateVerificationStatus(userId, status, callback){
         var query = "UPDATE saidalia_js.gc_customers SET verification_status = " + status + " WHERE id = " + userId; //+ userId;
 
@@ -106,10 +106,10 @@ class user{
     } 
     addUserAddress(userId, addressData, callback){
         var query = "INSERT INTO saidalia_js.gc_customers_address_bank\
-                     (customer_id, latitude, longitude,addressDesc,address1)\
-                     VALUES (" + userId + "," + addressData.latitude + "," + addressData.longitude 
+                     (country_id,city,country,customer_id, latitude, longitude,addressDesc,address1)\
+                     VALUES (" + addressData.country_id + "," + addressData.city + ","+ addressData.country + ","+ userId + "," + addressData.latitude + "," + addressData.longitude 
                      + "," +addressData.locName + "," + "\"" + addressData.addressDesc + "\"" + ")";
-        
+         
         mySql.getConnection(function(err, connection){
             if(err){
                 throw err;
@@ -120,6 +120,27 @@ class user{
                 callback(err, rows); //Passing results to callback function
             });
         });   
+    }
+    addUserShippingAddress(shippingId) {
+        return new Promise(function (resolve) {
+            var query = "SELECT address1 FROM saidalia_js.gc_customers_address_bank\
+            WHERE id = " + shippingId;
+             mySql.getConnection(function (err, connection) {
+                if (err) {
+                    throw err;
+                }
+                connection.query(query, function (err, rows) {
+                    if (err) {
+                        throw err;
+                    }
+                    else {
+                        connection.release();
+                        console.log("Promise going to be resolved");
+                        resolve(rows);
+                    }
+                });
+            });
+        });
     }
     editInfo(userId,addressData,callback){
        console.log("agaya");
@@ -150,7 +171,71 @@ class user{
             });
         });
     }
-
+    getUserCountry(addressId) {
+        return new Promise(function (resolve) {
+            var query = "SELECT city,country_id FROM saidalia_js.gc_customers_address_bank\
+            WHERE id = " + addressId;
+             mySql.getConnection(function (err, connection) {
+                if (err) {
+                    throw err;
+                }
+                connection.query(query, function (err, rows) {
+                    if (err) {
+                        throw err;
+                    }
+                    else {
+                        connection.release();
+                        console.log("Promise going to be resolved",rows);
+                        resolve(rows);
+                    }
+                });
+            });
+        });
+    }
+GetCountryAmount(addressId) {
+        return new Promise(function (resolve) {
+            var query = "SELECT tax FROM saidalia_js.gc_countries\
+            WHERE id = " + addressId;
+             mySql.getConnection(function (err, connection) {
+                if (err) {
+                    throw err;
+                }
+                connection.query(query, function (err, rows) {
+                    if (err) {
+                        throw err;
+                    }
+                    else {
+                        connection.release();
+                        console.log("Promise going to be resolved",rows);
+                        resolve(rows);
+                    }
+                });
+            });
+        });
+    }
+    getCityAmount(name) {
+        return new Promise(function (resolve) {
+            console.log(name);
+            name=JSON.stringify(name);
+            var query = "SELECT tax FROM saidalia_js.gc_country_zones\
+            WHERE name = " + name;
+             mySql.getConnection(function (err, connection) {
+                if (err) {
+                    throw err;
+                }
+                connection.query(query, function (err, rows) {
+                    if (err) {
+                        throw err;
+                    }
+                    else {
+                        connection.release();
+                        console.log("City Rate Promise going to be resolved",rows);
+                        resolve(rows);
+                    }
+                });
+            });
+        });
+    }
     setForgotPassTokenAndTime(userId, token, time, callback){
         console.log(typeof token);
         console.log(typeof time);

@@ -22,7 +22,7 @@ exports.getUserAddressController = function(req, res){
                 data: rows
             });
         }
-    })
+    }) 
 }
 
 exports.addUserAddressController = function(req, res){
@@ -33,7 +33,10 @@ exports.addUserAddressController = function(req, res){
         latitude: req.body.latitude,
         longitude: req.body.longitude,
         addressDesc: req.body.adressDesc,
-        locName:JSON.stringify(req.body.locationName)
+        locName:JSON.stringify(req.body.locationName),
+        city:JSON.stringify(req.body.city),
+        country:JSON.stringify(req.body.country),
+        country_id:req.body.country_id,
     }
     
     console.log("Printing req.user.id" + req.user.id);

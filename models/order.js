@@ -121,7 +121,7 @@ class Order{
     //     });
     // }
 
-    addNewOrder(cart_total,cart, userId, addressId,cargoType,temp2,shippingRate,addressRow,callback){
+    addNewOrder(cart_total,cart, userId, addressId,cargoType,temp2,shippingRate,addressRow,shippingId,callback){
         /*
             The generate array in Cart class would return
             all the products present in the cart.
@@ -131,15 +131,15 @@ class Order{
         addressRow=JSON.stringify(addressRow);
         cargoType=JSON.stringify(cargoType);
         var micTime= microtime.now();
-        var newOrderQuery = "INSERT INTO saidalia_js.gc_orders (Type,shipping,vat,customer_id, order_number, order_status, total, subtotal, ordered_on, billing_address_id,address)\
-                             VALUES ("+ cargoType + ","+ shippingRate + "," + temp2 + "," + userId + "," + micTime + "," + "'Pending'" + "," + cart_total + "," + cart.totalPrice + "," + Date.now() + "," + addressId + "," + addressRow + ")";
+        var newOrderQuery = "INSERT INTO saidalia_js.gc_orders (shipping_address_id,Type,shipping,vat,customer_id, order_number, order_status, total, subtotal, ordered_on, billing_address_id,address)\
+                             VALUES ("+ shippingId + ","+ cargoType + ","+ shippingRate + "," + temp2 + "," + userId + "," + micTime + "," + "'Pending'" + "," + cart_total + "," + cart.totalPrice + "," + Date.now() + "," + addressId + "," + addressRow + ")";
         /*
             Insert a new order and get the id of the row inserted in order table
             The id would be used to add order items in order items table
          */
-            console.log("address",newOrderQuery);
+        console.log("address",newOrderQuery);
         var orderItemFunction = this.addOrderItems;
-
+        
         mySql.getConnection(function(err, connection){
             if(err){
                 throw err;

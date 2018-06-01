@@ -4,7 +4,7 @@ class product {
     constructor() {
     }
     findById(id, callback) {
-        var query = "SELECT id, name,description, arabic_name,arabic_description, price_1\
+        var query = "SELECT id, name,description,images, arabic_name,arabic_description, price_1\
                      FROM saidalia_js.gc_products\
                      WHERE id =  " + id;
         mySql.getConnection(function (err, connection) {
@@ -156,7 +156,7 @@ class product {
 
     getProductWiseOffers(end, offerId) {
         return new Promise(function (resolve) {
-            var query = "SELECT products.id,products.excerpt as days,products.enable_date as Hours,products.disable_date as Minutes, products.name, products.model, products.arabic_name, products.description, products.arabic_description,\
+            var query = "SELECT products.id,products.excerpt as days,products.enable_date as Hours,products.disable_date as Minutes, products.name, products.model as seconds, products.arabic_name, products.description, products.arabic_description,\
                         products.quantity,promotions.reduction_amount as Reduction_Percentage, products.images, COALESCE(products.price_1 - ((products.price_1/100) * promotions.reduction_amount)) AS price_1, products.arabic_images, products.price_1 AS actual_price\
                         FROM saidalia_js.gc_promotions as promotions\
                         INNER JOIN saidalia_js.gc_promotions_products as promo_prods ON  promotions.id = promo_prods.coupon_id\
@@ -165,7 +165,7 @@ class product {
 
             var ehourData = new Date(end);
             var currentDates = new Date();
-            var currentDatesH = currentDates.getHours()+5;
+            var currentDatesH = currentDates.getHours() + 5;
             var currentDatesM = currentDates.getMinutes();
             var EH = ehourData.getHours()
             var eminutesData = ehourData.getMinutes();
@@ -182,8 +182,8 @@ class product {
             seconds = seconds - (days * 24 * 60 * 60) - (hours * 60 * 60) - (minutes * 60);
             console.log("days", days, "Hours", hours, "minutes", minutes, "seconds", seconds);
 
-             console.log("Current Hour", currentDatesH, "Offer date Hours", EH)
-             console.log("Current Minute", currentDatesM, "offer date min", remainingHours)
+            console.log("Current Hour", currentDatesH, "Offer date Hours", EH)
+            console.log("Current Minute", currentDatesM, "offer date min", remainingHours)
             mySql.getConnection(function (err, connection) {
                 if (err) {
                     throw err;
@@ -199,6 +199,7 @@ class product {
                             rows[i].Hours = hours;
                             rows[i].Minutes = minutes;
                             rows[i].days = days;
+                            rows[i].seconds = seconds;
                             rows[i].Reduction_Percentage = rows[i].Reduction_Percentage + "%"
                         }
                         resolve(rows);
@@ -209,12 +210,12 @@ class product {
     }
     getCategoryWiseOffers(end, subCategoryId, deductedAmount) {
         return new Promise(function (resolve) {
-            var query = "SELECT p.id,p.weight as Reduction_Percentage,p.excerpt as days,p.enable_date as Hours,p.disable_date as Minutes, p.name,b.name as brand_name,p.arabic_description, p.model,p.description,p.fixed_quantity as discount_price, p.arabic_name, p.quantity, p.price_1, p.images \
+            var query = "SELECT p.id,p.weight as Reduction_Percentage,p.excerpt as days,p.enable_date as Hours,p.disable_date as Minutes, p.name,b.name as brand_name,p.arabic_description,  p.model as seconds,p.description,p.fixed_quantity as discount_price, p.arabic_name, p.quantity, p.price_1, p.images \
                 FROM saidalia_js.gc_products p inner join saidalia_js.gc_brands b on b.id = p.brand \
                 WHERE secondary_category = " + subCategoryId;
             var ehourData = new Date(end);
             var currentDates = new Date();
-            var currentDatesH = currentDates.getHours()+5
+            var currentDatesH = currentDates.getHours() + 5
             var currentDatesM = currentDates.getMinutes();
             var EH = ehourData.getHours()
             var eminutesData = ehourData.getMinutes();
@@ -246,6 +247,55 @@ class product {
                             rows[j].Hours = hours;
                             rows[j].Minutes = minutes;
                             rows[j].days = days;
+                            rows[j].seconds = seconds;
+                            rows[j].Reduction_Percentage = deductedAmount + "%";
+                        }
+                        resolve(rows);
+                    }
+                });
+            });
+        });
+    }
+    getBrandWiseOffer(end, brand_id, deductedAmount) {
+        return new Promise(function (resolve) {
+            var query = "SELECT p.id,p.weight as Reduction_Percentage,p.excerpt as days,p.enable_date as Hours,p.disable_date as Minutes, p.name,b.name as brand_name,p.arabic_description,  p.model as seconds,p.description,p.fixed_quantity as discount_price, p.arabic_name, p.quantity, p.price_1, p.images \
+                FROM saidalia_js.gc_products p inner join saidalia_js.gc_brands b on b.id = p.brand \
+                WHERE p.brand = " + brand_id;
+            var ehourData = new Date(end);
+            var currentDates = new Date();
+            var currentDatesH = currentDates.getHours() + 5
+            var currentDatesM = currentDates.getMinutes();
+            var EH = ehourData.getHours()
+            var eminutesData = ehourData.getMinutes();
+            var remainingHours = EH - currentDatesH;
+            var remainingMinutes = eminutesData - eminutesData;
+            // get total seconds between the times
+            var seconds = Math.floor((ehourData - (currentDates)) / 1000);
+            var minutes = Math.floor(seconds / 60);
+            var hours = Math.floor(minutes / 60);
+            var days = Math.floor(hours / 24);
+
+            hours = hours - (days * 24);
+            minutes = minutes - (days * 24 * 60) - (hours * 60);
+            seconds = seconds - (days * 24 * 60 * 60) - (hours * 60 * 60) - (minutes * 60);
+            console.log("Hours", hours, "minutes", minutes, "seconds", seconds);
+            mySql.getConnection(function (err, connection) {
+                if (err) {
+                    throw err;
+                }
+                connection.query(query, function (err, rows) {
+                    if (err) {
+                        throw err;
+                    }
+                    else {
+                        connection.release();
+                        console.log("Promise going to be resolved");
+                        for (let j = 0; j < rows.length; j++) {
+                            rows[j].discount_price = ((rows[j].price_1 - ((rows[j].price_1 / 100) * deductedAmount)));
+                            rows[j].Hours = hours;
+                            rows[j].Minutes = minutes;
+                            rows[j].days = days;
+                            rows[j].seconds = seconds;
                             rows[j].Reduction_Percentage = deductedAmount + "%";
                         }
                         resolve(rows);
@@ -278,9 +328,9 @@ class product {
         });
     }
     getOrderDetailHistory(Id, callback) {
-        var query='select o.Type ,o.subtotal,o.total as Grand_total,o.shipping as ShippingAmount,o.vat as VAT, o.order_number,o.address,o.order_started,d.quantity as product_quantity,d.price as product_price,d.total_price as product_total,d.name,d.description,d.arabic_name,d.arabic_description ' +
+        var query = 'select o.Type ,o.subtotal,o.total as Grand_total,o.shipping as ShippingAmount,o.vat as VAT, o.order_number,o.address,o.order_started,d.quantity as product_quantity,d.price as product_price,d.total_price as product_total,d.name,d.description,d.arabic_name,d.arabic_description ' +
             '   from saidalia_js.gc_orders o' +
-            '  inner join saidalia_js.gc_order_items d on o.id= d.order_id'+
+            '  inner join saidalia_js.gc_order_items d on o.id= d.order_id' +
             ' where o.id = "' + Id + '" ';
         console.log("query", query);
         mySql.getConnection(function (err, connection) {
