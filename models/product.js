@@ -210,7 +210,7 @@ class product {
     }
     getCategoryWiseOffers(end, subCategoryId, deductedAmount) {
         return new Promise(function (resolve) {
-            var query = "SELECT p.id,p.weight as Reduction_Percentage,p.excerpt as days,p.enable_date as Hours,p.disable_date as Minutes, p.name,b.name as brand_name,p.arabic_description,  p.model as seconds,p.description,p.fixed_quantity as discount_price, p.arabic_name, p.quantity, p.price_1, p.images \
+            var query = "SELECT p.id,p.weight as Reduction_Percentage,p.excerpt as days,p.enable_date as Hours,p.disable_date as Minutes, p.name,b.name as brand_name,p.arabic_description,  p.model as seconds,p.description,p.fixed_quantity as discount_price, p.arabic_name, p.quantity,p.arabic_images, p.price_1 AS actual_price, p.images \
                 FROM saidalia_js.gc_products p inner join saidalia_js.gc_brands b on b.id = p.brand \
                 WHERE secondary_category = " + subCategoryId;
             var ehourData = new Date(end);
@@ -258,7 +258,7 @@ class product {
     }
     getBrandWiseOffer(end, brand_id, deductedAmount) {
         return new Promise(function (resolve) {
-            var query = "SELECT p.id,p.weight as Reduction_Percentage,p.excerpt as days,p.enable_date as Hours,p.disable_date as Minutes, p.name,b.name as brand_name,p.arabic_description,  p.model as seconds,p.description,p.fixed_quantity as discount_price, p.arabic_name, p.quantity, p.price_1, p.images \
+            var query = "SELECT p.id,p.weight as Reduction_Percentage,p.excerpt as days,p.enable_date as Hours,p.disable_date as Minutes, p.name,b.name as brand_name,p.arabic_description,  p.model as seconds,p.description,p.fixed_quantity as discount_price, p.arabic_name, p.quantity,p.arabic_images, p.price_1 AS actual_price, p.images \
                 FROM saidalia_js.gc_products p inner join saidalia_js.gc_brands b on b.id = p.brand \
                 WHERE p.brand = " + brand_id;
             var ehourData = new Date(end);

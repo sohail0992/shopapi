@@ -118,13 +118,9 @@ exports.shoppingCartController = async function (req, res) {
     if(ID){
         country = await user.getUserCountry(ID);
         CountryRate= await user.GetCountryAmount(country[0].country_id);
-      //  CountryRate=Number(CountryRate);
         CityRate = await user.getCityAmount(country[0].city);
-       // CityRate=Number(CityRate);
-        console.log(CountryRate[0].tax, CityRate[0].tax);
         COD = CountryRate[0].tax + CityRate[0].tax;
         COD +=0
-        console.log("COD inside",COD,typeof(COD));
     }
     var cart = new Cart(req.session.cart);
     var flatRate = await cart.getFlatRate();
