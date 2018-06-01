@@ -133,7 +133,7 @@ exports.shoppingCartController = async function (req, res) {
     var cart_total = cart.totalPrice + ((cart.totalPrice / 100) * temp2);
     if (shippingRate > cart_total) {
         cart_total += FlatRateConverstion;
-        cart.totalPrice+= FlatRateConverstion
+        cart.totalPrice+= FlatRateConverstion;
     } 
     console.log("COD outside",COD);
     res.json({
@@ -173,11 +173,13 @@ exports.finalCheckoutController = function (req, res) {
         }
         else {
            // var shippingAddress=await user.addUserShippingAddress(shippingId);
+         
             var temp = await cart.getVatPrice();
             var Shipping = await cart.getShippingRate();
             var shippingRate = Number(Shipping.setting)
             var temp2 = Number(temp.setting);
             cart.totalPrice = cart.totalPrice + shippingRate;
+            cart.totalPrice+=COD;
             var cart_total = cart.totalPrice + ((cart.totalPrice / 100) * temp2);
             order.addNewOrder(cart_total, cart, req.user.id, addressId, checkType, temp2, shippingRate, addressRow[0].address1, shippingId, async function (err) {
                 if (err) {
