@@ -46,7 +46,9 @@ exports.addToCartController = function (req, res) {
 
             res.json({
                 status: 200,
-                message: "Product added successfully"
+                message: "Product added successfully",
+                cartProducts: cart.generateArray(),
+        
             })
         }
     })
@@ -90,7 +92,9 @@ exports.addOfferToCartController = function (req, res) {
             console.log(req.session.cart);
             res.json({
                 status: 200,
-                message: "Product added successfully"
+                message: "Product added successfully",
+                cartProducts: cart.generateArray(),
+        
             })
         }
     })
