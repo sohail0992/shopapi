@@ -157,7 +157,7 @@ class product {
     getProductWiseOffers(end, offerId) {
         return new Promise(function (resolve) {
             var query = "SELECT products.id,products.excerpt as days,products.enable_date as Hours,products.disable_date as Minutes, products.name, products.model as seconds, products.arabic_name, products.description, products.arabic_description,\
-                        products.quantity,promotions.reduction_amount as Reduction_Percentage, products.images, COALESCE(products.price_1 - ((products.price_1/100) * promotions.reduction_amount)) AS price_1, products.arabic_images, products.price_1 AS actual_price\
+                        products.quantity,promotions.reduction_amount as Reduction_Percentage, products.images, COALESCE(products.price_1 - ((products.price_1/100) * promotions.reduction_amount)) AS discount_price, products.arabic_images, products.price_1 AS actual_price\
                         FROM saidalia_js.gc_promotions as promotions\
                         INNER JOIN saidalia_js.gc_promotions_products as promo_prods ON  promotions.id = promo_prods.coupon_id\
                         INNER JOIN saidalia_js.gc_products as products ON promo_prods.product_id = products.id\
@@ -243,7 +243,7 @@ class product {
                         connection.release();
                         console.log("Promise going to be resolved");
                         for (let j = 0; j < rows.length; j++) {
-                            rows[j].discount_price = ((rows[j].price_1 - ((rows[j].price_1 / 100) * deductedAmount)));
+                            rows[j].discount_price = ((rows[j].actual_price - ((rows[j].actual_price / 100) * deductedAmount)));
                             rows[j].Hours = hours;
                             rows[j].Minutes = minutes;
                             rows[j].days = days;
@@ -289,9 +289,9 @@ class product {
                     }
                     else {
                         connection.release();
-                        console.log("Promise going to be resolved");
+                        console.log("reduction_amount",deductedAmount);
                         for (let j = 0; j < rows.length; j++) {
-                            rows[j].discount_price = ((rows[j].price_1 - ((rows[j].price_1 / 100) * deductedAmount)));
+                            rows[j].discount_price = ((rows[j].actual_price - ((rows[j].actual_price / 100) * deductedAmount)));
                             rows[j].Hours = hours;
                             rows[j].Minutes = minutes;
                             rows[j].days = days;

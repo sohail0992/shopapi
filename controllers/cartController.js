@@ -129,6 +129,7 @@ exports.shoppingCartController = async function (req, res) {
     var FlatRateConverstion = Number(flatRate.setting);
     var shippingRate = Number(Shipping.setting)
     var temp2 = Number(temp.setting);
+    cart.totalPrice+=COD;
     var cart_total = cart.totalPrice + ((cart.totalPrice / 100) * temp2);
     if (shippingRate > cart_total) {
         cart_total += FlatRateConverstion;
@@ -146,6 +147,57 @@ exports.shoppingCartController = async function (req, res) {
         COD :COD,
     });
     return;
+}
+exports.finalCheckoutController = function (req, res) {
+    var addressId = req.body.addressId;
+    var shippingId = req.body.shippingId;
+    var checkType = req.body.type;
+    var Country = req.query.country;
+    var user = new User();
+    var order = new Order();
+    console.log("executed 1");
+    if (req.session.cart == null) {
+        return res.json({
+            status: 500,
+            message: "Cannot proceed with empty cart"
+        });
+    }
+    var cart = new Cart(req.session.cart);
+    user.getUserAddressById(addressId, async function (err, addressRow) {
+        console.log("address", addressRow);
+        if (err) {
+            res.json({
+                status: 500,
+                message: err
+            });
+        }
+        else {
+           // var shippingAddress=await user.addUserShippingAddress(shippingId);
+            var temp = await cart.getVatPrice();
+            var Shipping = await cart.getShippingRate();
+            var shippingRate = Number(Shipping.setting)
+            var temp2 = Number(temp.setting);
+            cart.totalPrice = cart.totalPrice + shippingRate;
+            var cart_total = cart.totalPrice + ((cart.totalPrice / 100) * temp2);
+            order.addNewOrder(cart_total, cart, req.user.id, addressId, checkType, temp2, shippingRate, addressRow[0].address1, shippingId, async function (err) {
+                if (err) {
+                    res.json({
+                        status: 500,
+                        message: err
+                    })
+                } else {
+
+                    // var paymentData = await order.setPaymentTable(cart,req.user.id,addressId,checkType)
+                    req.session.cart = null;
+                    res.json({
+                        status: 200,
+                        message: "order placed successfully"
+                    })
+                }
+
+            });
+        }
+    });
 }
 
 exports.editShoppingCartController = function (req, res) {
@@ -220,57 +272,6 @@ exports.deleteShoppingCartController = function (req, res) {
     })
 }
 
-exports.finalCheckoutController = function (req, res) {
-    var addressId = req.body.addressId;
-    var shippingId = req.body.shippingId;
-    var checkType = req.body.type;
-    var Country = req.query.country;
-    var user = new User();
-    var order = new Order();
-    console.log("executed 1");
-    if (req.session.cart == null) {
-        return res.json({
-            status: 500,
-            message: "Cannot proceed with empty cart"
-        });
-    }
-    var cart = new Cart(req.session.cart);
-    user.getUserAddressById(addressId, async function (err, addressRow) {
-        console.log("address", addressRow);
-        if (err) {
-            res.json({
-                status: 500,
-                message: err
-            });
-        }
-        else {
-           // var shippingAddress=await user.addUserShippingAddress(shippingId);
-            var temp = await cart.getVatPrice();
-            var Shipping = await cart.getShippingRate();
-            var shippingRate = Number(Shipping.setting)
-            var temp2 = Number(temp.setting);
-            cart.totalPrice = cart.totalPrice + shippingRate;
-            var cart_total = cart.totalPrice + ((cart.totalPrice / 100) * temp2);
-            order.addNewOrder(cart_total, cart, req.user.id, addressId, checkType, temp2, shippingRate, addressRow[0].address1, shippingId, async function (err) {
-                if (err) {
-                    res.json({
-                        status: 500,
-                        message: err
-                    })
-                } else {
-
-                    // var paymentData = await order.setPaymentTable(cart,req.user.id,addressId,checkType)
-                    req.session.cart = null;
-                    res.json({
-                        status: 200,
-                        message: "order placed successfully"
-                    })
-                }
-
-            });
-        }
-    });
-}
 
 exports.checkCoupunController = function (req, res) {
     console.log("inside controller");
