@@ -162,6 +162,13 @@ exports.finalCheckoutController = function (req, res) {
             message: "Cannot proceed with empty cart"
         });
     }
+    var user = new User();
+    var ID=req.body.shippingId;
+    var countryId=0;
+    var CountryRate=0;
+    var CityRate=0;
+    var COD=0
+   
     var cart = new Cart(req.session.cart);
     user.getUserAddressById(addressId, async function (err, addressRow) {
         console.log("address", addressRow);
@@ -170,16 +177,35 @@ exports.finalCheckoutController = function (req, res) {
                 status: 500,
                 message: err
             });
-        } 
+        }
         else {
            // var shippingAddress=await user.addUserShippingAddress(shippingId);
-         
-            var temp = await cart.getVatPrice();
-            var Shipping = await cart.getShippingRate();
-            var shippingRate = Number(Shipping.setting)
-            var temp2 = Number(temp.setting);
-            cart.totalPrice = cart.totalPrice + shippingRate;
-            var cart_total = cart.totalPrice + ((cart.totalPrice / 100) * temp2);
+           if(ID){
+            country = await user.getUserCountry(ID);
+            CountryRate= await user.GetCountryAmount(country[0].country_id);
+            CityRate = await user.getCityAmount(country[0].city);
+            COD = CountryRate[0].tax + CityRate[0].tax;
+            COD +=0
+        }
+        var flatRate = await cart.getFlatRate();
+        var temp = await cart.getVatPrice();
+        var Shipping = await cart.getShippingRate();
+        var FlatRateConverstion = Number(flatRate.setting);
+        var shippingRate = Number(Shipping.setting)
+        var temp2 = Number(temp.setting);
+        cart.totalPrice+=COD;
+        var cart_total = cart.totalPrice + ((cart.totalPrice / 100) * temp2);
+        if (shippingRate > cart_total) {
+            cart_total += FlatRateConverstion;
+            cart.totalPrice+= FlatRateConverstion;
+        } 
+            // var temp = await cart.getVatPrice();
+            // var Shipping = await cart.getShippingRate();
+            // var shippingRate = Number(Shipping.setting)
+            // var temp2 = Number(temp.setting);
+            // cart.totalPrice = cart.totalPrice + shippingRate;
+            // cart.totalPrice+=COD;
+            // var cart_total = cart.totalPrice + ((cart.totalPrice / 100) * temp2);
             order.addNewOrder(cart_total, cart, req.user.id, addressId, checkType, temp2, shippingRate, addressRow[0].address1, shippingId, async function (err) {
                 if (err) {
                     res.json({
