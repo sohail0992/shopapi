@@ -170,7 +170,7 @@ exports.finalCheckoutController = function (req, res) {
                 status: 500,
                 message: err
             });
-        }
+        } 
         else {
            // var shippingAddress=await user.addUserShippingAddress(shippingId);
          
@@ -179,7 +179,6 @@ exports.finalCheckoutController = function (req, res) {
             var shippingRate = Number(Shipping.setting)
             var temp2 = Number(temp.setting);
             cart.totalPrice = cart.totalPrice + shippingRate;
-            cart.totalPrice+=COD;
             var cart_total = cart.totalPrice + ((cart.totalPrice / 100) * temp2);
             order.addNewOrder(cart_total, cart, req.user.id, addressId, checkType, temp2, shippingRate, addressRow[0].address1, shippingId, async function (err) {
                 if (err) {
