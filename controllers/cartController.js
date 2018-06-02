@@ -134,8 +134,10 @@ exports.shoppingCartController = async function (req, res) {
     if (shippingRate > cart_total) {
         cart_total += FlatRateConverstion;
         cart.totalPrice+= FlatRateConverstion;
-    } 
-    console.log("COD outside",COD);
+    }
+    if (shippingRate < cart_total) {
+        FlatRateConverstion=FlatRateConverstion*0;
+    }   
     res.json({
         status: 200,
         cartProducts: cart.generateArray(),
