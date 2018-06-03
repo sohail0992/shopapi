@@ -52,7 +52,9 @@ passport.use('local-register', new localStrategy({
                     verificationCode: verificationCode,
                     verificationStatus: false,
                     company: req.body.company,
-                    companyNumber: req.body.companyNumber
+                    companyNumber: req.body.companyNumber,
+                    active:1,
+                    confirmed:1,
             }        
 
             //Creating new user

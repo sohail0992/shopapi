@@ -63,8 +63,8 @@ class user{
         console.log("inside set new user");
         console.log(userData);
         var query = "INSERT into saidalia_js.gc_customers" +   
-                    "(firstname,  email, phone, password, verification_status, verification_code)" +
-                    "VALUES" + "(" + "\"" + userData.name + "\"" + "," + "\"" + userData.email + "\"" + "," + "\"" + userData.mobile + "\"" + "," + "\"" + userData.password + "\"" + "," + "\"" + userData.verificationStatus + "\"" + ","+ userData.verificationCode +")";
+                    "(active,confirmed,firstname,  email, phone, password, verification_status, verification_code)" +
+                    "VALUES" + "(" + "\"" + userData.active + "\"" + "," + "\"" + userData.confirmed + "\"" + ","+ "\"" + userData.name + "\"" + "," + "\"" + userData.email + "\"" + "," + "\"" + userData.mobile + "\"" + "," + "\"" + userData.password + "\"" + "," + "\"" + userData.verificationStatus + "\"" + ","+ userData.verificationCode +")";
         
         var findbyemail = this.findByEmail;
 
