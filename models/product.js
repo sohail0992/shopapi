@@ -328,11 +328,14 @@ class product {
         });
     }
     getOrderDetailHistory(Id, callback) {
-        var query = 'select o.Type ,o.subtotal,o.total as Grand_total,d.images,o.shipping as ShippingAmount,o.vat as VAT, o.order_number,o.address,o.order_started,d.quantity as product_quantity,d.price as product_price,d.total_price as product_total,d.name,d.description,d.arabic_name,d.arabic_description ' +
-            '  from saidalia_js.gc_orders o' +
-            '  inner join saidalia_js.gc_order_items d on o.id= d.order_id' +
-            '  where o.id = "' + Id + '" ' 
-            '  and (d.name != Flat Rate) and (d.name != vat_rate) and (d.name != Cash on Delivery Charges:)' ;
+        // var query = 'select o.Type ,o.subtotal,o.total as Grand_total,d.images,o.shipping as ShippingAmount,o.vat as VAT, o.order_number,o.address,o.order_started,d.quantity as product_quantity,d.price as product_price,d.total_price as product_total,d.name,d.description,d.arabic_name,d.arabic_description ' +
+        //     '  from saidalia_js.gc_orders o' +
+        //     '  inner join saidalia_js.gc_order_items d on o.id= d.order_id' +
+        //     '  where o.id = "' + Id + '" ';
+            var query = `select o.Type ,o.subtotal,o.total as Grand_total,d.images,o.shipping as ShippingAmount,o.vat as VAT, o.order_number,o.address,o.order_started,d.quantity as product_quantity,d.price as product_price,d.total_price as product_total,d.name,d.description,d.arabic_name,d.arabic_description 
+            from saidalia_js.gc_orders o
+            inner join saidalia_js.gc_order_items d on o.id= d.order_id
+            where o.id = ${Id} and d.product_id != 0`;
         console.log("query", query);
         mySql.getConnection(function (err, connection) {
             if (err) {
