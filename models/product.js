@@ -154,15 +154,25 @@ class product {
         });
     }
 
-    getProductWiseOffers(end, offerId) {
+    getProductWiseOffers(end, offerId, reduction_type) {
         return new Promise(function (resolve) {
-            var query = "SELECT products.id,products.excerpt as days,products.enable_date as Hours,products.disable_date as Minutes, products.name, products.model as seconds, products.arabic_name, products.description, products.arabic_description,\
+            var query = "";
+            if (reduction_type === 'percent') {
+                query = "SELECT products.id,products.excerpt as days,products.enable_date as Hours,products.disable_date as Minutes, products.name, products.model as seconds, products.arabic_name, products.description, products.arabic_description,\
                         products.quantity,promotions.reduction_amount as Reduction_Percentage, products.images, COALESCE(products.price_1 - ((products.price_1/100) * promotions.reduction_amount)) AS discount_price, products.arabic_images, products.price_1 AS actual_price\
                         FROM saidalia_js.gc_promotions as promotions\
                         INNER JOIN saidalia_js.gc_promotions_products as promo_prods ON  promotions.id = promo_prods.coupon_id\
                         INNER JOIN saidalia_js.gc_products as products ON promo_prods.product_id = products.id\
                         WHERE promotions.id = " + offerId;
-
+            }
+            if (reduction_type === 'fixed') {
+                query = "SELECT products.id,products.excerpt as days,products.enable_date as Hours,products.disable_date as Minutes, products.name, products.model as seconds, products.arabic_name, products.description, products.arabic_description,\
+                            products.quantity,promotions.reduction_amount as Reduction_Percentage, products.images, COALESCE(products.price_1 - promotions.reduction_amount) AS discount_price, products.arabic_images, products.price_1 AS actual_price\
+                            FROM saidalia_js.gc_promotions as promotions\
+                            INNER JOIN saidalia_js.gc_promotions_products as promo_prods ON  promotions.id = promo_prods.coupon_id\
+                            INNER JOIN saidalia_js.gc_products as products ON promo_prods.product_id = products.id\
+                            WHERE promotions.id = " + offerId;
+            }
             var ehourData = new Date(end);
             var currentDates = new Date();
             var currentDatesH = currentDates.getHours() + 5;
@@ -195,20 +205,34 @@ class product {
                     else {
                         connection.release();
                         console.log("Promise going to be resolved");
-                        for (var i = 0; i < rows.length; i++) {
-                            rows[i].Hours = hours;
-                            rows[i].Minutes = minutes;
-                            rows[i].days = days;
-                            rows[i].seconds = seconds;
-                            rows[i].Reduction_Percentage = rows[i].Reduction_Percentage + "%"
+                        if (reduction_type === 'fixed') {
+                            for (var i = 0; i < rows.length; i++) {
+                                rows[i].Hours = hours;
+                                rows[i].Minutes = minutes;
+                                rows[i].days = days;
+                                rows[i].seconds = seconds;
+                                rows[i].Reduction_Percentage = rows[i].Reduction_Percentage
+                            }
+                            console.log("Product Wise Offers", rows[0])
+                            resolve(rows);
+                        } else {
+                            for (var i = 0; i < rows.length; i++) {
+                                rows[i].Hours = hours;
+                                rows[i].Minutes = minutes;
+                                rows[i].days = days;
+                                rows[i].seconds = seconds;
+                                rows[i].Reduction_Percentage = rows[i].Reduction_Percentage + "%"
+                            }
+                            console.log("Product Wise Offers", rows[0])
+                            resolve(rows);
                         }
-                        resolve(rows);
+
                     }
                 });
             });
         });
     }
-    getCategoryWiseOffers(end, subCategoryId, deductedAmount) {
+    getCategoryWiseOffers(end, subCategoryId, deductedAmount, reduction_type) {
         return new Promise(function (resolve) {
             var query = "SELECT p.id,p.weight as Reduction_Percentage,p.excerpt as days,p.enable_date as Hours,p.disable_date as Minutes, p.name,b.name as brand_name,p.arabic_description,  p.model as seconds,p.description,p.fixed_quantity as discount_price, p.arabic_name, p.quantity,p.arabic_images, p.price_1 AS actual_price, p.images \
                 FROM saidalia_js.gc_products p inner join saidalia_js.gc_brands b on b.id = p.brand \
@@ -242,21 +266,33 @@ class product {
                     else {
                         connection.release();
                         console.log("Promise going to be resolved");
-                        for (let j = 0; j < rows.length; j++) {
-                            rows[j].discount_price = ((rows[j].actual_price - ((rows[j].actual_price / 100) * deductedAmount)));
-                            rows[j].Hours = hours;
-                            rows[j].Minutes = minutes;
-                            rows[j].days = days;
-                            rows[j].seconds = seconds;
-                            rows[j].Reduction_Percentage = deductedAmount + "%";
+                        if (reduction_type === 'fixed') {
+                            for (let j = 0; j < rows.length; j++) {
+                                rows[j].discount_price = (rows[j].actual_price -  deductedAmount);
+                                rows[j].Hours = hours;
+                                rows[j].Minutes = minutes;
+                                rows[j].days = days;
+                                rows[j].seconds = seconds;
+                                rows[j].Reduction_Percentage = deductedAmount ;
+                            }
+                            resolve(rows);
+                        }else{
+                            for (let j = 0; j < rows.length; j++) {
+                                rows[j].discount_price = ((rows[j].actual_price - ((rows[j].actual_price / 100) * deductedAmount)));
+                                rows[j].Hours = hours;
+                                rows[j].Minutes = minutes;
+                                rows[j].days = days;
+                                rows[j].seconds = seconds;
+                                rows[j].Reduction_Percentage = deductedAmount + "%";
+                            }
+                            resolve(rows); 
                         }
-                        resolve(rows);
                     }
                 });
             });
         });
     }
-    getBrandWiseOffer(end, brand_id, deductedAmount) {
+    getBrandWiseOffer(end, brand_id, deductedAmount, reduction_type) {
         return new Promise(function (resolve) {
             var query = "SELECT p.id,p.weight as Reduction_Percentage,p.excerpt as days,p.enable_date as Hours,p.disable_date as Minutes, p.name,b.name as brand_name,p.arabic_description,  p.model as seconds,p.description,p.fixed_quantity as discount_price, p.arabic_name, p.quantity,p.arabic_images, p.price_1 AS actual_price, p.images \
                 FROM saidalia_js.gc_products p inner join saidalia_js.gc_brands b on b.id = p.brand \
@@ -289,16 +325,29 @@ class product {
                     }
                     else {
                         connection.release();
-                        console.log("reduction_amount",deductedAmount);
-                        for (let j = 0; j < rows.length; j++) {
-                            rows[j].discount_price = ((rows[j].actual_price - ((rows[j].actual_price / 100) * deductedAmount)));
-                            rows[j].Hours = hours;
-                            rows[j].Minutes = minutes;
-                            rows[j].days = days;
-                            rows[j].seconds = seconds;
-                            rows[j].Reduction_Percentage = deductedAmount + "%";
-                        }
-                        resolve(rows);
+                        console.log("reduction_amount", deductedAmount);
+                        if (reduction_type === 'fixed') {
+                            for (let j = 0; j < rows.length; j++) {
+                                rows[j].discount_price = (rows[j].actual_price -  deductedAmount);
+                                rows[j].Hours = hours;
+                                rows[j].Minutes = minutes;
+                                rows[j].days = days;
+                                rows[j].seconds = seconds;
+                                rows[j].Reduction_Percentage = deductedAmount ;
+                            }
+                            resolve(rows);
+                        }else{
+                            for (let j = 0; j < rows.length; j++) {
+                                rows[j].discount_price = ((rows[j].actual_price - ((rows[j].actual_price / 100) * deductedAmount)));
+                                rows[j].Hours = hours;
+                                rows[j].Minutes = minutes;
+                                rows[j].days = days;
+                                rows[j].seconds = seconds;
+                                rows[j].Reduction_Percentage = deductedAmount + "%";
+                            }
+                            resolve(rows);
+                        }   
+                       
                     }
                 });
             });
@@ -332,7 +381,7 @@ class product {
         //     '  from saidalia_js.gc_orders o' +
         //     '  inner join saidalia_js.gc_order_items d on o.id= d.order_id' +
         //     '  where o.id = "' + Id + '" ';
-            var query = `select o.Type ,o.subtotal,o.total as Grand_total,d.images,o.shipping as ShippingAmount,o.vat as VAT, o.order_number,o.address,o.order_started,d.quantity as product_quantity,d.price as product_price,d.total_price as product_total,d.name,d.description,d.arabic_name,d.arabic_description 
+        var query = `select o.Type ,o.subtotal,o.total as Grand_total,d.images,o.shipping as ShippingAmount,o.vat as VAT, o.order_number,o.address,o.order_started,d.quantity as product_quantity,d.price as product_price,d.total_price as product_total,d.name,d.description,d.arabic_name,d.arabic_description 
             from saidalia_js.gc_orders o
             inner join saidalia_js.gc_order_items d on o.id= d.order_id
             where o.id = ${Id} and d.product_id != 0`;

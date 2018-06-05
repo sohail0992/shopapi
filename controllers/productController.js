@@ -23,7 +23,7 @@ async function getMainAndSubCat(parentCategories) {
         "/sadaliaCatsArabic/Perfumes.png",
         "/sadaliaCatsArabic/ElectricalDevices.png",
     ];
- 
+
     //Return a promise when all subcategories are fetched for parent categories
     return new Promise(async function (resolve) {
         var catMainAndSub = []; //Array to save parent and their sub categories
@@ -154,48 +154,54 @@ exports.getSubCatProductsController = function (req, res) {
             });
         } else {
             //console.log(result);
-            for (var i = 0; i < result.length; ++i) {
-                //Data object contains the list of products
-                //Replace [0] with the iterating variable through which you are listing all products
-                var productImageObj = result[i].images;
-                //Parse the productImageObj
-                var productImageObj = JSON.parse(productImageObj);
-                //Get the value of first property from image object
-                var imageFirstProp = productImageObj[Object.keys(productImageObj)[0]]
-                //Extract image filename from image first property object
-                var imageLink = imageFirstProp.filename;
-                //Concatenate image name with remote repository url
-                result[i].images = "http://www.saidaliah.com/uploads/images/full/" + imageLink;
+            if (result.length != 0) {
+                for (var i = 0; i < result.length; ++i) {
+                    //Data object contains the list of products
+                    //Replace [0] with the iterating variable through which you are listing all products
+
+                    var productImageObj = result[i].images;
+                    //Parse the productImageObj
+                    console.log("Image", result[i].images)
+                    if (result[i].images) {
+                        var productImageObj = JSON.parse(productImageObj);
+                        //Get the value of first property from image object
+                        var imageFirstProp = productImageObj[Object.keys(productImageObj)[0]]
+                        //Extract image filename from image first property object
+                        var imageLink = imageFirstProp.filename;
+                        //Concatenate image name with remote repository url
+                        result[i].images = "http://www.saidaliah.com/uploads/images/full/" + imageLink;
+                    }
+                }
+                res.json({
+                    status: 200,
+                    data: result
+                });
             }
-            res.json({
-                status: 200,
-                data: result
-            });
         }
     });
 }
-async function getReviewData(productId,result) {
+async function getReviewData(productId, result) {
     //Return a promise when all subcategories are fetched for parent categories
     return new Promise(async function (resolve) {
-        var description=[]; 
-        var rating =0;
+        var description = [];
+        var rating = 0;
         var products = new product();
-        review_details= await products.getReviewOnProduct(productId);
-        if(review_details!=0){
-            console.log("review_details",review_details);
-            for (var j=0;j<review_details.length;j++){
-             description[j]=review_details[j].Review;
-             rating += review_details[j].rating;
-            console.log("details review",review_details[j].Review);
+        review_details = await products.getReviewOnProduct(productId);
+        if (review_details != 0) {
+            console.log("review_details", review_details);
+            for (var j = 0; j < review_details.length; j++) {
+                description[j] = review_details[j].Review;
+                rating += review_details[j].rating;
+                console.log("details review", review_details[j].Review);
             }
-            var rationRating=rating/review_details.length;
-            result[0].Review_decription=description;
-            result[0].rating=Math.floor(rationRating);
-         }else{
-            var rationRating=rating/review_details.length;
-            result[0].Review_decription=description;
-            result[0].rating=Math.floor(rationRating);
-         }
+            var rationRating = rating / review_details.length;
+            result[0].Review_decription = description;
+            result[0].rating = Math.floor(rationRating);
+        } else {
+            var rationRating = rating / review_details.length;
+            result[0].Review_decription = description;
+            result[0].rating = Math.floor(rationRating);
+        }
         resolve(review_details); //Returning All offers
     });
 }
@@ -206,28 +212,28 @@ async function getReviewData(productId,result) {
  */
 exports.getProductDetailsController = function (req, res) {
     var products = new product();
-    var review_details="";
+    var review_details = "";
     console.log("Product id entered " + req.query.productId);
-    products.getProductDetails(req.query.productId,async function (err, result) {
+    products.getProductDetails(req.query.productId, async function (err, result) {
         if (err) {
             res.json({
                 status: 500,
                 message: err
             });
         } else {
-              if(result.lenth!=0){
-                review_details= await getReviewData(req.query.productId,result);
+            if (result.lenth != 0) {
+                review_details = await getReviewData(req.query.productId, result);
                 res.json({
                     status: 200,
                     data: result
                 });
-                }else{
-                    res.json({
-                        status: 200,
-                        Message: "No Details are Avialable "
-                    });
-                }
-           
+            } else {
+                res.json({
+                    status: 200,
+                    Message: "No Details are Avialable "
+                });
+            }
+
         }
     });
 }
@@ -286,18 +292,18 @@ exports.getProductSearchController = function (req, res) {
         }
     });
 }
-async function concatArrays(arr1,arr2) {
+async function concatArrays(arr1, arr2) {
     //Return a promise when all subcategories are fetched for parent categories
     return new Promise(async function (resolve) {
         let arr3 = [];
-        for(var i in arr1){
-           var shared = false;
-           for (var j in arr2)
-               if (arr2[j].name == arr1[i].name) {
-                   shared = true;
-                   break;
-               }
-           if(!shared) arr3.push(arr1[i])
+        for (var i in arr1) {
+            var shared = false;
+            for (var j in arr2)
+                if (arr2[j].name == arr1[i].name) {
+                    shared = true;
+                    break;
+                }
+            if (!shared) arr3.push(arr1[i])
         }
         arr3 = arr3.concat(arr2);
 
@@ -307,32 +313,32 @@ async function concatArrays(arr1,arr2) {
 async function getofferData(result) {
     //Return a promise when all subcategories are fetched for parent categories
     return new Promise(async function (resolve) {
-        let offerData=[];
-        let ProductWise=[];
-        let CategoryWise=[];
+        let offerData = [];
+        let ProductWise = [];
+        let CategoryWise = [];
         var products = new product();
         console.log("In offer data controller");
-        for (var i=0 ;i<result.length;i++){
-            if(result[i].type==='product_wise'){
-                offerData[i] = await products.getProductWiseOffers(result[i].end_date,result[i].id);
+        for (var i = 0; i < result.length; i++) {
+            if (result[i].type === 'product_wise') {
+                offerData[i] = await products.getProductWiseOffers(result[i].end_date, result[i].id,result[i].reduction_type);
             }
-            if(result[i].type==="category_wise"){
-                offerData[i] = await products.getCategoryWiseOffers(result[i].end_date,result[i].secondary_category,result[i].reduction_amount);         
+            if (result[i].type === "category_wise") {
+                offerData[i] = await products.getCategoryWiseOffers(result[i].end_date, result[i].secondary_category, result[i].reduction_amount,result[i].reduction_type);
             }
-            if(result[i].type==="brand_wise"){
-                offerData[i] = await products.getBrandWiseOffer(result[i].end_date,result[i].brand_id,result[i].reduction_amount);         
+            if (result[i].type === "brand_wise") {
+                offerData[i] = await products.getBrandWiseOffer(result[i].end_date, result[i].brand_id, result[i].reduction_amount,result[i].reduction_type);
             }
-            
+
         }
         //let offers = await concatArrays(ProductWise,CategoryWise); 
-        Array.prototype.push.apply(ProductWise,CategoryWise) 
+        Array.prototype.push.apply(ProductWise, CategoryWise)
         resolve(offerData); //Returning All offers
     });
 }
 exports.getOffers = function (req, res) {
     var products = new product();
 
-    console.log("inside offers controller"); 
+    console.log("inside offers controller");
     products.getAllOffers(async function (err, result) {
         if (err) {
             res.json({
@@ -342,15 +348,15 @@ exports.getOffers = function (req, res) {
         }
         else {
             if (result.length != 0) {
-                var availableOffers = await getofferData(result);  
+                var availableOffers = await getofferData(result);
                 res.json({
                     status: 200,
-                     productWise: availableOffers,
+                    productWise: availableOffers,
                 });
-            }else {
+            } else {
                 res.json({
                     status: 200,
-                     message: "Currently No Offer is Available"
+                    message: "Currently No Offer is Available"
                 });
             }
 
@@ -381,30 +387,30 @@ exports.getMyOrderdetails = function (req, res) {
     console.log("inside controller");
     var products = new product();
     console.log("andr he nai gaya ");
-    products.getOrderHistory(req.query.Id,function (err, result) {
+    products.getOrderHistory(req.query.Id, function (err, result) {
         if (err) {
             res.json({
                 status: 500,
-                message:"y error hai ajeeb ", err,
+                message: "y error hai ajeeb ", err,
             });
-        }else {
+        } else {
             console.log("after", result);
-            if(result!=0){
-                    // for(var i=0 ;i<result.length;i++){
-                    //     result[i].order_status="Pending";
-                    // }
+            if (result != 0) {
+                // for(var i=0 ;i<result.length;i++){
+                //     result[i].order_status="Pending";
+                // }
                 res.json({
                     status: 200,
                     data: result,
                 })
             }
-            else{
+            else {
                 res.json({
                     status: 200,
                     message: "No previous orders",
                 })
             }
-           
+
         }
     })
 
@@ -414,31 +420,31 @@ exports.getMyOrderdetailsproductwise = function (req, res) {
     console.log("inside controller");
     var products = new product();
     console.log("andr he nai gaya ");
-    var id=Number(req.query.id);
-    products.getOrderDetailHistory(id,function (err, result) {
+    var id = Number(req.query.id);
+    products.getOrderDetailHistory(id, function (err, result) {
         if (err) {
             res.json({
                 status: 500,
-                message:"y error hai ajeeb ", err,
+                message: "y error hai ajeeb ", err,
             });
-        }else {
+        } else {
             console.log("after", result);
-            if(result!=0){
-                    // for(var i=0 ;i<result.length;i++){
-                    //     result[i].order_status="Pending";
-                    // }
+            if (result != 0) {
+                // for(var i=0 ;i<result.length;i++){
+                //     result[i].order_status="Pending";
+                // }
                 res.json({
                     status: 200,
                     data: result,
                 })
             }
-            else{
+            else {
                 res.json({
                     status: 200,
                     message: "No previous orders",
                 })
             }
-           
+
         }
     })
 
@@ -446,9 +452,9 @@ exports.getMyOrderdetailsproductwise = function (req, res) {
 exports.setProductReiview = function (req, res) {
     console.log("inside controller");
     var review = req.body.review;
-    var productId=req.body.productId
+    var productId = req.body.productId
     var products = new product();
-    products.insertReview(review,productId,req.body.rating, function (err, result) {
+    products.insertReview(review, productId, req.body.rating, function (err, result) {
         if (err) {
             res.json({
                 status: 500,
