@@ -194,12 +194,15 @@ exports.finalCheckoutController = function (req, res) {
         var FlatRateConverstion = 0;
         var shippingRate = Number(Shipping.setting)
         var temp2 = Number(temp.setting);
+        var vat_difference=0;
         cart.totalPrice+=COD;
         var cart_total = cart.totalPrice + ((cart.totalPrice / 100) * temp2);
-        if (shippingRate > cart_total) {
+        vat_difference=cart_total-cart.totalPrice;
+        if(shippingRate > cart_total){
             FlatRateConverstion = Number(flatRate.setting);
             cart_total += FlatRateConverstion;
             cart.totalPrice+= FlatRateConverstion;
+            vat_difference=cart_total-cart.totalPrice;
         } 
             // var temp = await cart.getVatPrice();
             // var Shipping = await cart.getShippingRate();
@@ -208,7 +211,7 @@ exports.finalCheckoutController = function (req, res) {
             // cart.totalPrice = cart.totalPrice + shippingRate;
             // cart.totalPrice+=COD;
             // var cart_total = cart.totalPrice + ((cart.totalPrice / 100) * temp2);
-            order.addNewOrder(cart_total, cart, req.user.id, addressId, checkType, temp2, FlatRateConverstion, addressRow[0].address1, shippingId, async function (err) {
+            order.addNewOrder(COD,FlatRateConverstion,vat_difference,cart_total, cart, req.user.id, addressId, checkType, temp2, FlatRateConverstion, addressRow[0].address1, shippingId, async function (err) {
                 if (err) {
                     res.json({
                         status: 500,

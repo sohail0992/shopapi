@@ -420,9 +420,9 @@ exports.getMyOrderdetailsproductwise = function (req, res) {
         }else {
             console.log("after", result);
             if(result!=0){
-                    for(var i=0 ;i<result.length;i++){
-                        result[i].order_status="Pending";
-                    }
+                    // for(var i=0 ;i<result.length;i++){
+                    //     result[i].order_status="Pending";
+                    // }
                 res.json({
                     status: 200,
                     data: result,
