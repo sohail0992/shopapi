@@ -191,6 +191,10 @@ async function getReviewData(productId,result) {
             var rationRating=rating/review_details.length;
             result[0].Review_decription=description;
             result[0].rating=Math.floor(rationRating);
+         }else{
+            var rationRating=rating/review_details.length;
+            result[0].Review_decription=description;
+            result[0].rating=Math.floor(rationRating);
          }
         resolve(review_details); //Returning All offers
     });
