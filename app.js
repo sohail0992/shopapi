@@ -47,8 +47,13 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(expressSession({
     secret: "824AE1",
-    saveUninitialized: false, 
-    resave: false
+    saveUninitialized: true, 
+    resave: true,
+    store:sessionStore,
+    cookie : {
+      maxAge: 1000* 60 * 60 *24 * 365
+  },
+
 }));
 app.use(passport.initialize());
 app.use(passport.session());
