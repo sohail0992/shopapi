@@ -48,7 +48,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(expressSession({
     secret: "824AE1",
     saveUninitialized: false, 
-    resave: false
+    resave: false,
+    store:sessionStore,
+    expiration: 86400000,
 }));
 app.use(passport.initialize());
 app.use(passport.session());
@@ -60,7 +62,8 @@ app.use(passport.session());
 
 app.use(function(req, res, next){
 	res.locals.login = req.isAuthenticated();
-	res.locals.session = req.session;
+  res.locals.session = req.session;
+  console.log("res.locals.session",res.locals.session);
 	next();
 });
 
