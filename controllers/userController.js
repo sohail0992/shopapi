@@ -10,7 +10,7 @@ exports.getUserAddressController = function(req, res){
     
     var user = new User();
     user.getUserAddresses(req.user.id, function(err, rows){
-        console.log("Get address callback");
+        console.log("Get address callback",req.user.id);
         if(err){
             res.json({
                 status: 500,

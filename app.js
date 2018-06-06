@@ -33,7 +33,7 @@ var sessionStore = new mySqlStore({}, mySql)
 require('./config/passport');
 
 // view engine setup
-app.engine('hbs', hbs({extname: ".hbs", defaultLayout: "layout", layoutsDir: __dirname + "/views/layouts/"}))
+app.engine('hbs', hbs({ extname: ".hbs", defaultLayout: "layout", layoutsDir: __dirname + "/views/layouts/" }))
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
 
@@ -46,9 +46,12 @@ app.use(expressValidator());
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(expressSession({
-    secret: "824AE1",
-    saveUninitialized: false, 
-    resave: false
+  secret: "824AE1",
+  saveUninitialized: false,
+  resave: false,
+  cookie: {
+    maxAge: 1000 * 60 * 60 * 24 * 365
+  },
 }));
 app.use(passport.initialize());
 app.use(passport.session());
@@ -58,10 +61,10 @@ app.use(passport.session());
     Making session available to be accessed in response
 */
 
-app.use(function(req, res, next){
-	res.locals.login = req.isAuthenticated();
-	res.locals.session = req.session;
-	next();
+app.use(function (req, res, next) {
+  res.locals.login = req.isAuthenticated();
+  res.locals.session = req.session;
+  next();
 });
 
 
@@ -73,9 +76,9 @@ app.use('/cart', cart);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
-    var err = new Error('Not Found');
-    err.status = 404;
-    next(err);
+  var err = new Error('Not Found');
+  err.status = 404;
+  next(err);
 });
 
 // error handlers
@@ -83,23 +86,23 @@ app.use(function (req, res, next) {
 // development error handler
 // will print stacktrace
 if (app.get('env') === 'development') {
-    app.use(function (err, req, res, next) {
-        res.status(err.status || 500);
-        res.render('error', {
-            message: err.message,
-            error: err
-        });
+  app.use(function (err, req, res, next) {
+    res.status(err.status || 500);
+    res.render('error', {
+      message: err.message,
+      error: err
     });
+  });
 }
 
 // production error handler
 // no stacktraces leaked to user
 app.use(function (err, req, res, next) {
-    res.status(err.status || 500);
-    res.render('error', {
-        message: err.message,
-        error: {}
-    });
+  res.status(err.status || 500);
+  res.render('error', {
+    message: err.message,
+    error: {}
+  });
 });
 
 // app.set('port', process.env.PORT || 3000);
