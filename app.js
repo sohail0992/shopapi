@@ -47,10 +47,8 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(expressSession({
     secret: "824AE1",
-    saveUninitialized: true, 
-    resave: false,
-    store:sessionStore,
-    cookie: {expires: new Date(253402300000000)}
+    saveUninitialized: false, 
+    resave: false
 }));
 app.use(passport.initialize());
 app.use(passport.session());
@@ -62,8 +60,7 @@ app.use(passport.session());
 
 app.use(function(req, res, next){
 	res.locals.login = req.isAuthenticated();
-  res.locals.session = req.session;
-  console.log("res.locals.session",res.locals.session);
+	res.locals.session = req.session;
 	next();
 });
 

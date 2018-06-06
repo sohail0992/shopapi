@@ -13,12 +13,12 @@ passport.serializeUser(function(user, done){
 })
 
 //Always define the opposite
-// passport.deserializeUser(function(id, done){
-//     var user = new User();
-//     user.findById(id, function(err, user){
-//         done(err, user[0]);
-//     });
-// });
+passport.deserializeUser(function(id, done){
+    var user = new User();
+    user.findById(id, function(err, user){
+        done(err, user[0]);
+    });
+});
 
 passport.use('local-register', new localStrategy({
     usernameField: 'email',

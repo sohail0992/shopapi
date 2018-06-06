@@ -105,7 +105,7 @@ exports.getCategoryController = function (req, res) {
 
 /*
     This controller takes the parent category id and
-    return all the sub categories that are in the parent
+    return all the ssub categories that are in the parent
     category
  */
 exports.getAllCategoriesController = function (req, res) {
