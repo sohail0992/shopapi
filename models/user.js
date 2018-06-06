@@ -82,10 +82,8 @@ class user{
                         callback(err, result);
                     });    
                 }
-
             });
         })
-
     }
     getUserAddresses(userId, callback){
         var query = "SELECT address.id, address.latitude, address.longitude, address.address1,address.addressDesc\
