@@ -61,7 +61,9 @@ app.use(passport.session());
 
 app.use(function(req, res, next){
 	res.locals.login = req.isAuthenticated();
-	res.locals.session = req.session;
+  res.locals.session = req.session;
+  console.log("Session",req.session);
+  console.log("Session ID",req.sessionID);
 	next();
 });
 
