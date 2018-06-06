@@ -49,7 +49,7 @@ app.use(expressSession({
     secret: "824AE1",
     saveUninitialized: false, 
     resave: false,
-    cookie: {expires: new Date(253402300000000)}
+    cookie: {expires: new Date(253402300000000)} 
 }));
 app.use(passport.initialize());
 app.use(passport.session());
