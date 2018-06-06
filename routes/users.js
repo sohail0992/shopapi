@@ -272,9 +272,11 @@ router.post('/verification', verificationMiddleWare, function(req, res, next){
 
 function isLoggedIn(req, res, next){
     if(req.isAuthenticated()){
+        console.log("user",req.user.id);
         next();
     }
     else{
+        console.log("no user id found not logged in user",req.user);
         res.json({
             status: 200,
             message: "User must be logged in"
