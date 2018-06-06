@@ -27,7 +27,7 @@ var app = express();
 
 //Initializing session store
 //var connection = await sessionController.getSessionStore();
-var sessionStore = new mySqlStore({}, mySql)
+//var sessionStore = new mySqlStore({}, mySql)
 
 //Using passport strategy
 require('./config/passport');
@@ -52,7 +52,10 @@ app.use(expressSession({
   cookie: {
     maxAge: 1000 * 60 * 60 * 24 * 365
   },
-}));
+  store: new mySqlStore({}, mySql)
+})
+    
+);
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -64,6 +67,8 @@ app.use(passport.session());
 app.use(function (req, res, next) {
   res.locals.login = req.isAuthenticated();
   res.locals.session = req.session;
+  console.log("Cookies",cookie)
+  //console.log("Session",sessionStore)
   next();
 });
 
