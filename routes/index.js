@@ -5,7 +5,7 @@ var Mail = require('../models/mail');
 
 var productsController = require('../controllers/productController');
 
-router.get('/',isLoggedIn, function(req, res){
+router.get('/', function(req, res){
     productsController.getCategoryController(req, res);
 });
 
