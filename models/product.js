@@ -134,7 +134,7 @@ class product {
         });
     }
     getAllOffers(callback) {
-        var query = `SELECT * FROM saidalia_js.gc_promotions WHERE end_date >= NOW()`;
+        var query = `SELECT * FROM saidalia_js.gc_promotions WHERE end_date >= NOW() and enabled_1=1`;
         // console.log("query", query);
 
         mySql.getConnection(function (err, connection) {
