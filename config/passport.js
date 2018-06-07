@@ -8,6 +8,7 @@ var localStrategy = require('passport-local').Strategy;
 //Passport will serialize a unique session with the user id from which the request has been made
 //Serialize the session by user id
 //Done is a callback function
+
 passport.serializeUser(function(user, done){
     done(null, user.id);
 })
@@ -25,11 +26,8 @@ passport.use('local-register', new localStrategy({
     passwordFiled: 'password',
     passReqToCallback: true
 }, function(req, username, password, done){
-            console.log("inside errors1");
-  
-    
+            console.log("inside errors1");  
         var user = new User(); 
-
         user.findByEmail(username, function(err, resultUser){
         
             if(err){
