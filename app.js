@@ -49,7 +49,7 @@ app.use(expressSession({
   secret: "824AE1",
   saveUninitialized: false,
   resave: false,
-  cookie: { expires: new Date(253402300000000) },
+  cookie: { expires: new Date(253402300000000)},
   store:new mySqlStore({}, mySql)
 }));
 app.use(passport.initialize());
@@ -66,7 +66,6 @@ app.use(function (req, res, next) {
   var value=  req.session.save();
   console.log("Session", req.session); 
   console.log("Session ID", value);
-  
   next();
 });
 

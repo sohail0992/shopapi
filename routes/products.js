@@ -17,25 +17,19 @@ router.get('/offers', (req, res) => {
     console.log("Inside offers");
     productsController.getOffers(req, res);
 });
-
 router.post('/SearchProduct', (req, res) => {
     console.log("In Route \n", req.body.productName);
     productsController.getProductSearchController(req, res);
 })
-
 router.get('/offers-details', function (req, res) {
     productsController.getOfferDetailsController(req, res);
 });
-
 router.get('/myOrder', function (req, res) {
     productsController.getMyOrderdetails(req,res);
 });
 router.get('/myOrderDetails', function (req, res) {
     productsController.getMyOrderdetailsproductwise(req,res);
 });
-
-
-
 router.post('/product-review', function (req, res) {
     console.log("Inside product review route");
     req.assert("review", "Write any review to submit").notEmpty();

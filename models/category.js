@@ -27,7 +27,7 @@ class category{
         that does'nt have any parent id
     */
    getCategories(callback) {
-    var query = "SELECT id, name, arabic_name, image\
+    var query = "SELECT id, name, arabic_name, image,arabic_image as ARABIC_IMAGES\
                  FROM saidalia_js.gc_categories\
                  WHERE parent_id = 0";
 

@@ -38,14 +38,12 @@ router.post('/register', function(req, res, next){
     }
     else{
         passport.authenticate('local-register', function(err, user, info){
-            console.log("Inside user-register post route");
-                
+            console.log("Inside user-register post route");   
                 if(err){
                     return res.json({
                         status:500,
                         message: err
                     });
-        
                 }
                 if (!user) { 
                     return res.json({
@@ -154,7 +152,8 @@ router.get('/addresses', isLoggedIn, function(req, res){
 
 router.post('/addresses', isLoggedIn, function(req, res){
     userController.addUserAddressController(req, res);
-}); 
+});
+
 router.post('/accountUpdate', isLoggedIn, function(req, res){
     userController.EditAccountInformation(req, res);
 });
