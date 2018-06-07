@@ -7,7 +7,6 @@ exports.getRegisterController = function(req, res){
 }
 
 exports.getUserAddressController = function(req, res){
-    
     var user = new User();
     console.log("User id in address",req.user.id)
     user.getUserAddresses(req.user.id, function(err, rows){
