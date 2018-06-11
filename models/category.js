@@ -29,7 +29,7 @@ class category{
    getCategories(callback) {
     var query = "SELECT id, name, arabic_name, image,arabic_image as arabic_images\
                  FROM saidalia_js.gc_categories\
-                 WHERE parent_id = 0";
+                 WHERE parent_id = 0 and parent_id= -3";
 
     mySql.getConnection(function(err, connection){
         if(err){

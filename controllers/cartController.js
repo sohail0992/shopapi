@@ -5,7 +5,6 @@ var Order = require('../models/order');
 
 exports.addToCartController = function (req, res) {
     console.log("Inside add to cart controller");
-
     //req.assert("");
 
     var productId = req.query.id;
@@ -48,7 +47,7 @@ exports.addToCartController = function (req, res) {
                 status: 200,
                 message: "Product added successfully",
                 cartProducts: cart.generateArray(),
-        
+
             })
         }
     })
@@ -94,7 +93,7 @@ exports.addOfferToCartController = function (req, res) {
                 status: 200,
                 message: "Product added successfully",
                 cartProducts: cart.generateArray(),
-        
+
             })
         }
     })
@@ -104,23 +103,23 @@ exports.shoppingCartController = async function (req, res) {
     if (!req.session.cart) {
         res.json({
             status: 200,
-            message:"Empty Cart",
+            message: "Empty Cart",
             cartProducts: { products: null }
         });
         return;
     }
     var user = new User();
-    var ID=req.query.shippingId;
-    var countryId=0;
-    var CountryRate=0;
-    var CityRate=0;
-    var COD=0
-    if(ID){
+    var ID = req.query.shippingId;
+    var countryId = 0;
+    var CountryRate = 0;
+    var CityRate = 0;
+    var COD = 0
+    if (ID) {
         country = await user.getUserCountry(ID);
-        CountryRate= await user.GetCountryAmount(country[0].country_id);
+        CountryRate = await user.GetCountryAmount(country[0].country_id);
         CityRate = await user.getCityAmount(country[0].city);
         COD = CountryRate[0].tax + CityRate[0].tax;
-        COD +=0
+        COD += 0
     }
     var cart = new Cart(req.session.cart);
     var flatRate = await cart.getFlatRate();
@@ -129,14 +128,14 @@ exports.shoppingCartController = async function (req, res) {
     var FlatRateConverstion = 0;
     var shippingRate = Number(Shipping.setting)
     var temp2 = Number(temp.setting);
-    cart.totalPrice+=COD;
+    cart.totalPrice += COD;
     var cart_total = cart.totalPrice + ((cart.totalPrice / 100) * temp2);
     if (shippingRate > cart_total) {
         FlatRateConverstion = Number(flatRate.setting);
         cart_total += FlatRateConverstion;
-        cart.totalPrice+= FlatRateConverstion;
+        cart.totalPrice += FlatRateConverstion;
     }
-      
+
     res.json({
         status: 200,
         cartProducts: cart.generateArray(),
@@ -144,8 +143,8 @@ exports.shoppingCartController = async function (req, res) {
         totalPrice: cart_total,
         VAT: temp.setting + "%",
         FlatRate: FlatRateConverstion,
-        SubTotal:cart.totalPrice,
-        COD :COD,
+        SubTotal: cart.totalPrice,
+        COD: COD,
     });
     return;
 }
@@ -164,12 +163,12 @@ exports.finalCheckoutController = function (req, res) {
         });
     }
     var user = new User();
-    var ID=req.body.shippingId;
-    var countryId=0;
-    var CountryRate=0;
-    var CityRate=0;
-    var COD=0
-   
+    var ID = req.body.shippingId;
+    var countryId = 0;
+    var CountryRate = 0;
+    var CityRate = 0;
+    var COD = 0
+
     var cart = new Cart(req.session.cart);
     user.getUserAddressById(addressId, async function (err, addressRow) {
         console.log("address", addressRow);
@@ -180,30 +179,30 @@ exports.finalCheckoutController = function (req, res) {
             });
         }
         else {
-           // var shippingAddress=await user.addUserShippingAddress(shippingId);
-           if(ID){
-            country = await user.getUserCountry(ID);
-            CountryRate= await user.GetCountryAmount(country[0].country_id);
-            CityRate = await user.getCityAmount(country[0].city);
-            COD = CountryRate[0].tax + CityRate[0].tax;
-            COD +=0
-        }
-        var flatRate = await cart.getFlatRate();
-        var temp = await cart.getVatPrice();
-        var Shipping = await cart.getShippingRate();
-        var FlatRateConverstion = 0;
-        var shippingRate = Number(Shipping.setting)
-        var temp2 = Number(temp.setting);
-        var vat_difference=0;
-        cart.totalPrice+=COD;
-        var cart_total = cart.totalPrice + ((cart.totalPrice / 100) * temp2);
-        vat_difference=cart_total-cart.totalPrice;
-        if(shippingRate > cart_total){
-            FlatRateConverstion = Number(flatRate.setting);
-            cart_total += FlatRateConverstion;
-            cart.totalPrice+= FlatRateConverstion;
-            vat_difference=cart_total-cart.totalPrice;
-        } 
+            // var shippingAddress=await user.addUserShippingAddress(shippingId);
+            if (ID) {
+                country = await user.getUserCountry(ID);
+                CountryRate = await user.GetCountryAmount(country[0].country_id);
+                CityRate = await user.getCityAmount(country[0].city);
+                COD = CountryRate[0].tax + CityRate[0].tax;
+                COD += 0
+            }
+            var flatRate = await cart.getFlatRate();
+            var temp = await cart.getVatPrice();
+            var Shipping = await cart.getShippingRate();
+            var FlatRateConverstion = 0;
+            var shippingRate = Number(Shipping.setting)
+            var temp2 = Number(temp.setting);
+            var vat_difference = 0;
+            cart.totalPrice += COD;
+            var cart_total = cart.totalPrice + ((cart.totalPrice / 100) * temp2);
+            vat_difference = cart_total - cart.totalPrice;
+            if (shippingRate > cart_total) {
+                FlatRateConverstion = Number(flatRate.setting);
+                cart_total += FlatRateConverstion;
+                cart.totalPrice += FlatRateConverstion;
+                vat_difference = cart_total - cart.totalPrice;
+            }
             // var temp = await cart.getVatPrice();
             // var Shipping = await cart.getShippingRate();
             // var shippingRate = Number(Shipping.setting) 
@@ -211,7 +210,7 @@ exports.finalCheckoutController = function (req, res) {
             // cart.totalPrice = cart.totalPrice + shippingRate;
             // cart.totalPrice+=COD;
             // var cart_total = cart.totalPrice + ((cart.totalPrice / 100) * temp2);
-            order.addNewOrder(COD,FlatRateConverstion,vat_difference,cart_total, cart, req.user.id, addressId, checkType, temp2, FlatRateConverstion, addressRow[0].address1, shippingId, async function (err) {
+            order.addNewOrder(COD, FlatRateConverstion, vat_difference, cart_total, cart, req.user.id, addressId, checkType, temp2, FlatRateConverstion, addressRow[0].address1, shippingId, async function (err) {
                 if (err) {
                     res.json({
                         status: 500,
@@ -317,19 +316,37 @@ exports.checkCoupunController = function (req, res) {
                 message: err
             });
         } else {
-            if (result != 0) {
-                res.json({
-                    status: 200,
-                    message: "Coupun matched",
-                    data: result,
-                })
+            if (result != 0) { 
+                if (result[0].reduction_type == 'fixed') {
+                    if (result[0].reduction_amount > cart.totalPrice) {
+                        res.json({
+                            status: 200,
+                            message: "Coupun Amount Exceed, No Coupun Apply",
+                        })
+                    } else {
+                        var totalPrice = cart.totalPrice -  result[0].reduction_amount;
+                        res.json({
+                            status: 200,
+                            message: "Coupun matched fixed",
+                            data: totalPrice, 
+                        })
+                    }
+                }
+                if (result[0].reduction_type == 'percent') {
+                  var  totalPrice = cart.totalPrice - ((cart.totalPrice / 100) * result[0].reduction_amount);
+                    res.json({
+                        status: 200,
+                        message: "Coupun matched percent",
+                        data: totalPrice,
+                    })
+                }
+
             } else {
                 res.json({
                     status: 200,
                     message: "Coupun did not matched Please try again with different Coupon"
                 })
             }
-
         }
     })
 }

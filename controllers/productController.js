@@ -34,7 +34,7 @@ async function getMainAndSubCat(parentCategories) {
          //   parentCategories[i].image = "http://hikvisionsaudi.com/9/uploads/images/full/" + mainCatImages[i];
          //   parentCategories[i].image = "http://hikvisionsaudi.com/9/uploads/images/full/" + mainCatImages[i];
           
-            //  parentCategories[i].image = mainCatImages[i];
+        //  parentCategories[i].image = mainCatImages[i];
           //  parentCategories[i].arabic_images = mainCatArabicImages[i];
             catMainAndSub.push({
                 "parentCategory": parentCategories[i],

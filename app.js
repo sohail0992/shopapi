@@ -49,8 +49,8 @@ app.use(expressSession({
   secret: "824AE1",
   saveUninitialized: false,
   resave: false,
-  cookie: { expires: new Date(253402300000000)},
-  store:new mySqlStore({}, mySql)
+ // cookie: { expires: new Date(253402300000000)},
+  //store:new mySqlStore({}, mySql)
 }));
 app.use(passport.initialize());
 app.use(passport.session());
