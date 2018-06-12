@@ -328,7 +328,7 @@ exports.checkCoupunController = function (req, res) {
                         res.json({
                             status: 200,
                             message: "Coupun matched fixed",
-                            data: totalPrice, 
+                            data: result[0].reduction_amount, 
                         })
                     }
                 }
@@ -337,10 +337,9 @@ exports.checkCoupunController = function (req, res) {
                     res.json({
                         status: 200,
                         message: "Coupun matched percent",
-                        data: totalPrice,
+                        data: result[0].reduction_amount,
                     })
                 }
-
             } else {
                 res.json({
                     status: 200,

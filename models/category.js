@@ -30,7 +30,6 @@ class category{
     var query = "SELECT id, name, arabic_name, image,arabic_image as arabic_images\
                  FROM saidalia_js.gc_categories\
                  WHERE parent_id = 0 ";
-
     mySql.getConnection(function(err, connection){
         if(err){
             throw err;
