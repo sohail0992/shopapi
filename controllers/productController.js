@@ -31,11 +31,11 @@ async function getMainAndSubCat(parentCategories) {
         for (i = 0; i < parentCategories.length; i++) {
             var subCategories = await categories1.getSubCatPromise(parentCategories[i].id); //The execution would wait until subcategories are fetched
             //Populating array with parent and subcategories
-         //   parentCategories[i].image = "http://hikvisionsaudi.com/9/uploads/images/full/" + mainCatImages[i];
-         //   parentCategories[i].image = "http://hikvisionsaudi.com/9/uploads/images/full/" + mainCatImages[i];
-          
-        //  parentCategories[i].image = mainCatImages[i];
-          //  parentCategories[i].arabic_images = mainCatArabicImages[i];
+            //   parentCategories[i].image = "http://hikvisionsaudi.com/9/uploads/images/full/" + mainCatImages[i];
+            //   parentCategories[i].image = "http://hikvisionsaudi.com/9/uploads/images/full/" + mainCatImages[i];
+
+            //  parentCategories[i].image = mainCatImages[i];
+            //  parentCategories[i].arabic_images = mainCatArabicImages[i];
             catMainAndSub.push({
                 "parentCategory": parentCategories[i],
                 "childCategories": subCategories
@@ -104,7 +104,6 @@ exports.getCategoryController = function (req, res) {
         mainCatArabicImages: mainCatArabicImages
     });
 }
-
 /*
     This controller takes the parent category id and
     return all the ssub categories that are in the parent
@@ -112,7 +111,6 @@ exports.getCategoryController = function (req, res) {
  */
 exports.getAllCategoriesController = function (req, res) {
     var categories = new category();
-
     categories.getCategories(async function (err, result) {
         //Get parent categories
         var parentCategories = result;
@@ -127,7 +125,6 @@ exports.getAllCategoriesController = function (req, res) {
 }
 exports.getAllCountriesAndSities = function (req, res) {
     var categories = new category();
-
     categories.getCountries(async function (err, result) {
         //Get parent categories
         var parentCategories = result;
@@ -141,14 +138,53 @@ exports.getAllCountriesAndSities = function (req, res) {
     });
 
 }
-
+// Working Example
 /*
     This controller takes the sub category id of a category
     and return all the products that are in the sub category
  */
+// exports.getSubCatProductsController = function (req, res) {
+//     var products = new product();
+//     products.getSubCatProd(req.query.subCategoryId, function (err, result) {
+//         if (err) {
+//             res.json({ 
+//                 status: 500,
+//                 message: err
+//             });
+//         } else {
+//             //console.log(result);
+//             if (result.length != 0) {
+//                 for (var i = 0; i < result.length; ++i) {
+//                     //Data object contains the list of products
+//                     //Replace [0] with the iterating variable through which you are listing all products
+
+//                     var productImageObj = result[i].images;
+//                     //Parse the productImageObj
+//                     console.log("Image", result[i].images)
+//                     if (result[i].images){
+//                         var productImageObj = JSON.parse(productImageObj);
+//                         //Get the value of first property from image object
+//                         var imageFirstProp = productImageObj[Object.keys(productImageObj)[0]]
+//                         //Extract image filename from image first property object
+//                         var imageLink = imageFirstProp.filename;
+//                         //Concatenate image name with remote repository url
+//                         result[i].images = "http://www.saidaliah.com/uploads/images/full/" + imageLink;
+//                     }
+//                 }
+//                 res.json({
+//                     status: 200,
+//                     data: result
+//                 });
+//             }
+//         }
+//     });
+// }
+
+
 exports.getSubCatProductsController = function (req, res) {
     var products = new product();
-    products.getSubCatProd(req.query.subCategoryId, function (err, result) {
+  
+    products.getSubCatProd(req.query.subCategoryId,async function (err, result) {
         if (err) {
             res.json({
                 status: 500,
@@ -156,11 +192,12 @@ exports.getSubCatProductsController = function (req, res) {
             });
         } else {
             //console.log(result);
+            let offers_data =await products.getAllOffersData(req.query.subCategoryId);
+            console.log(offers_data);
             if (result.length != 0) {
                 for (var i = 0; i < result.length; ++i) {
                     //Data object contains the list of products
                     //Replace [0] with the iterating variable through which you are listing all products
-
                     var productImageObj = result[i].images;
                     //Parse the productImageObj
                     console.log("Image", result[i].images)
@@ -174,10 +211,22 @@ exports.getSubCatProductsController = function (req, res) {
                         result[i].images = "http://www.saidaliah.com/uploads/images/full/" + imageLink;
                     }
                 }
-                res.json({
-                    status: 200,
-                    data: result
-                });
+                if (offers_data.length!=0) {
+                    for (var i = 0; i < result.length; ++i) {
+                        result[i].discount_price = result[i].price_1 - ((result[i].price_1 / 100) * offers_data[0].reduction_amount)
+                    }
+                    res.json({
+                        status: 200,
+                        data: result,
+                        type:"OFFER"
+                    });
+                }else{
+                    res.json({
+                        status: 200,
+                        data: result
+                    });
+                }
+               
             }
         }
     });
@@ -322,13 +371,13 @@ async function getofferData(result) {
         console.log("In offer data controller");
         for (var i = 0; i < result.length; i++) {
             if (result[i].type === 'product_wise') {
-                offerData[i] = await products.getProductWiseOffers(result[i].end_date, result[i].id,result[i].reduction_type);
+                offerData[i] = await products.getProductWiseOffers(result[i].end_date, result[i].id, result[i].reduction_type);
             }
             if (result[i].type === "category_wise") {
-                offerData[i] = await products.getCategoryWiseOffers(result[i].end_date, result[i].secondary_category, result[i].reduction_amount,result[i].reduction_type);
+                offerData[i] = await products.getCategoryWiseOffers(result[i].end_date, result[i].secondary_category, result[i].reduction_amount, result[i].reduction_type);
             }
             if (result[i].type === "brand_wise") {
-                offerData[i] = await products.getBrandWiseOffer(result[i].end_date, result[i].brand_id, result[i].reduction_amount,result[i].reduction_type);
+                offerData[i] = await products.getBrandWiseOffer(result[i].end_date, result[i].brand_id, result[i].reduction_amount, result[i].reduction_type);
             }
 
         }

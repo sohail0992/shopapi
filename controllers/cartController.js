@@ -9,6 +9,7 @@ exports.addToCartController = function (req, res) {
 
     var productId = req.query.id;
     var quantity = Number(req.query.quantity);
+    var price=Number(req.query.price);
     if (!(/^[0-9]+$/.test(quantity))) {
         return res.json({
             status: 500,
@@ -34,21 +35,51 @@ exports.addToCartController = function (req, res) {
         } else {
 
             if (req.query.quantity == null) {
-                cart.addProductToCart(prod, productId);
+                try{
+                    cart.addProductToCart(prod, productId,price);
+                }
+               catch(e){
+                   if(e==1){
+                    res.json({
+                        status: 200,
+                        message: "Product Already Exist, Kindly Check Your Cart",
+                    })
+                   }
+                   if(e==2){
+                    req.session.cart = cart;
+                    console.log("Following items in session cart");
+                    console.log(req.session.cart);
+                    res.json({
+                        status: 200,
+                        message: "Product added successfully",
+                        cartProducts: cart.generateArray(),
+                    })
+                   }
+               }
             } else {
-                cart.addProductToCart(prod, productId, req.query.quantity);
-            }
-            req.session.cart = cart;
-
-            console.log("Following items in session cart");
-            console.log(req.session.cart);
-
-            res.json({
-                status: 200,
-                message: "Product added successfully",
-                cartProducts: cart.generateArray(),
-
-            })
+                try{
+                    cart.addProductToCart(prod, productId, req.query.quantity,price);
+                }
+                catch(e){
+                    if(e==1){
+                        res.json({
+                            status: 200,
+                            message: "Product Already Exist, Kindly Check Your Cart",
+                        })
+                       }
+                       if(e==2){
+                        req.session.cart = cart;
+                        console.log("Following items in session cart");
+                        console.log(req.session.cart);
+                        res.json({
+                            status: 200,
+                            message: "Product added successfully",
+                            cartProducts: cart.generateArray(),
+                        })
+                       }
+                }
+           }
+           
         }
     })
 }
@@ -84,17 +115,28 @@ exports.addOfferToCartController = function (req, res) {
                 cart.addOfferToCart(prod, productId);
             } else {
                 console.log("discount", number);
-                cart.addOfferToCart(prod, productId, req.query.quantity, req.query.discount_price);
-            }
-            req.session.cart = cart;
-            console.log("Following items in session cart");
-            console.log(req.session.cart);
-            res.json({
-                status: 200,
-                message: "Product added successfully",
-                cartProducts: cart.generateArray(),
-
-            })
+                try{
+                    cart.addOfferToCart(prod, productId, req.query.quantity, req.query.discount_price);
+                }catch(e){
+                    if(e==1){
+                        res.json({
+                            status: 200,
+                            message: "Product Already Exist, Kindly Check Your Cart",
+                        })
+                    }
+                    if(e==2){
+                        req.session.cart = cart;
+                        console.log("Following items in session cart");
+                        console.log(req.session.cart);
+                        res.json({
+                            status: 200,
+                            message: "Product added successfully",
+                            cartProducts: cart.generateArray(),
+            
+                        })
+                    }
+                }
+                }
         }
     })
 }

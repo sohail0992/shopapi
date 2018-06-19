@@ -10,54 +10,73 @@ class Cart {
 		this.totalQty = oldCart.totalQty || 0;
 		this.totalPrice = oldCart.totalPrice || 0;
 	}
-	addProductToCart(item, id) {
+	addProductToCart(item, id,price) {
 		var storedItem = this.items[id];
 		//Create a new item if its not present in items list
 		if (!storedItem) {
-			storedItem = this.items[id] = { item: item, qty: 1, price: Number(item.price_1) };
+			storedItem = this.items[id] = { item: item, qty: 1, price: Number(price) };
 		} else {
 			//Increment qty by 1 and set price to item price
-			storedItem.qty++;
-			storedItem.price = item.price_1 * storedItem.qty;
+		//	storedItem.qty++;
+		//	storedItem.price = item.price_1 * storedItem.qty;
+		throw 1;
 		}
 		this.totalQty++;
 		this.totalPrice += storedItem.item.price_1;
-
+		throw 2;
 	}
 
-	addProductToCart(item, id, quantity) {
+	addProductToCart(item, id, quantity,price) {
 		var storedItem = this.items[id];
-
 		//Create a new item if its not present in items list
 		if (!storedItem) {
-			storedItem = this.items[id] = { item: item, qty: Number(quantity), price: Number(item.price_1*quantity) };
+			storedItem = this.items[id] = { item: item, qty: Number(quantity), price: Number(price*quantity) };
 		} else {
 			//Increment qty by 1 and set price to item price
-			storedItem.qty += Number(quantity);
-			storedItem.price = storedItem.item.price_1  * storedItem.qty;
-
+			//storedItem.qty += Number(quantity);
+			//storedItem.price = storedItem.item.price_1  * storedItem.qty;
+			throw 1;
 		}
 		this.totalQty += Number(quantity);
 		this.totalPrice += (item.price_1 * quantity);
-	
-	}
+		throw 2;
+	}// add offer to cart Working Fine
+	// addOfferToCart(item, id, quantity, discount_price) {
+	// 	var discount_priceD = item.price_1 - ((item.price_1 / 100) * discount_price)
+	// 	console.log("actual amount ", item.price_1, "Concession", discount_priceD);
+	// 	var storedItem = this.items[id + 100];
+	// 	//Create a new item if its not present in items list
+	// 	if (!storedItem) {
+	// 		item.id += 100;
+	// 		item.price_1 = discount_priceD
+	// 		storedItem = this.items[id + 100] = { item: item, qty: Number(quantity), price: Number(discount_priceD*quantity), type: "Offer" };
+	// 		console.log("Newly Stored Item")
+	// 	} else {
+	// 			storedItem.qty+= Number(quantity);
+	// 			storedItem.price = storedItem.item.price_1 * storedItem.qty; 
+	// 	}
+	// 	//Increment qty by 1 and set price to item price
+	// 	this.totalQty += Number(quantity);
+	// 	this.totalPrice += discount_priceD * quantity;
+	// }
+
 	addOfferToCart(item, id, quantity, discount_price) {
 		var discount_priceD = item.price_1 - ((item.price_1 / 100) * discount_price)
 		console.log("actual amount ", item.price_1, "Concession", discount_priceD);
-		var storedItem = this.items[id + 100];
+		var storedItem = this.items[id];
 		//Create a new item if its not present in items list
 		if (!storedItem) {
-			item.id += 100;
+			//item.id += 100;
 			item.price_1 = discount_priceD
-			storedItem = this.items[id + 100] = { item: item, qty: Number(quantity), price: Number(discount_priceD*quantity), type: "Offer" };
+			storedItem = this.items[id] = { item: item, qty: Number(quantity), price: Number(discount_priceD*quantity), type: "Offer" };
 			console.log("Newly Stored Item")
 		} else {
-				storedItem.qty+= Number(quantity);
-				storedItem.price = storedItem.item.price_1 * storedItem.qty; 
+			throw 1;
 		}
 		//Increment qty by 1 and set price to item price
 		this.totalQty += Number(quantity);
 		this.totalPrice += discount_priceD * quantity;
+		throw 2;
 	}
 
 	//Object.assign([...this.state.editTarget], {[id]: {[target]: value}})

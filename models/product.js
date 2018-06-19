@@ -16,15 +16,13 @@ class product {
                 console.log(rows);
                 callback(err, rows[0]); //Passing results to callback function
             });
-        });
+        }); 
     }
 
     getSubCatProd(subCategoryId, callback) {
-
-        var query = "SELECT id, name, model, arabic_name, quantity, price_1, images \
+        var query = "SELECT id, name, model, arabic_name, quantity, price_1, images,sku as discount_price \
                      FROM saidalia_js.gc_products \
                      WHERE secondary_category = " + subCategoryId;
-
         mySql.getConnection(function (err, connection) {
             if (err) {
                 throw err;
@@ -33,6 +31,26 @@ class product {
                 connection.release()
                 //console.log(rows);
                 callback(err, rows); //Passing results to callback function
+            });
+        });
+    }
+    getAllOffersData(Subcategory_id) {
+        return new Promise(function (resolve) {
+            var query = `SELECT reduction_amount,reduction_type FROM saidalia_js.gc_promotions WHERE end_date >= NOW() and enabled_1=1 and secondary_category=${Subcategory_id}`;
+            mySql.getConnection(function (err, connection){
+                if (err) {
+                    throw err;
+                }
+                connection.query(query, function (err, rows) {
+                    if (err) {
+                        throw err;
+                    }
+                    else {
+                        connection.release();
+                        console.log("Promise going to be resolved");
+                        resolve(rows);
+                    }
+                });
             });
         });
     }
@@ -153,6 +171,26 @@ class product {
             });
         });
     }
+    getAllCategoryWiseData(productId) {
+        return new Promise(function (resolve) {
+            var query = `SELECT * FROM saidalia_js.gc_promotions WHERE end_date >= NOW() and enabled_1=1 and offer_name = category_wise`;
+            mySql.getConnection(function (err, connection){
+                if (err) {
+                    throw err;
+                }
+                connection.query(query, function (err, rows) {
+                    if (err) {
+                        throw err;
+                    }
+                    else {
+                        connection.release();
+                        console.log("Promise going to be resolved");
+                        resolve(rows);
+                    }
+                });
+            });
+        });
+    }
 
     getProductWiseOffers(end, offerId, reduction_type) {
         return new Promise(function (resolve) {
@@ -268,15 +306,15 @@ class product {
                         console.log("Promise going to be resolved");
                         if (reduction_type === 'fixed') {
                             for (let j = 0; j < rows.length; j++) {
-                                rows[j].discount_price = (rows[j].actual_price -  deductedAmount);
+                                rows[j].discount_price = (rows[j].actual_price - deductedAmount);
                                 rows[j].Hours = hours;
                                 rows[j].Minutes = minutes;
                                 rows[j].days = days;
                                 rows[j].seconds = seconds;
-                                rows[j].Reduction_Percentage = deductedAmount ;
+                                rows[j].Reduction_Percentage = deductedAmount;
                             }
                             resolve(rows);
-                        }else{
+                        } else {
                             for (let j = 0; j < rows.length; j++) {
                                 rows[j].discount_price = ((rows[j].actual_price - ((rows[j].actual_price / 100) * deductedAmount)));
                                 rows[j].Hours = hours;
@@ -285,7 +323,7 @@ class product {
                                 rows[j].seconds = seconds;
                                 rows[j].Reduction_Percentage = deductedAmount + "%";
                             }
-                            resolve(rows); 
+                            resolve(rows);
                         }
                     }
                 });
@@ -328,15 +366,15 @@ class product {
                         console.log("reduction_amount", deductedAmount);
                         if (reduction_type === 'fixed') {
                             for (let j = 0; j < rows.length; j++) {
-                                rows[j].discount_price = (rows[j].actual_price -  deductedAmount);
+                                rows[j].discount_price = (rows[j].actual_price - deductedAmount);
                                 rows[j].Hours = hours;
                                 rows[j].Minutes = minutes;
                                 rows[j].days = days;
                                 rows[j].seconds = seconds;
-                                rows[j].Reduction_Percentage = deductedAmount ;
+                                rows[j].Reduction_Percentage = deductedAmount;
                             }
                             resolve(rows);
-                        }else{
+                        } else {
                             for (let j = 0; j < rows.length; j++) {
                                 rows[j].discount_price = ((rows[j].actual_price - ((rows[j].actual_price / 100) * deductedAmount)));
                                 rows[j].Hours = hours;
@@ -346,8 +384,8 @@ class product {
                                 rows[j].Reduction_Percentage = deductedAmount + "%";
                             }
                             resolve(rows);
-                        }   
-                       
+                        }
+
                     }
                 });
             });
