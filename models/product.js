@@ -33,7 +33,7 @@ class product {
                 callback(err, rows); //Passing results to callback function
             });
         });
-    }
+    } 
     getAllOffersData(Subcategory_id) {
         return new Promise(function (resolve) {
             var query = `SELECT reduction_amount,reduction_type FROM saidalia_js.gc_promotions WHERE end_date >= NOW() and enabled_1=1 and secondary_category=${Subcategory_id}`;
@@ -100,11 +100,11 @@ class product {
         var query = `select id,name,model,arabic_name,
                     description,arabic_description,
                     quantity,images,price_1,arabic_images
-                    from saidalia_js.gc_products where name like ${searchWord}`
+                    from saidalia_js.gc_products where name like ${searchWord} or arabic_name like ${searchWord} `
         mySql.getConnection(function (err, connection) {
             if (err) {
                 throw err;
-            }
+            } 
             connection.query(query, function (err, rows, fields) {
                 connection.release()
                 console.log(rows);
