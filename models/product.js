@@ -34,26 +34,7 @@ class product {
             });
         });
     } 
-    getAllOffersData(Subcategory_id) {
-        return new Promise(function (resolve) {
-            var query = `SELECT reduction_amount,reduction_type FROM saidalia_js.gc_promotions WHERE end_date >= NOW() and enabled_1=1 and secondary_category=${Subcategory_id}`;
-            mySql.getConnection(function (err, connection){
-                if (err) {
-                    throw err;
-                }
-                connection.query(query, function (err, rows) {
-                    if (err) {
-                        throw err;
-                    }
-                    else {
-                        connection.release();
-                        console.log("Promise going to be resolved");
-                        resolve(rows);
-                    }
-                });
-            });
-        });
-    }
+
     getProductDetails(productId, callback) {
         var query = "SELECT a.id, a.name,a.excerpt as rating,free_shipping as Review_decription, a.model, a.arabic_name, a.description, a.arabic_description, \
                     a.quantity, a.images, a.price_1, a.arabic_images, b.name as brand_name, \
@@ -186,6 +167,71 @@ class product {
                         connection.release();
                         console.log("Promise going to be resolved");
                         resolve(rows);
+                    }
+                });
+            });
+        });
+    }
+    getAllOffersData(Subcategory_id) { 
+        return new Promise(function (resolve) {
+            var query = `SELECT reduction_amount,reduction_type,start_date as days,whole_order_coupon as Hours,max_product_instances as Minutes,max_uses as seconds,end_date FROM saidalia_js.gc_promotions WHERE end_date >= NOW() and enabled_1=1 and secondary_category=${Subcategory_id}`;
+           
+            mySql.getConnection(function (err, connection){
+                if (err) {
+                    throw err;
+                }
+                connection.query(query, function (err, rows) {
+                    if (err) {
+                        throw err;
+                    }
+                    else {
+                        connection.release();
+                        console.log("Promise going to be resolved",rows);
+
+                        if(rows.length!=0){
+                        var ehourData = new Date(rows[0].end_date);
+                        var currentDates = new Date();
+                        var currentDatesH = currentDates.getHours() + 5;
+                        var currentDatesM = currentDates.getMinutes();
+                        var EH = ehourData.getHours()
+                        var eminutesData = ehourData.getMinutes();
+                        var remainingHours = EH - currentDatesH;
+                        var remainingMinutes = eminutesData - currentDatesM;
+             
+                        var seconds = Math.floor((ehourData - (currentDates)) / 1000);
+                        var minutes = Math.floor(seconds / 60);
+                        var hours = Math.floor(minutes / 60);
+                        var days = Math.floor(hours / 24);
+            
+                        hours = hours - (days * 24);
+                        minutes = minutes - (days * 24 * 60) - (hours * 60);
+                        seconds = seconds - (days * 24 * 60 * 60) - (hours * 60 * 60) - (minutes * 60);
+                        console.log("days", days, "Hours", hours, "minutes", minutes, "seconds", seconds);
+            
+                        console.log("Current Hour", currentDatesH, "Offer date Hours", EH)
+                        console.log("Current Minute", currentDatesM, "offer date min", remainingHours)
+                        if (rows[0].reduction_type === 'fixed') {
+                            for (var i = 0; i < rows.length; i++) {
+                                rows[i].Hours = hours;
+                                rows[i].Minutes = minutes;
+                                rows[i].days = days;
+                                rows[i].seconds = seconds;
+                           }
+                            console.log("Product Wise Offers", rows[0])
+                            resolve(rows);
+                        } else {
+                            for (var i = 0; i < rows.length; i++) {
+                                rows[i].Hours = hours;
+                                rows[i].Minutes = minutes;
+                                rows[i].days = days;
+                                rows[i].seconds = seconds;
+                          }
+                            console.log("Product Wise Offers", rows[0])
+                            resolve(rows);
+                        } 
+                     }else{
+                        resolve(rows);
+                     }
                     }
                 });
             });

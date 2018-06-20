@@ -218,7 +218,8 @@ exports.getSubCatProductsController = function (req, res) {
                     res.json({
                         status: 200,
                         data: result,
-                        type:"OFFER"
+                        type:"OFFER",
+                        offer:offers_data, 
                     });
                 }else{
                     res.json({
