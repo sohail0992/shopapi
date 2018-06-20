@@ -14,6 +14,7 @@ class Cart {
 		var storedItem = this.items[id];
 		//Create a new item if its not present in items list
 		if (!storedItem) {
+			item.price_1 = price;
 			storedItem = this.items[id] = { item: item, qty: 1, price: Number(price) };
 		} else {
 			//Increment qty by 1 and set price to item price
@@ -30,6 +31,7 @@ class Cart {
 		var storedItem = this.items[id];
 		//Create a new item if its not present in items list
 		if (!storedItem) {
+			item.price_1 = price;
 			storedItem = this.items[id] = { item: item, qty: Number(quantity), price: Number(price * quantity) };
 		} else {
 			//Increment qty by 1 and set price to item price
