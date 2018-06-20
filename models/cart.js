@@ -10,27 +10,27 @@ class Cart {
 		this.totalQty = oldCart.totalQty || 0;
 		this.totalPrice = oldCart.totalPrice || 0;
 	}
-	addProductToCart(item, id,price) {
+	addProductToCart(item, id, price) {
 		var storedItem = this.items[id];
 		//Create a new item if its not present in items list
 		if (!storedItem) {
 			storedItem = this.items[id] = { item: item, qty: 1, price: Number(price) };
 		} else {
 			//Increment qty by 1 and set price to item price
-		//	storedItem.qty++;
-		//	storedItem.price = item.price_1 * storedItem.qty;
-		throw 1;
+			//	storedItem.qty++;
+			//	storedItem.price = item.price_1 * storedItem.qty;
+			throw 1;
 		}
 		this.totalQty++;
-		this.totalPrice += price;
+		this.totalPrice += (price * quantity);
 		throw 2;
 	}
 
-	addProductToCart(item, id, quantity,price) {
+	addProductToCart(item, id, quantity, price) {
 		var storedItem = this.items[id];
 		//Create a new item if its not present in items list
 		if (!storedItem) {
-			storedItem = this.items[id] = { item: item, qty: Number(quantity), price: Number(price*quantity) };
+			storedItem = this.items[id] = { item: item, qty: Number(quantity), price: Number(price * quantity) };
 		} else {
 			//Increment qty by 1 and set price to item price
 			//storedItem.qty += Number(quantity);
@@ -68,7 +68,7 @@ class Cart {
 		if (!storedItem) {
 			//item.id += 100;
 			item.price_1 = discount_priceD
-			storedItem = this.items[id] = { item: item, qty: Number(quantity), price: Number(discount_priceD*quantity), type: "Offer" };
+			storedItem = this.items[id] = { item: item, qty: Number(quantity), price: Number(discount_priceD * quantity), type: "Offer" };
 			console.log("Newly Stored Item")
 		} else {
 			throw 1;
@@ -103,7 +103,7 @@ class Cart {
 		var qty_decission = 0;
 		console.log("in edit cart model ", typeof (id), id);
 		console.log(storedItem, "storedItem")
-		if (storedItem) { 
+		if (storedItem) {
 			this.totalQty -= storedItem.qty;
 			this.totalPrice -= storedItem.item.price_1 * storedItem.qty;
 			storedItem.qty = changeQty;
@@ -113,99 +113,99 @@ class Cart {
 		} else {
 			console.log("do nothig")
 		}
-		
+
 		console.log("Complete Cart", cart);
 	}
 
 	getVatPrice() {
-        return new Promise(function (resolve) {
-			var rate='" + rate + "';
-            var query = `select setting from saidalia_js.gc_settings where id = 102`
+		return new Promise(function (resolve) {
+			var rate = '" + rate + "';
+			var query = `select setting from saidalia_js.gc_settings where id = 102`
 
-            mySql.getConnection(function (err, connection) {
-                if (err) {
-                    throw err;
-                }
-                connection.query(query, function (err, rows) {
-                    if (err) {
-                        throw err;
-                    }
-                    else {
-                        connection.release();
-                        console.log("Promise going to be resolved");
-                        resolve(rows[0]);
-                    }
-                });
-            });
-        });
+			mySql.getConnection(function (err, connection) {
+				if (err) {
+					throw err;
+				}
+				connection.query(query, function (err, rows) {
+					if (err) {
+						throw err;
+					}
+					else {
+						connection.release();
+						console.log("Promise going to be resolved");
+						resolve(rows[0]);
+					}
+				});
+			});
+		});
 	}
 	getFlatRate() {
-        return new Promise(function (resolve) {
-			var rate='" + rate + "';
-            var query = `select setting from saidalia_js.gc_settings where id = 95`
+		return new Promise(function (resolve) {
+			var rate = '" + rate + "';
+			var query = `select setting from saidalia_js.gc_settings where id = 95`
 
-            mySql.getConnection(function (err, connection) {
-                if (err) {
-                    throw err;
-                }
-                connection.query(query, function (err, rows) {
-                    if (err) {
-                        throw err;
-                    }
-                    else {
-                        connection.release();
-                        console.log("Promise going to be resolved");
-                        resolve(rows[0]);
-                    }
-                });
-            });
-        });
-    }
-	getShippingRate() {
-        return new Promise(function (resolve) {
-			var rate='" + rate + "';
-            var query = `select setting from saidalia_js.gc_settings where id = 116`
-
-            mySql.getConnection(function (err, connection) {
-                if (err) {
-                    throw err;
-                }
-                connection.query(query, function (err, rows) {
-                    if (err) {
-                        throw err;
-                    }
-                    else {
-                        connection.release();
-                        console.log("Promise going to be resolved");
-                        resolve(rows[0]);
-                    }
-                });
-            });
-        });
+			mySql.getConnection(function (err, connection) {
+				if (err) {
+					throw err;
+				}
+				connection.query(query, function (err, rows) {
+					if (err) {
+						throw err;
+					}
+					else {
+						connection.release();
+						console.log("Promise going to be resolved");
+						resolve(rows[0]);
+					}
+				});
+			});
+		});
 	}
-	getCountryAndCityRate() {
-        return new Promise(function (resolve) {
-			var rate='" + rate + "';
-            var query = `select setting from saidalia_js.gc_settings where id = 116`
+	getShippingRate() {
+		return new Promise(function (resolve) {
+			var rate = '" + rate + "';
 			var query = `select setting from saidalia_js.gc_settings where id = 116`
 
-            mySql.getConnection(function (err, connection) {
-                if (err) {
-                    throw err;
-                }
-                connection.query(query, function (err, rows) {
-                    if (err) {
-                        throw err;
-                    }
-                    else {
-                        connection.release();
-                        console.log("Promise going to be resolved");
-                        resolve(rows[0]);
-                    }
-                });
-            });
-        });
-    }
+			mySql.getConnection(function (err, connection) {
+				if (err) {
+					throw err;
+				}
+				connection.query(query, function (err, rows) {
+					if (err) {
+						throw err;
+					}
+					else {
+						connection.release();
+						console.log("Promise going to be resolved");
+						resolve(rows[0]);
+					}
+				});
+			});
+		});
+	}
+	getCountryAndCityRate() {
+		return new Promise(function (resolve) {
+			var rate = '" + rate + "';
+			var query = `select setting from saidalia_js.gc_settings where id = 116`
+			var query = `select setting from saidalia_js.gc_settings where id = 116`
+
+			mySql.getConnection(function (err, connection) {
+				if (err) {
+					throw err;
+				}
+				connection.query(query, function (err, rows) {
+					if (err) {
+						throw err;
+					}
+					else {
+						connection.release();
+						console.log("Promise going to be resolved");
+						resolve(rows[0]);
+					}
+				});
+			});
+		});
+	}
 
 	generateArray() {
 		var arr = [];
