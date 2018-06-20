@@ -110,7 +110,6 @@ exports.addOfferToCartController = function (req, res) {
                 message: err
             });
         } else {
-
             if (req.query.quantity == null) {
                 cart.addOfferToCart(prod, productId);
             } else {

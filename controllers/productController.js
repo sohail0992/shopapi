@@ -227,6 +227,11 @@ exports.getSubCatProductsController = function (req, res) {
                     });
                 }
                
+            }else{
+                res.json({
+                    status: 401,
+                    message: "No Products found in this category "
+                });
             }
         }
     });
