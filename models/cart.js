@@ -22,7 +22,7 @@ class Cart {
 		throw 1;
 		}
 		this.totalQty++;
-		this.totalPrice += storedItem.item.price_1;
+		this.totalPrice += price;
 		throw 2;
 	}
 
@@ -38,7 +38,7 @@ class Cart {
 			throw 1;
 		}
 		this.totalQty += Number(quantity);
-		this.totalPrice += (item.price_1 * quantity);
+		this.totalPrice += (price * quantity);
 		throw 2;
 	}// add offer to cart Working Fine
 	// addOfferToCart(item, id, quantity, discount_price) {
