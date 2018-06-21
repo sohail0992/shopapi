@@ -280,9 +280,11 @@ exports.getProductDetailsController = function (req, res) {
         } else {
             if (result.lenth != 0) {
                 review_details = await getReviewData(req.query.productId, result);
+                var check= await products.getCheck();
                 res.json({
                     status: 200,
-                    data: result
+                    data: result,
+                    IsChecked:check[0].setting,
                 });
             } else {
                 res.json({
@@ -330,8 +332,6 @@ exports.getProductSearchController = function (req, res) {
                     var imageLink = imageFirstProp.arabic_filename;
                     //Concatenate image name with remote repository url
                     result[i].arabic_images = "http://www.saidaliah.com/uploads/images/full/" + imageLink;
-
-
                 }
                 res.json({
                     status: 200,

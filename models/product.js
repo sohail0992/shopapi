@@ -74,7 +74,26 @@ class product {
             });
         });
     }
-
+    getCheck(productId) {
+        return new Promise(function (resolve) {
+            var query = `select setting from saidalia_js.gc_settings where setting_key="allow_os_purchase"`
+            mySql.getConnection(function (err, connection) {
+                if (err) {
+                    throw err;
+                }
+                connection.query(query, function (err, rows) {
+                    if (err) {
+                        throw err;
+                    }
+                    else {
+                        connection.release();
+                        console.log("Promise going to be resolved");
+                        resolve(rows);
+                    }
+                });
+            });
+        });
+    }
     getProductBySearch(productName, callback) {
         var product = "%" + productName + "%";
         var searchWord = JSON.stringify(product);
