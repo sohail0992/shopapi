@@ -224,7 +224,7 @@ exports.getSubCatProductsController = function (req, res) {
                 }else{
                     res.json({
                         status: 200,
-                        data: result
+                        data: result,
                     });
                 }
                
@@ -406,9 +406,11 @@ exports.getOffers = function (req, res) {
         else {
             if (result.length != 0) {
                 var availableOffers = await getofferData(result);
+                let check= await products.getCheck();
                 res.json({
                     status: 200,
                     productWise: availableOffers,
+                    IsChecked:check[0].setting,
                 });
             } else {
                 res.json({
