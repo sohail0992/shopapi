@@ -323,30 +323,30 @@ exports.getProductSearchController = function (req, res) {
                 var searchOffer = await products.getallofferforSearch()
                 var availableOffers = await getofferData(searchOffer);
                 let finalResult = [];
-                for (var i = 0; i < result.length; ++i) {
-                    //Data object contains the list of products
-                    //Replace [0] with the iterating variable through which you are listing all products
-                    var productImageObj = result[i].images;
-                    //Parse the productImageObj
-                    var productImageObj = JSON.parse(productImageObj);
-                    //Get the value of first property from image object
-                    var imageFirstProp = productImageObj[Object.keys(productImageObj)[0]]
-                    //Extract image filename from image first property object
-                    var imageLink = imageFirstProp.filename;
-                    //Concatenate image name with remote repository url
-                    result[i].images = "http://www.saidaliah.com/uploads/images/full/" + imageLink;
-                    // for Arabic
+                // for (var i = 0; i < result.length; ++i) {
+                //     //Data object contains the list of products
+                //     //Replace [0] with the iterating variable through which you are listing all products
+                //     var productImageObj = result[i].images;
+                //     //Parse the productImageObj
+                //     var productImageObj = JSON.parse(productImageObj);
+                //     //Get the value of first property from image object
+                //     var imageFirstProp = productImageObj[Object.keys(productImageObj)[0]]
+                //     //Extract image filename from image first property object
+                //     var imageLink = imageFirstProp.filename;
+                //     //Concatenate image name with remote repository url
+                //     result[i].images = "http://www.saidaliah.com/uploads/images/full/" + imageLink;
+                //     // for Arabic
 
-                    var productImageObj = result[i].arabic_images;
-                    //Parse the productImageObj
-                    var productImageObj = JSON.parse(productImageObj);
-                    //Get the value of first property from image object
-                    var imageFirstProp = productImageObj[Object.keys(productImageObj)[0]]
-                    //Extract image filename from image first property object
-                    var imageLink = imageFirstProp.arabic_filename;
-                    //Concatenate image name with remote repository url
-                    result[i].arabic_images = "http://www.saidaliah.com/uploads/images/full/" + imageLink;
-                }
+                //     var productImageObj = result[i].arabic_images;
+                //     //Parse the productImageObj
+                //     var productImageObj = JSON.parse(productImageObj);
+                //     //Get the value of first property from image object
+                //     var imageFirstProp = productImageObj[Object.keys(productImageObj)[0]]
+                //     //Extract image filename from image first property object
+                //     var imageLink = imageFirstProp.arabic_filename;
+                //     //Concatenate image name with remote repository url
+                //     result[i].arabic_images = "http://www.saidaliah.com/uploads/images/full/" + imageLink;
+                // }
                 for (let j = 0; j < availableOffers.length; j++) {
                     finalResult.push(availableOffers[j].filter(o1 => result.some(o2 => o1.id === o2.id)));
                 }
