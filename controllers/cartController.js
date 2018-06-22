@@ -365,7 +365,7 @@ exports.checkCoupunController = function (req, res) {
                             message: "Coupun Amount Exceed, No Coupun Apply",
                         })
                     } else {
-                        var totalPrice = cart.totalPrice -  result[0].reduction_amount;
+                        cart.totalPrice  = cart.totalPrice -  result[0].reduction_amount;
                         res.json({
                             status: 200,
                             message: "Coupun matched fixed",
@@ -374,7 +374,7 @@ exports.checkCoupunController = function (req, res) {
                     }
                 }
                 if (result[0].reduction_type == 'percent') {
-                  var  totalPrice = cart.totalPrice - ((cart.totalPrice / 100) * result[0].reduction_amount);
+                    cart.totalPrice  = cart.totalPrice - ((cart.totalPrice / 100) * result[0].reduction_amount);
                     res.json({
                         status: 200,
                         message: "Coupun matched percent",
