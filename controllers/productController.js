@@ -183,8 +183,8 @@ exports.getAllCountriesAndSities = function (req, res) {
 
 exports.getSubCatProductsController = function (req, res) {
     var products = new product();
-  
-    products.getSubCatProd(req.query.subCategoryId,async function (err, result) {
+
+    products.getSubCatProd(req.query.subCategoryId, async function (err, result) {
         if (err) {
             res.json({
                 status: 500,
@@ -192,7 +192,7 @@ exports.getSubCatProductsController = function (req, res) {
             });
         } else {
             //console.log(result);
-            let offers_data =await products.getAllOffersData(req.query.subCategoryId);
+            let offers_data = await products.getAllOffersData(req.query.subCategoryId);
             console.log(offers_data);
             if (result.length != 0) {
                 for (var i = 0; i < result.length; ++i) {
@@ -211,24 +211,24 @@ exports.getSubCatProductsController = function (req, res) {
                         result[i].images = "http://www.saidaliah.com/uploads/images/full/" + imageLink;
                     }
                 }
-                if (offers_data.length!=0) {
+                if (offers_data.length != 0) {
                     for (var i = 0; i < result.length; ++i) {
                         result[i].discount_price = result[i].price_1 - ((result[i].price_1 / 100) * offers_data[0].reduction_amount)
                     }
                     res.json({
                         status: 200,
                         data: result,
-                        type:"OFFER",
-                        offer:offers_data, 
+                        type: "OFFER",
+                        offer: offers_data,
                     });
-                }else{
+                } else {
                     res.json({
                         status: 200,
                         data: result,
                     });
                 }
-               
-            }else{
+
+            } else {
                 res.json({
                     status: 401,
                     message: "No Products found in this category "
@@ -280,11 +280,11 @@ exports.getProductDetailsController = function (req, res) {
         } else {
             if (result.lenth != 0) {
                 review_details = await getReviewData(req.query.productId, result);
-                var check= await products.getCheck();
+                var check = await products.getCheck();
                 res.json({
                     status: 200,
                     data: result,
-                    IsChecked:check[0].setting,
+                    IsChecked: check[0].setting,
                 });
             } else {
                 res.json({
@@ -296,11 +296,23 @@ exports.getProductDetailsController = function (req, res) {
         }
     });
 }
-
+async function findObjectByKey(array, key, value) {
+    //Return a promise when all subcategories are fetched for parent categories
+    return new Promise(async function (resolve) {
+        for (var i = 0; i < array.length; i++) {
+            if (array[i][key] === value) {
+                resolve(i);
+            }
+        }
+        return null;
+        resolve(null);
+         //Returning All offers
+    });
+}
 exports.getProductSearchController = function (req, res) {
     var products = new product();
     console.log("name to search " + req.body.productName);
-    products.getProductBySearch(req.body.productName, function (err, result) {
+    products.getProductBySearch(req.body.productName, async function (err, result) {
         if (err) {
             res.json({
                 status: 500,
@@ -308,7 +320,9 @@ exports.getProductSearchController = function (req, res) {
             });
         } else {
             if (result.length != 0) {
-                //console.log(result);
+                var searchOffer = await products.getallofferforSearch()
+                var availableOffers = await getofferData(searchOffer);
+                let finalResult = [];
                 for (var i = 0; i < result.length; ++i) {
                     //Data object contains the list of products
                     //Replace [0] with the iterating variable through which you are listing all products
@@ -333,9 +347,30 @@ exports.getProductSearchController = function (req, res) {
                     //Concatenate image name with remote repository url
                     result[i].arabic_images = "http://www.saidaliah.com/uploads/images/full/" + imageLink;
                 }
+                for (let j = 0; j < availableOffers.length; j++) {
+                    finalResult.push(availableOffers[j].filter(o1 => result.some(o2 => o1.id === o2.id)));
+                }
+                for (var l = 0; l < result.length; l++) {
+                    for (var j = 0; j < finalResult.length; j++) {
+                        for (var k = 0; k < finalResult[j].length; k++) {
+                            if (finalResult[j][k].id == result[l].id) {
+                                var key =await findObjectByKey(result, 'id', finalResult[j][k].id);
+                                console.log("obj", key);
+                                result.splice(key, 1);
+                            } else {
+                                //do nothing 
+                            }
+                        }
+                    }
+                }
+                console.log("result2", result);
+                for (var m = 0; m < result.length; m++) {
+                    finalResult.push(result[m]);
+                }
+                console.log("result after splice", finalResult);
                 res.json({
                     status: 200,
-                    data: result
+                    data: finalResult
                 });
             }
             else {
@@ -406,11 +441,11 @@ exports.getOffers = function (req, res) {
         else {
             if (result.length != 0) {
                 var availableOffers = await getofferData(result);
-                let check= await products.getCheck();
+                let check = await products.getCheck();
                 res.json({
                     status: 200,
                     productWise: availableOffers,
-                    IsChecked:check[0].setting,
+                    IsChecked: check[0].setting,
                 });
             } else {
                 res.json({

@@ -100,14 +100,14 @@ class product {
         var query = `select id,name,model,arabic_name,
                     description,arabic_description,
                     quantity,images,price_1,arabic_images
-                    from saidalia_js.gc_products where name like ${searchWord} or arabic_name like ${searchWord} `
+                    from saidalia_js.gc_products where name like ${searchWord} or arabic_name like ${searchWord} or description like ${searchWord} or slug like ${searchWord} or arabic_description like ${searchWord}`;
         mySql.getConnection(function (err, connection) {
             if (err) {
                 throw err;
             } 
             connection.query(query, function (err, rows, fields) {
                 connection.release()
-                console.log(rows);
+              //  console.log(rows);
                 callback(err, rows); //Passing results to callback function
             });
         });
@@ -168,6 +168,26 @@ class product {
                     //  console.log(results);
                     callback(err, results);
                 }
+            });
+        });
+    }
+    getallofferforSearch(productId) {
+        return new Promise(function (resolve) {
+            var query = `SELECT * FROM saidalia_js.gc_promotions WHERE end_date >= NOW() and enabled_1=1 `;
+            mySql.getConnection(function (err, connection){
+                if (err) {
+                    throw err;
+                }
+                connection.query(query, function (err, rows) {
+                    if (err) {
+                        throw err;
+                    }
+                    else {
+                        connection.release();
+                        console.log("Promise going to be resolved");
+                        resolve(rows);
+                    }
+                });
             });
         });
     }
@@ -293,11 +313,7 @@ class product {
             hours = hours - (days * 24);
             minutes = minutes - (days * 24 * 60) - (hours * 60);
             seconds = seconds - (days * 24 * 60 * 60) - (hours * 60 * 60) - (minutes * 60);
-            console.log("days", days, "Hours", hours, "minutes", minutes, "seconds", seconds);
-
-            console.log("Current Hour", currentDatesH, "Offer date Hours", EH)
-            console.log("Current Minute", currentDatesM, "offer date min", remainingHours)
-            mySql.getConnection(function (err, connection) {
+           mySql.getConnection(function (err, connection) {
                 if (err) {
                     throw err;
                 }
@@ -307,7 +323,6 @@ class product {
                     }
                     else {
                         connection.release();
-                        console.log("Promise going to be resolved");
                         if (reduction_type === 'fixed') {
                             for (var i = 0; i < rows.length; i++) {
                                 rows[i].Hours = hours;
@@ -316,7 +331,6 @@ class product {
                                 rows[i].seconds = seconds;
                                 rows[i].Reduction_Percentage = rows[i].Reduction_Percentage
                             }
-                            console.log("Product Wise Offers", rows[0])
                             resolve(rows);
                         } else {
                             for (var i = 0; i < rows.length; i++) {
@@ -326,8 +340,7 @@ class product {
                                 rows[i].seconds = seconds;
                                 rows[i].Reduction_Percentage = rows[i].Reduction_Percentage + "%"
                             }
-                            console.log("Product Wise Offers", rows[0])
-                            resolve(rows);
+                           resolve(rows);
                         }
 
                     }
@@ -357,7 +370,6 @@ class product {
             hours = hours - (days * 24);
             minutes = minutes - (days * 24 * 60) - (hours * 60);
             seconds = seconds - (days * 24 * 60 * 60) - (hours * 60 * 60) - (minutes * 60);
-            console.log("Hours", hours, "minutes", minutes, "seconds", seconds);
             mySql.getConnection(function (err, connection) {
                 if (err) {
                     throw err;
@@ -417,7 +429,6 @@ class product {
             hours = hours - (days * 24);
             minutes = minutes - (days * 24 * 60) - (hours * 60);
             seconds = seconds - (days * 24 * 60 * 60) - (hours * 60 * 60) - (minutes * 60);
-            console.log("Hours", hours, "minutes", minutes, "seconds", seconds);
             mySql.getConnection(function (err, connection) {
                 if (err) {
                     throw err;
