@@ -355,7 +355,7 @@ exports.checkCoupunController = function (req, res) {
             res.json({
                 status: 500,
                 message: err
-            });
+            }); 
         } else {
             if (result != 0) { 
                 if (result[0].reduction_type == 'fixed') {

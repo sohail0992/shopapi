@@ -21,6 +21,10 @@ router.post('/SearchProduct', (req, res) => {
     console.log("In Route \n", req.body.productName);
     productsController.getProductSearchController(req, res);
 })
+router.post('/SearchProductIOS', (req, res) => {
+    console.log("In Route \n", req.body.productName);
+    productsController.getProductSearchControllerIOS(req, res);
+})
 router.get('/offers-details', function (req, res) {
     productsController.getOfferDetailsController(req, res);
 });

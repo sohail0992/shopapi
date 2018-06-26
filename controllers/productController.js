@@ -321,6 +321,7 @@ exports.getProductSearchController = function (req, res) {
         } else {
             if (result.length != 0) {
                 var searchOffer = await products.getallofferforSearch()
+                console.log("searchOffer",searchOffer.length);
                 var availableOffers = await getofferData(searchOffer);
                 let finalResult = [];
                 // for (var i = 0; i < result.length; ++i) {
@@ -347,17 +348,31 @@ exports.getProductSearchController = function (req, res) {
                 //     //Concatenate image name with remote repository url
                 //     result[i].arabic_images = "http://www.saidaliah.com/uploads/images/full/" + imageLink;
                 // }
+                console.log("availableOffers",availableOffers.length);
                 for (let j = 0; j < availableOffers.length; j++) {
                     finalResult.push(availableOffers[j].filter(o1 => result.some(o2 => o1.id === o2.id)));
-                }
+                }          
+                console.log("Final result",finalResult.length);
+                console.log("result",result.length);
+                
                 for (var l = 0; l < result.length; l++) {
                     for (var j = 0; j < finalResult.length; j++) {
                         for (var k = 0; k < finalResult[j].length; k++) {
+                            console.log("finalResult[j][k].id",finalResult[j][k].id," result[l].id", result[l].id);
+                            console.log("l",l);       
                             if (finalResult[j][k].id == result[l].id) {
-                                var key =await findObjectByKey(result, 'id', finalResult[j][k].id);
-                                console.log("obj", key);
-                                result.splice(key, 1);
+                                try{
+                                    console.log("finalResult[j][k].length",finalResult.length);
+                                    console.log("j",finalResult[j][k].id);
+                                    var key =await findObjectByKey(result, 'id', finalResult[j][k].id);                             
+                                    console.log("obj", key);
+                                    result.splice(key, 1);
+                                }catch(err){
+                                  console.log("err",err);
+                                }
+                               
                             } else {
+                                console.log("In Else");
                                 //do nothing 
                             }
                         }
@@ -378,9 +393,97 @@ exports.getProductSearchController = function (req, res) {
                     status: 200,
                     message: "No Matching Product Found"
                 });
-
             }
+        }
+    });
+}
+exports.getProductSearchControllerIOS = function (req, res) {
+    var products = new product();
+    console.log("name to search " + req.body.productName);
+    products.getProductBySearch(req.body.productName, async function (err, result) {
+        if (err) {
+            res.json({
+                status: 500,
+                message: err
+            });
+        } else {
+            if (result.length != 0) {
+                var searchOffer = await products.getallofferforSearch()
+                console.log("searchOffer",searchOffer.length);
+                var availableOffers = await getofferData(searchOffer);
+                let finalResult = [];
+                // for (var i = 0; i < result.length; ++i) {
+                //     //Data object contains the list of products
+                //     //Replace [0] with the iterating variable through which you are listing all products
+                //     var productImageObj = result[i].images;
+                //     //Parse the productImageObj
+                //     var productImageObj = JSON.parse(productImageObj);
+                //     //Get the value of first property from image object
+                //     var imageFirstProp = productImageObj[Object.keys(productImageObj)[0]]
+                //     //Extract image filename from image first property object
+                //     var imageLink = imageFirstProp.filename;
+                //     //Concatenate image name with remote repository url
+                //     result[i].images = "http://www.saidaliah.com/uploads/images/full/" + imageLink;
+                //     // for Arabic
 
+                //     var productImageObj = result[i].arabic_images;
+                //     //Parse the productImageObj
+                //     var productImageObj = JSON.parse(productImageObj);
+                //     //Get the value of first property from image object
+                //     var imageFirstProp = productImageObj[Object.keys(productImageObj)[0]]
+                //     //Extract image filename from image first property object
+                //     var imageLink = imageFirstProp.arabic_filename;
+                //     //Concatenate image name with remote repository url
+                //     result[i].arabic_images = "http://www.saidaliah.com/uploads/images/full/" + imageLink;
+                // }
+                console.log("availableOffers",availableOffers.length);
+                for (let j = 0; j < availableOffers.length; j++) {
+                    finalResult.push(availableOffers[j].filter(o1 => result.some(o2 => o1.id === o2.id)));
+                }          
+                console.log("Final result",finalResult.length);
+                console.log("result",result.length);
+                
+                for (var l = 0; l < result.length; l++) {
+                    for (var j = 0; j < finalResult.length; j++) {
+                        for (var k = 0; k < finalResult[j].length; k++) {
+                            console.log("finalResult[j][k].id",finalResult[j][k].id," result[l].id", result[l].id);
+                            console.log("l",l);       
+                            if (finalResult[j][k].id == result[l].id) {
+                                try{
+                                    console.log("finalResult[j][k].length",finalResult.length);
+                                    console.log("j",finalResult[j][k].id);
+                                    var key =await findObjectByKey(result, 'id', finalResult[j][k].id);                             
+                                    console.log("obj", key);
+                                    result.splice(key, 1);
+                                }catch(err){
+                                  console.log("err",err);
+                                }
+                               
+                            } else {
+                                console.log("In Else");
+                                //do nothing 
+                            }
+                        }
+                    }
+                }
+                console.log("result2", result);
+                // for (var m = 0; m < result.length;m++){
+                //     finalResult.push(result[m]);
+                // }
+                //finalResult.push(result);
+                finalResult.push(result);
+                console.log("result after splice", finalResult);
+                res.json({
+                    status: 200,
+                    data: finalResult
+                });
+            }
+            else {
+                res.json({
+                    status: 200,
+                    message: "No Matching Product Found"
+                });
+            }
         }
     });
 }
