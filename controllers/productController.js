@@ -321,8 +321,9 @@ exports.getProductSearchController = function (req, res) {
         } else {
             if (result.length != 0) {
                 var searchOffer = await products.getallofferforSearch()
-                console.log("searchOffer",searchOffer.length);
+                console.log("searchOffer",searchOffer.length,"Data:",searchOffer)
                 var availableOffers = await getofferData(searchOffer);
+                console.log("availableOffers",availableOffers.length,"Data:",availableOffers)
                 let finalResult = [];
                 // for (var i = 0; i < result.length; ++i) {
                 //     //Data object contains the list of products
@@ -409,7 +410,6 @@ exports.getProductSearchControllerIOS = function (req, res) {
         } else {
             if (result.length != 0) {
                 var searchOffer = await products.getallofferforSearch()
-                console.log("searchOffer",searchOffer.length);
                 var availableOffers = await getofferData(searchOffer);
                 let finalResult = [];
                 // for (var i = 0; i < result.length; ++i) {
@@ -466,16 +466,24 @@ exports.getProductSearchControllerIOS = function (req, res) {
                         }
                     }
                 }
-                console.log("result2", result);
+               // console.log("result2", result);
                 // for (var m = 0; m < result.length;m++){
                 //     finalResult.push(result[m]);
                 // }
                 //finalResult.push(result);
                 finalResult.push(result);
-                console.log("result after splice", finalResult);
+                let resu=[];
+                console.log("result after splice", finalResult.length);
+                    for(var i=0;i<finalResult.length;i++){
+                        for(var j=0;j<finalResult[i].length;++j){
+                          if(finalResult[i].length !=0){
+                            resu.push(finalResult[i][j]);
+                          }
+                        }
+                    }
                 res.json({
                     status: 200,
-                    data: finalResult
+                    data :resu   
                 });
             }
             else {
