@@ -20,7 +20,7 @@ class product {
     }
 
     getSubCatProd(subCategoryId, callback) {
-        var query = "SELECT id, name, model, arabic_name, quantity, price_1, images,sku as discount_price \
+        var query = "SELECT id,slug, name, model, arabic_name, quantity, price_1, images,sku as discount_price \
                      FROM saidalia_js.gc_products \
                      WHERE secondary_category = " + subCategoryId;
         mySql.getConnection(function (err, connection) {
@@ -36,7 +36,7 @@ class product {
     } 
 
     getProductDetails(productId, callback) {
-        var query = "SELECT a.id, a.name,a.excerpt as rating,free_shipping as Review_decription, a.model, a.arabic_name, a.description, a.arabic_description, \
+        var query = "SELECT a.id,a.slug, a.name,a.excerpt as rating,free_shipping as Review_decription, a.model, a.arabic_name, a.description, a.arabic_description, \
                     a.quantity, a.images, a.price_1, a.arabic_images, b.name as brand_name, \
                     b.arabic_name as brand_arabic_name\
                     FROM  gc_products a\
@@ -98,7 +98,7 @@ class product {
         var product = "%" + productName + "%";
         var searchWord = JSON.stringify(product);
         var query = `select id,name,model,arabic_name,
-                    description,arabic_description,
+                    description,arabic_description,slug,
                     quantity,images,price_1,arabic_images
                     from saidalia_js.gc_products where name like ${searchWord} or arabic_name like ${searchWord} or description like ${searchWord} or slug like ${searchWord} or arabic_description like ${searchWord}`;
         mySql.getConnection(function (err, connection) {
@@ -281,7 +281,7 @@ class product {
         return new Promise(function (resolve) {
             var query = "";
             if (reduction_type === 'percent') {
-                query = "SELECT products.id,products.excerpt as days,products.enable_date as Hours,products.disable_date as Minutes, products.name, products.model as seconds, products.arabic_name, products.description, products.arabic_description,\
+                query = "SELECT products.id,products.slug,products.excerpt as days,products.enable_date as Hours,products.disable_date as Minutes, products.name, products.model as seconds, products.arabic_name, products.description, products.arabic_description,\
                         products.quantity,promotions.reduction_amount as Reduction_Percentage, products.images, COALESCE(products.price_1 - ((products.price_1/100) * promotions.reduction_amount)) AS discount_price, products.arabic_images, products.price_1 AS actual_price\
                         FROM saidalia_js.gc_promotions as promotions\
                         INNER JOIN saidalia_js.gc_promotions_products as promo_prods ON  promotions.id = promo_prods.coupon_id\
@@ -290,7 +290,7 @@ class product {
             }
             if (reduction_type === 'fixed') {
                 query = "SELECT products.id,products.excerpt as days,products.enable_date as Hours,products.disable_date as Minutes, products.name, products.model as seconds, products.arabic_name, products.description, products.arabic_description,\
-                            products.quantity,promotions.reduction_amount as Reduction_Percentage, products.images, COALESCE(products.price_1 - promotions.reduction_amount) AS discount_price, products.arabic_images, products.price_1 AS actual_price\
+                            products.quantity,products.slug,promotions.reduction_amount as Reduction_Percentage, products.images, COALESCE(products.price_1 - promotions.reduction_amount) AS discount_price, products.arabic_images, products.price_1 AS actual_price\
                             FROM saidalia_js.gc_promotions as promotions\
                             INNER JOIN saidalia_js.gc_promotions_products as promo_prods ON  promotions.id = promo_prods.coupon_id\
                             INNER JOIN saidalia_js.gc_products as products ON promo_prods.product_id = products.id\
@@ -350,7 +350,7 @@ class product {
     }
     getCategoryWiseOffers(end, subCategoryId, deductedAmount, reduction_type) {
         return new Promise(function (resolve) {
-            var query = "SELECT p.id,p.weight as Reduction_Percentage,p.excerpt as days,p.enable_date as Hours,p.disable_date as Minutes, p.name,b.name as brand_name,p.arabic_description,  p.model as seconds,p.description,p.fixed_quantity as discount_price, p.arabic_name, p.quantity,p.arabic_images, p.price_1 AS actual_price, p.images \
+            var query = "SELECT p.id,p.slug,p.weight as Reduction_Percentage,p.excerpt as days,p.enable_date as Hours,p.disable_date as Minutes, p.name,b.name as brand_name,p.arabic_description,  p.model as seconds,p.description,p.fixed_quantity as discount_price, p.arabic_name, p.quantity,p.arabic_images, p.price_1 AS actual_price, p.images \
                 FROM saidalia_js.gc_products p inner join saidalia_js.gc_brands b on b.id = p.brand \
                 WHERE secondary_category = " + subCategoryId;
             var ehourData = new Date(end);
@@ -409,7 +409,7 @@ class product {
     }
     getBrandWiseOffer(end, brand_id, deductedAmount, reduction_type) {
         return new Promise(function (resolve) {
-            var query = "SELECT p.id,p.weight as Reduction_Percentage,p.excerpt as days,p.enable_date as Hours,p.disable_date as Minutes, p.name,b.name as brand_name,p.arabic_description,  p.model as seconds,p.description,p.fixed_quantity as discount_price, p.arabic_name, p.quantity,p.arabic_images, p.price_1 AS actual_price, p.images \
+            var query = "SELECT p.id,p.slug,p.weight as Reduction_Percentage,p.excerpt as days,p.enable_date as Hours,p.disable_date as Minutes, p.name,b.name as brand_name,p.arabic_description,  p.model as seconds,p.description,p.fixed_quantity as discount_price, p.arabic_name, p.quantity,p.arabic_images, p.price_1 AS actual_price, p.images \
                 FROM saidalia_js.gc_products p inner join saidalia_js.gc_brands b on b.id = p.brand \
                 WHERE p.brand = " + brand_id;
             var ehourData = new Date(end);
