@@ -461,7 +461,6 @@ class product {
                             }
                             resolve(rows);
                         }
-
                     }
                 });
             });

@@ -170,13 +170,13 @@ exports.shoppingCartController = async function (req, res) {
     var shippingRate = Number(Shipping.setting)
     var temp2 = Number(temp.setting);
     cart.totalPrice += COD;
-    var cart_total = cart.totalPrice + ((cart.totalPrice / 100) * temp2);
+    let cart_total = cart.totalPrice + ((cart.totalPrice / 100) * temp2);
     if (shippingRate > cart_total) {
         FlatRateConverstion = Number(flatRate.setting);
         cart_total += FlatRateConverstion;
         cart.totalPrice += FlatRateConverstion;
+        cart_total = cart.totalPrice + ((cart.totalPrice / 100) * temp2);
     }
-
     res.json({
         status: 200,
         cartProducts: cart.generateArray(),
