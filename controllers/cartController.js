@@ -154,7 +154,7 @@ exports.shoppingCartController = async function (req, res) {
     var countryId = 0;
     var CountryRate = 0;
     var CityRate = 0;
-    var COD = 0
+    var COD = 0;
     if (ID) {
         country = await user.getUserCountry(ID);
         CountryRate = await user.GetCountryAmount(country[0].country_id);
@@ -163,6 +163,7 @@ exports.shoppingCartController = async function (req, res) {
         COD += 0
     }
     var cart = new Cart(req.session.cart);
+    var sub= cart.totalPrice;
     var flatRate = await cart.getFlatRate();
     var temp = await cart.getVatPrice();
     var Shipping = await cart.getShippingRate();
@@ -184,7 +185,7 @@ exports.shoppingCartController = async function (req, res) {
         totalPrice: cart_total,
         VAT: temp.setting + "%",
         FlatRate: FlatRateConverstion,
-        SubTotal: cart.totalPrice,
+        SubTotal: sub,
         COD: COD,
     });
     return;

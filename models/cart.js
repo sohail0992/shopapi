@@ -15,7 +15,7 @@ class Cart {
 		//Create a new item if its not present in items list
 		if (!storedItem) {
 			item.price_1 = price;
-			storedItem = this.items[id] = { item: item, qty: 1, price: Number(price) };
+			storedItem = this.items[id] = { item: item, qty: 1, price: Number(item.price_1) };
 		} else {
 			//Increment qty by 1 and set price to item price
 			//	storedItem.qty++;
@@ -23,7 +23,7 @@ class Cart {
 			throw 1;
 		}
 		this.totalQty++;
-		this.totalPrice += (price * quantity);
+		this.totalPrice += (item.price_1 * quantity);
 		throw 2;
 	}
 
@@ -80,11 +80,8 @@ class Cart {
 		this.totalPrice += discount_priceD * quantity;
 		throw 2;
 	}
-
 	//Object.assign([...this.state.editTarget], {[id]: {[target]: value}})
-
 	deleteProductfromCart(id, price_1, cart) {
-
 		var int_id = Number(id)
 		var storedItem = this.items[id];
 		console.log("in delete cart model cart.length", typeof (id), id);
