@@ -14,16 +14,17 @@ class Cart {
 		var storedItem = this.items[id];
 		//Create a new item if its not present in items list
 		if (!storedItem) {
-			item.price_1 = price;
-			storedItem = this.items[id] = { item: item, qty: 1, price: Number(storedItem.item.price_1) };
+			//item.price_1 = price;
+			storedItem = this.items[id] = { item: item, qty: 1, price: Number(item.price_1) };
 		} else {
 			//Increment qty by 1 and set price to item price
 			//	storedItem.qty++;
 			//	storedItem.price = item.price_1 * storedItem.qty;
 			throw 1;
 		}
+		console.log("storedItem.item.price_1",item.price_1)
 		this.totalQty++;
-		this.totalPrice += (storedItem.item.price_1 * quantity);
+		this.totalPrice += (item.price_1 * quantity);
 		throw 2;
 	}
 
@@ -31,16 +32,17 @@ class Cart {
 		var storedItem = this.items[id];
 		//Create a new item if its not present in items list
 		if (!storedItem) {
-			item.price_1 = price;
-			storedItem = this.items[id] = { item: item, qty: Number(quantity), price: Number(storedItem.item.price_1* quantity) };
+			//item.price_1 = price;
+			storedItem = this.items[id] = { item: item, qty: Number(quantity), price: Number(item.price_1 * quantity) };
 		} else {
 			//Increment qty by 1 and set price to item price
 			//storedItem.qty += Number(quantity);
 			//storedItem.price = storedItem.item.price_1  * storedItem.qty;
 			throw 1;
 		}
+
 		this.totalQty += Number(quantity);
-		this.totalPrice += (storedItem.item.price_1 * quantity);
+		this.totalPrice += (price * quantity);
 		throw 2;
 	}// add offer to cart Working Fine
 	// addOfferToCart(item, id, quantity, discount_price) {

@@ -33,30 +33,6 @@ exports.addToCartController = function (req, res) {
                 message: err
             });
         } else {
-
-            if (req.query.quantity == null) {
-                try{
-                    cart.addProductToCart(prod, productId,price);
-                }
-               catch(e){
-                   if(e==1){
-                    res.json({
-                        status: 200,
-                        message: "Product Already Exist, Kindly Check Your Cart",
-                    })
-                   }
-                   if(e==2){
-                    req.session.cart = cart;
-                    console.log("Following items in session cart");
-                    console.log(req.session.cart);
-                    res.json({
-                        status: 200,
-                        message: "Product added successfully",
-                        cartProducts: cart.generateArray(),
-                    })
-                   }
-               }
-            } else {
                 try{
                     cart.addProductToCart(prod, productId, req.query.quantity,price);
                 }
@@ -78,8 +54,6 @@ exports.addToCartController = function (req, res) {
                         })
                        }
                 }
-           }
-           
         }
     })
 }
