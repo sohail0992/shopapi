@@ -9,6 +9,8 @@ class Cart {
 		this.items = oldCart.items || {};
 		this.totalQty = oldCart.totalQty || 0;
 		this.totalPrice = oldCart.totalPrice || 0;
+		this.codPrice = oldCart.codPrice || 0;
+		this.codType = oldCart.codType || '';
 	}
 	addProductToCart(item, id, price) {
 		var storedItem = this.items[id];
@@ -22,7 +24,7 @@ class Cart {
 			//	storedItem.price = item.price_1 * storedItem.qty;
 			throw 1;
 		}
-		console.log("storedItem.item.price_1",item.price_1)
+		console.log("storedItem.item.price_1", item.price_1)
 		this.totalQty++;
 		this.totalPrice += (item.price_1 * quantity);
 		throw 2;
@@ -118,6 +120,32 @@ class Cart {
 		console.log("Complete Cart", cart);
 	}
 
+	addCoupun(type, price) {
+		return new Promise(function (resolve) {
+			console.log('type', type, price);
+
+			var query = `select setting from saidalia_js.gc_settings where id = 102`
+
+			mySql.getConnection(function (err, connection) {
+				if (err) {
+					throw err;
+				}
+				connection.query(query, function (err, rows) {
+					if (err) {
+						throw err;
+					}
+					else {
+						connection.release();
+						console.log("Promise going to be resolved");
+						this.codPrice = price;
+						this.codType = type;
+						console.log(this.codType, this.codPrice);
+						resolve(rows[0]);
+					}
+				});
+			});
+		});
+	}
 	getVatPrice() {
 		return new Promise(function (resolve) {
 			var rate = '" + rate + "';

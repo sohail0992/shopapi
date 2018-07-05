@@ -9,7 +9,7 @@ exports.addToCartController = function (req, res) {
 
     var productId = req.query.id;
     var quantity = Number(req.query.quantity);
-    var price=Number(req.query.price);
+    var price = Number(req.query.price);
     if (!(/^[0-9]+$/.test(quantity))) {
         return res.json({
             status: 500,
@@ -33,27 +33,27 @@ exports.addToCartController = function (req, res) {
                 message: err
             });
         } else {
-                try{
-                    cart.addProductToCart(prod, productId, req.query.quantity,price);
+            try {
+                cart.addProductToCart(prod, productId, req.query.quantity, price);
+            }
+            catch (e) {
+                if (e == 1) {
+                    res.json({
+                        status: 200,
+                        message: "Product Already Exist, Kindly Check Your Cart",
+                    })
                 }
-                catch(e){
-                    if(e==1){
-                        res.json({
-                            status: 200,
-                            message: "Product Already Exist, Kindly Check Your Cart",
-                        })
-                       }
-                       if(e==2){
-                        req.session.cart = cart;
-                        console.log("Following items in session cart");
-                        console.log(req.session.cart);
-                        res.json({
-                            status: 200,
-                            message: "Product added successfully",
-                            cartProducts: cart.generateArray(),
-                        })
-                       }
+                if (e == 2) {
+                    req.session.cart = cart;
+                    console.log("Following items in session cart");
+                    console.log(req.session.cart);
+                    res.json({
+                        status: 200,
+                        message: "Product added successfully",
+                        cartProducts: cart.generateArray(),
+                    })
                 }
+            }
         }
     })
 }
@@ -68,7 +68,6 @@ exports.addOfferToCartController = function (req, res) {
             message: "Invalid quantity"
         })
     }
-
     /*
       If cart is already present in session then pass that old cart
       into the new Cart obj. Else create a new cart and pass it to 
@@ -88,16 +87,16 @@ exports.addOfferToCartController = function (req, res) {
                 cart.addOfferToCart(prod, productId);
             } else {
                 console.log("discount", number);
-                try{
+                try {
                     cart.addOfferToCart(prod, productId, req.query.quantity, req.query.discount_price);
-                }catch(e){
-                    if(e==1){
+                } catch (e) {
+                    if (e == 1) {
                         res.json({
                             status: 200,
                             message: "Product Already Exist, Kindly Check Your Cart",
                         })
                     }
-                    if(e==2){
+                    if (e == 2) {
                         req.session.cart = cart;
                         console.log("Following items in session cart");
                         console.log(req.session.cart);
@@ -105,11 +104,11 @@ exports.addOfferToCartController = function (req, res) {
                             status: 200,
                             message: "Product added successfully",
                             cartProducts: cart.generateArray(),
-            
+
                         })
                     }
                 }
-                }
+            }
         }
     })
 }
@@ -131,18 +130,23 @@ exports.shoppingCartController = async function (req, res) {
     var COD = 0;
     if (ID) {
         country = await user.getUserCountry(ID);
-        CountryRate = await user.GetCountryAmount(country[0].country_id);
-        CityRate = await user.getCityAmount(country[0].city);
-        COD = CountryRate[0].tax + CityRate[0].tax;
-        COD += 0
+        if (country.length != 0) {
+            CountryRate = await user.GetCountryAmount(country[0].country_id);
+            CityRate = await user.getCityAmount(country[0].city);
+        }
+        if (CityRate.length != 0) {
+            CityRate = await user.getCityAmount(country[0].city);
+            COD = CountryRate[0].tax + CityRate[0].tax;
+            COD += 0
+        }
     }
     var cart = new Cart(req.session.cart);
-    var sub= cart.totalPrice;
+    var sub = cart.totalPrice;
     var flatRate = await cart.getFlatRate();
-    var temp = await cart.getVatPrice();
     var Shipping = await cart.getShippingRate();
     var FlatRateConverstion = 0;
     var shippingRate = Number(Shipping.setting)
+    var temp = await cart.getVatPrice();
     var temp2 = Number(temp.setting);
     cart.totalPrice += COD;
     let cart_total = cart.totalPrice + ((cart.totalPrice / 100) * temp2);
@@ -157,6 +161,7 @@ exports.shoppingCartController = async function (req, res) {
         cartProducts: cart.generateArray(),
         totalQty: cart.totalQty,
         totalPrice: cart_total,
+        Coupun: cart.codPrice,
         VAT: temp.setting + "%",
         FlatRate: FlatRateConverstion,
         SubTotal: sub,
@@ -198,10 +203,15 @@ exports.finalCheckoutController = function (req, res) {
             // var shippingAddress=await user.addUserShippingAddress(shippingId);
             if (ID) {
                 country = await user.getUserCountry(ID);
-                CountryRate = await user.GetCountryAmount(country[0].country_id);
-                CityRate = await user.getCityAmount(country[0].city);
-                COD = CountryRate[0].tax + CityRate[0].tax;
-                COD += 0
+                if (country.length != 0) {
+                    CountryRate = await user.GetCountryAmount(country[0].country_id);
+                    CityRate = await user.getCityAmount(country[0].city);
+                }
+                if (CityRate.length != 0) {
+                    CityRate = await user.getCityAmount(country[0].city);
+                    COD = CountryRate[0].tax + CityRate[0].tax;
+                    COD += 0
+                }
             }
             var flatRate = await cart.getFlatRate();
             var temp = await cart.getVatPrice();
@@ -226,14 +236,13 @@ exports.finalCheckoutController = function (req, res) {
             // cart.totalPrice = cart.totalPrice + shippingRate;
             // cart.totalPrice+=COD;
             // var cart_total = cart.totalPrice + ((cart.totalPrice / 100) * temp2);
-            order.addNewOrder(COD, FlatRateConverstion, vat_difference, cart_total, cart, req.user.id, addressId, checkType, temp2, FlatRateConverstion, addressRow[0].address1, shippingId, async function (err) {
+            order.addNewOrder(COD, FlatRateConverstion, vat_difference, cart_total, cart, req.user.id, addressId, checkType, temp2, FlatRateConverstion, addressRow[0].address1, shippingId, cart.codPrice, cart.codType, async function (err) {
                 if (err) {
                     res.json({
                         status: 500,
                         message: err
                     })
-                } else {
-
+                } else{
                     // var paymentData = await order.setPaymentTable(cart,req.user.id,addressId,checkType)
                     req.session.cart = null;
                     res.json({
@@ -241,7 +250,6 @@ exports.finalCheckoutController = function (req, res) {
                         message: "order placed successfully"
                     })
                 }
-
             });
         }
     });
@@ -251,11 +259,9 @@ exports.editShoppingCartController = function (req, res) {
     console.log("Inside Edit to cart controller");
     //req.assert("");
     /*
-    
       If cart is already present in session then pass that old cart
       into the new Cart obj. Else create a new cart and pass it to 
       the new Cart
-
     */
     var cart = new Cart(req.session.cart ? req.session.cart : {});
 
@@ -288,7 +294,6 @@ exports.deleteShoppingCartController = function (req, res) {
 
     //req.assert("");
     /*
-    
       If cart is already present in session then pass that old cart
       into the new Cart obj. Else create a new cart and pass it to 
       the new Cart
@@ -318,38 +323,45 @@ exports.deleteShoppingCartController = function (req, res) {
         }
     })
 }
-
-
 exports.checkCoupunController = function (req, res) {
     console.log("inside controller");
     var coupun = req.query.coupun;
-    var cart = req.session.cart;
+    var cart = new Cart(req.session.cart);
     var products = new Product();
-    products.checkCoupun(coupun, cart, function (err, result) {
+    console.log("cart.totalPrice  in ", cart.totalPrice )
+    products.checkCoupun(coupun, async function (err, result) {
         if (err) {
             res.json({
                 status: 500,
                 message: err
-            }); 
+            });
         } else {
-            if (result != 0) { 
+            if (result != 0) {
                 if (result[0].reduction_type == 'fixed') {
                     if (result[0].reduction_amount > cart.totalPrice) {
                         res.json({
                             status: 200,
                             message: "Coupun Amount Exceed, No Coupun Apply",
                         })
-                    } else {
-                        cart.totalPrice  = cart.totalPrice -  result[0].reduction_amount;
-                        res.json({
+                    } else{     
+                        var priceInNumber = Number(result[0].reduction_amount);
+                        var temp = await cart.addCoupun(result[0].code,priceInNumber);
+                       cart.totalPrice  = cart.totalPrice -  result[0].reduction_amount; 
+                       console.log("cart.totalPrice  in ", cart.totalPrice )
+                         
+                       res.json({
                             status: 200,
                             message: "Coupun matched fixed",
-                            data: result[0].reduction_amount, 
+                            data: result[0].reduction_amount,
                         })
                     }
                 }
                 if (result[0].reduction_type == 'percent') {
-                    cart.totalPrice  = cart.totalPrice - ((cart.totalPrice / 100) * result[0].reduction_amount);
+                    cart.totalPrice = cart.totalPrice - ((cart.totalPrice / 100) * result[0].reduction_amount);
+                    var priceInNumber = Number(result[0].reduction_amount);
+                    var temp = await cart.addCoupun(result[0].code,priceInNumber);
+                    console.log("cart in ", temp)
+                   
                     res.json({
                         status: 200,
                         message: "Coupun matched percent",

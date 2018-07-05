@@ -3,26 +3,26 @@ var microtime = require('microtime');
 
 class Order {
     constructor() {
-        this.addOrderItems = function (COD,FlatRateConverstion,vat_difference, cart_total, cart, orderedId, type, micTime, callback) {
+        this.addOrderItems = function (COD,FlatRateConverstion,vat_difference, cart_total, cart, orderedId, type, micTime,codPrice,codType, callback) {
             var productsInCart = cart.generateArray();
-            console.log(cart, 'productsInCart');
+            console.log(productsInCart, 'productsInCart');
             var orderItemsArray = [];
             //Creating array of order items so that it can be added asynchronously
             for (var i = 0; i < productsInCart.length; i++) {
-                if (productsInCart[i].item.id >= 100) {
+                if (productsInCart[i].item.id >= 100){
                     productsInCart[i].item.id = productsInCart[i].item.id - 100;
-                    var newItem = [orderedId, productsInCart[i].item.id, productsInCart[i].qty, productsInCart[i].item.name, productsInCart[i].item.arabic_name, productsInCart[i].item.description, productsInCart[i].item.arabic_description, productsInCart[i].item.price_1, productsInCart[i].price, productsInCart[i].item.images,1,1,0,1,"product"];
+                    var newItem = [orderedId, productsInCart[i].item.id, productsInCart[i].qty, productsInCart[i].item.name, productsInCart[i].item.arabic_name, productsInCart[i].item.description, productsInCart[i].item.arabic_description, productsInCart[i].item.price_1, productsInCart[i].price, productsInCart[i].item.images,1,1,0,1,"product",codPrice,codType];
                     orderItemsArray.push(newItem);
                 } else {
-                    var newItem = [orderedId, productsInCart[i].item.id, productsInCart[i].qty, productsInCart[i].item.name, productsInCart[i].item.arabic_name, productsInCart[i].item.description, productsInCart[i].item.arabic_description, productsInCart[i].item.price_1, productsInCart[i].price, productsInCart[i].item.images,1,1,0,1,"product"];
+                    var newItem = [orderedId, productsInCart[i].item.id, productsInCart[i].qty, productsInCart[i].item.name, productsInCart[i].item.arabic_name, productsInCart[i].item.description, productsInCart[i].item.arabic_description, productsInCart[i].item.price_1, productsInCart[i].price, productsInCart[i].item.images,1,1,0,1,"product",codPrice,codType];
                     orderItemsArray.push(newItem);
                 }
             }
-            var newItem = [orderedId, 0, 1,"Flat Rate", "", "", "", 0.00,FlatRateConverstion,"",0,1,1,0,"shipping"];
+            var newItem = [orderedId, 0, 1,"Flat Rate", "", "", "", 0.00,FlatRateConverstion,"",0,1,1,0,"shipping",codPrice,codType];
             orderItemsArray.push(newItem);
-            var newItem1 = [orderedId, 0, 1,"vat_rate", "", "", "", 0.00,vat_difference,"",0,0,1,0,"vat"];
+            var newItem1 = [orderedId, 0, 1,"vat_rate", "", "", "", 0.00,vat_difference,"",0,0,1,0,"vat",codPrice,codType];
             orderItemsArray.push(newItem1);
-            var newItem2 = [orderedId, 0, 1,"Cash on Delivery Charges:", "", "", "", 0.00,COD,"",0,0,1,0,"tax"];
+            var newItem2 = [orderedId, 0, 1,"Cash on Delivery Charges:", "", "", "", 0.00,COD,"",0,0,1,0,"tax",codPrice,codType];
             orderItemsArray.push(newItem2);
             let paymentData = {
                 order_id: orderedId,
@@ -36,26 +36,26 @@ class Order {
                 order_id: orderedId,
                 created_at: Date.now(),
             }
-            //  console.log(orderItemsArray);
+              console.log(orderItemsArray);
             // console.log("inside add order items function");
-            var query = "INSERT INTO saidalia_js.gc_order_items (order_id, product_id, quantity, name,arabic_name,description,arabic_description,price, total_price,images,shippable,taxable,fixed_quantity,track_stock,type) VALUES ?";
+            var query = "INSERT INTO saidalia_js.gc_order_items (order_id, product_id, quantity, name,arabic_name,description,arabic_description,total_price,price,images,shippable,taxable,fixed_quantity,track_stock,type,coupon_code,coupon_discount) VALUES ?";
             var paymentQuery = "INSERT INTO saidalia_js.gc_payments set ?";
             var transactions = "insert into saidalia_js.gc_transactions set ?";
             mySql.getConnection(function (err, connection) {
                 if (err) {
                     throw err;
                 }
-                connection.query(query, [orderItemsArray], async function (err, rows1, fields1) {
+                connection.query(query,[orderItemsArray], async function (err, rows1, fields1) {
                     connection.query(paymentQuery, paymentData, async function (err, rows2, fields2) {
-                        console.log("rows2 ", rows2);
+                      //  console.log("rows2 ", rows2);
                         var data = {
                             transaction_id: rows2.insertId,
                         }
                         connection.query(transactions, transaction, async function (err, rows3, fields3) {
                             connection.query(`update saidalia_js.gc_orders set ? where id =?`, [data, orderedId], function (err, rows, fields3) {
                                 connection.release()
-                                console.log("rowsrows", rows);
-                                console.log(err);
+                                console.log("query order items",query);
+                                console.log("query order items",rows1,fields1);
                                 callback(err, rows); //Passing results to callback function
                             });
                         });
@@ -127,7 +127,7 @@ class Order {
     //     });
     // }
 
-    addNewOrder(COD,FlatRateConverstion,vat_difference, cart_total, cart, userId, addressId, cargoType, temp2, shippingRate, addressRow, shippingId, callback) {
+    addNewOrder(COD,FlatRateConverstion,vat_difference, cart_total, cart, userId, addressId, cargoType, temp2, shippingRate, addressRow, shippingId,codPrice,codType, callback) {
         /*
             The generate array in Cart class would return
             all the products present in the cart.
@@ -155,7 +155,7 @@ class Order {
                 if (err) {
                     callback(err);
                 } else {
-                    orderItemFunction(COD,FlatRateConverstion,vat_difference, cart_total, cart, result.insertId, cargoType, micTime, (err) => {
+                    orderItemFunction(COD,FlatRateConverstion,vat_difference, cart_total, cart, result.insertId, cargoType, micTime,codPrice,codType, (err) => {
                         if (err)
                             callback(err);
                         else

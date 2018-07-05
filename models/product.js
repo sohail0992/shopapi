@@ -571,8 +571,8 @@ class product {
             });
         });
     }
-    checkCoupun(coupun, cart, callback) {
-        var query = 'select reduction_amount,reduction_type' +
+    checkCoupun(coupun,callback) {
+        var query = 'select reduction_amount,reduction_type,code' +
             ' from saidalia_js.gc_coupons ' +
             ' where code = "' + coupun + '" and end_date >=NOW()';
         //  var query = `SELECT code from saidalia_js.gc_coupons where code = coupun 
