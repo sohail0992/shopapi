@@ -141,6 +141,8 @@ exports.shoppingCartController = async function (req, res) {
         }
     }
     var cart = new Cart(req.session.cart);
+    console.log("cart ", cart )
+            
     var sub = cart.totalPrice;
     var flatRate = await cart.getFlatRate();
     var Shipping = await cart.getShippingRate();
@@ -350,7 +352,7 @@ exports.checkCoupunController = function (req, res) {
                         cart.totalPrice  = cart.totalPrice -  result[0].reduction_amount; 
                         cart.codType= result[0].code;
                         cart.codPrice = result[0].reduction_amount;
-                        console.log("cart.totalPrice  in ", cart.totalPrice )
+                        console.log("cart ", cart )
                          
                        res.json({
                             status: 200,

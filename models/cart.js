@@ -73,7 +73,7 @@ class Cart {
 		//Create a new item if its not present in items list
 		if (!storedItem) {
 			//item.id += 100;
-			item.price_1 = discount_price
+			item.price_1 = Number(discount_price)
 			storedItem = this.items[id] = { item: item, qty: Number(quantity), price: Number(discount_price * quantity), type: "Offer" };
 			console.log("Newly Stored Item")
 		} else {
@@ -81,7 +81,7 @@ class Cart {
 		} 
 		//Increment qty by 1 and set price to item price
 		this.totalQty += Number(quantity);
-		this.totalPrice += discount_price * quantity;
+		this.totalPrice += Number(discount_price * quantity);
 		throw 2;
 	}
 	//Object.assign([...this.state.editTarget], {[id]: {[target]: value}})
