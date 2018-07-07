@@ -5,7 +5,7 @@ class Order {
     constructor() {
         this.addOrderItems = function (COD,FlatRateConverstion,vat_difference, cart_total, cart, orderedId, type, micTime,codPrice,codType, callback) {
             var productsInCart = cart.generateArray();
-            console.log(productsInCart, 'productsInCart');
+            console.log('price','type',codPrice,codType);
             var orderItemsArray = [];
             //Creating array of order items so that it can be added asynchronously
             for (var i = 0; i < productsInCart.length; i++) {

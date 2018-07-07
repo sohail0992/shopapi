@@ -67,21 +67,21 @@ class Cart {
 	// }
 
 	addOfferToCart(item, id, quantity, discount_price) {
-		var discount_priceD = item.price_1 - ((item.price_1 / 100) * discount_price)
-		console.log("actual amount ", item.price_1, "Concession", discount_priceD);
+		var dis= ((item.price_1 / 100) * discount_price);
+		var discount_priceD = item.price_1 - dis;
 		var storedItem = this.items[id];
 		//Create a new item if its not present in items list
 		if (!storedItem) {
 			//item.id += 100;
-			item.price_1 = discount_priceD
-			storedItem = this.items[id] = { item: item, qty: Number(quantity), price: Number(discount_priceD * quantity), type: "Offer" };
+			item.price_1 = discount_price
+			storedItem = this.items[id] = { item: item, qty: Number(quantity), price: Number(discount_price * quantity), type: "Offer" };
 			console.log("Newly Stored Item")
 		} else {
 			throw 1;
-		}
+		} 
 		//Increment qty by 1 and set price to item price
 		this.totalQty += Number(quantity);
-		this.totalPrice += discount_priceD * quantity;
+		this.totalPrice += discount_price * quantity;
 		throw 2;
 	}
 	//Object.assign([...this.state.editTarget], {[id]: {[target]: value}})
@@ -139,7 +139,7 @@ class Cart {
 						console.log("Promise going to be resolved");
 						this.codPrice = price;
 						this.codType = type;
-						console.log(this.codType, this.codPrice);
+						console.log("this.codType",this.codType," this.codPrice", this.codPrice);
 						resolve(rows[0]);
 					}
 				});

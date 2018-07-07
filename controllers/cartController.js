@@ -328,6 +328,7 @@ exports.checkCoupunController = function (req, res) {
     var coupun = req.query.coupun;
     var cart = new Cart(req.session.cart);
     var products = new Product();
+    
     console.log("cart.totalPrice  in ", cart.totalPrice )
     products.checkCoupun(coupun, async function (err, result) {
         if (err) {
@@ -346,8 +347,10 @@ exports.checkCoupunController = function (req, res) {
                     } else{     
                         var priceInNumber = Number(result[0].reduction_amount);
                         var temp = await cart.addCoupun(result[0].code,priceInNumber);
-                       cart.totalPrice  = cart.totalPrice -  result[0].reduction_amount; 
-                       console.log("cart.totalPrice  in ", cart.totalPrice )
+                        cart.totalPrice  = cart.totalPrice -  result[0].reduction_amount; 
+                        cart.codType= result[0].code;
+                        cart.codPrice = result[0].reduction_amount;
+                        console.log("cart.totalPrice  in ", cart.totalPrice )
                          
                        res.json({
                             status: 200,
@@ -360,8 +363,8 @@ exports.checkCoupunController = function (req, res) {
                     cart.totalPrice = cart.totalPrice - ((cart.totalPrice / 100) * result[0].reduction_amount);
                     var priceInNumber = Number(result[0].reduction_amount);
                     var temp = await cart.addCoupun(result[0].code,priceInNumber);
-                    console.log("cart in ", temp)
-                   
+                    cart.codType= result[0].code;
+                    cart.codPrice = result[0].reduction_amount;
                     res.json({
                         status: 200,
                         message: "Coupun matched percent",

@@ -550,6 +550,7 @@ exports.getOffers = function (req, res) {
             });
         }
         else {
+            console.log("result ,",result);
             if (result.length != 0) {
                 var availableOffers = await getofferData(result);
                 let check = await products.getCheck();
