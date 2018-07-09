@@ -67,7 +67,7 @@ class Cart {
 	// }
 
 	addOfferToCart(item, id, quantity, discount_price) {
-		var dis= ((item.price_1 / 100) * discount_price);
+		var dis = ((item.price_1 / 100) * discount_price);
 		var discount_priceD = item.price_1 - dis;
 		var storedItem = this.items[id];
 		//Create a new item if its not present in items list
@@ -78,7 +78,7 @@ class Cart {
 			console.log("Newly Stored Item")
 		} else {
 			throw 1;
-		} 
+		}
 		//Increment qty by 1 and set price to item price
 		this.totalQty += Number(quantity);
 		this.totalPrice += Number(discount_price * quantity);
@@ -137,9 +137,10 @@ class Cart {
 					else {
 						connection.release();
 						console.log("Promise going to be resolved");
-						this.codPrice = price;
+						this.codPrice = Number(price);
 						this.codType = type;
-						console.log("this.codType",this.codType," this.codPrice", this.codPrice);
+						this.totalPrice-=this.codPrice;
+						console.log("this.codType", this.codType, " this.codPrice", this.codPrice);
 						resolve(rows[0]);
 					}
 				});
@@ -216,7 +217,7 @@ class Cart {
 		return new Promise(function (resolve) {
 			var rate = '" + rate + "';
 			var query = `select setting from saidalia_js.gc_settings where id = 116`
-			var query = `select setting from saidalia_js.gc_settings where id = 116`
+			//var query = `select setting from saidalia_js.gc_settings where id = 116`
 
 			mySql.getConnection(function (err, connection) {
 				if (err) {
@@ -242,7 +243,6 @@ class Cart {
 		for (var id in this.items) {
 			arr.push(this.items[id]);
 		}
-
 		return arr;
 	}
 }

@@ -113,7 +113,7 @@ exports.addOfferToCartController = function (req, res) {
     })
 }
 exports.shoppingCartController = async function (req, res) {
-    console.log("inside cart controller");
+    console.log("inside cart controller",);
     if (!req.session.cart) {
         res.json({
             status: 200,
@@ -141,7 +141,7 @@ exports.shoppingCartController = async function (req, res) {
         }
     }
     var cart = new Cart(req.session.cart);
-    console.log("cart ", cart )
+    console.log("Shopping Cart ", cart )
             
     var sub = cart.totalPrice;
     var flatRate = await cart.getFlatRate();
@@ -331,14 +331,14 @@ exports.checkCoupunController = function (req, res) {
     var cart = new Cart(req.session.cart);
     var products = new Product();
     
-    console.log("cart.totalPrice  in ", cart.totalPrice )
+    console.log("cart before  in ", req.session.cart )
     products.checkCoupun(coupun, async function (err, result) {
         if (err) {
             res.json({
                 status: 500,
                 message: err
             });
-        } else {
+        } else { 
             if (result != 0) {
                 if (result[0].reduction_type == 'fixed') {
                     if (result[0].reduction_amount > cart.totalPrice) {
@@ -349,11 +349,10 @@ exports.checkCoupunController = function (req, res) {
                     } else{     
                         var priceInNumber = Number(result[0].reduction_amount);
                         var temp = await cart.addCoupun(result[0].code,priceInNumber);
-                        cart.totalPrice  = cart.totalPrice -  result[0].reduction_amount; 
-                        cart.codType= result[0].code;
-                        cart.codPrice = result[0].reduction_amount;
-                        console.log("cart ", cart )
-                         
+                        req.session.cart.totalPrice  = cart.totalPrice -  result[0].reduction_amount; 
+                        req.session.cart.codType= result[0].code;
+                        req.session.cart.codPrice = result[0].reduction_amount;
+                        console.log("cart before ", req.session.cart)
                        res.json({
                             status: 200,
                             message: "Coupun matched fixed",
@@ -362,11 +361,11 @@ exports.checkCoupunController = function (req, res) {
                     }
                 }
                 if (result[0].reduction_type == 'percent') {
-                    cart.totalPrice = cart.totalPrice - ((cart.totalPrice / 100) * result[0].reduction_amount);
+                    req.session.cart.totalPrice = cart.totalPrice - ((cart.totalPrice / 100) * result[0].reduction_amount);
                     var priceInNumber = Number(result[0].reduction_amount);
                     var temp = await cart.addCoupun(result[0].code,priceInNumber);
-                    cart.codType= result[0].code;
-                    cart.codPrice = result[0].reduction_amount;
+                    req.session.cart.codType= result[0].code;
+                    req.session.cart.codPrice = result[0].reduction_amount;
                     res.json({
                         status: 200,
                         message: "Coupun matched percent",
