@@ -238,7 +238,7 @@ exports.finalCheckoutController = function (req, res) {
             // cart.totalPrice = cart.totalPrice + shippingRate;
             // cart.totalPrice+=COD;
             // var cart_total = cart.totalPrice + ((cart.totalPrice / 100) * temp2);
-            order.addNewOrder(COD, FlatRateConverstion, vat_difference, cart_total, cart, req.user.id, addressId, checkType, temp2, FlatRateConverstion, addressRow[0].address1, shippingId, cart.codPrice, cart.codType, async function (err) {
+            order.addNewOrder(COD, FlatRateConverstion, vat_difference, cart_total, cart, req.user.id, addressId, checkType, temp2, FlatRateConverstion, addressRow[0].address1, shippingId, req.session.cart.codPrice, req.session.cart.codType, async function (err) {
                 if (err) {
                     res.json({
                         status: 500,
