@@ -38,7 +38,7 @@ class Order {
             }
               console.log(orderItemsArray);
             // console.log("inside add order items function");
-            var query = "INSERT INTO saidalia_js.gc_order_items (order_id, product_id, quantity, name,arabic_name,description,arabic_description,total_price,price,images,shippable,taxable,fixed_quantity,track_stock,type,coupon_code,coupon_discount) VALUES ?";
+            var query = "INSERT INTO saidalia_js.gc_order_items (order_id, product_id, quantity, name,arabic_name,description,arabic_description,total_price,price,images,shippable,taxable,fixed_quantity,track_stock,type,coupon_discount,coupon_code) VALUES ?";
             var paymentQuery = "INSERT INTO saidalia_js.gc_payments set ?";
             var transactions = "insert into saidalia_js.gc_transactions set ?";
             mySql.getConnection(function (err, connection) {
