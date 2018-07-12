@@ -99,14 +99,12 @@ class Cart {
 		}
 		console.log("Complete Cart", cart);
 	}
-
 	editProductfromCart(id, changeQty, cart) {
-
 		var storedItem = this.items[id];
 		var qty_decission = 0;
 		console.log("in edit cart model ", typeof (id), id);
 		console.log(storedItem, "storedItem")
-		if (storedItem) {
+		if (storedItem){
 			this.totalQty -= storedItem.qty;
 			this.totalPrice -= storedItem.item.price_1 * storedItem.qty;
 			storedItem.qty = changeQty;
@@ -116,16 +114,12 @@ class Cart {
 		} else {
 			console.log("do nothig")
 		}
-
 		console.log("Complete Cart", cart);
 	}
-
 	addCoupun(type, price) {
 		return new Promise(function (resolve) {
 			console.log('type', type, price);
-
 			var query = `select setting from saidalia_js.gc_settings where id = 102`
-
 			mySql.getConnection(function (err, connection) {
 				if (err) {
 					throw err;

@@ -113,7 +113,7 @@ exports.addOfferToCartController = function (req, res) {
     })
 }
 exports.shoppingCartController = async function (req, res) {
-    console.log("inside cart controller",);
+    console.log("inside cart controller", );
     if (!req.session.cart) {
         res.json({
             status: 200,
@@ -141,8 +141,8 @@ exports.shoppingCartController = async function (req, res) {
         }
     }
     var cart = new Cart(req.session.cart);
-    console.log("Shopping Cart ", cart )
-            
+    console.log("Shopping Cart ", cart)
+
     var sub = cart.totalPrice;
     var flatRate = await cart.getFlatRate();
     var Shipping = await cart.getShippingRate();
@@ -244,7 +244,7 @@ exports.finalCheckoutController = function (req, res) {
                         status: 500,
                         message: err
                     })
-                } else{
+                } else {
                     // var paymentData = await order.setPaymentTable(cart,req.user.id,addressId,checkType)
                     req.session.cart = null;
                     res.json({
@@ -279,15 +279,25 @@ exports.editShoppingCartController = function (req, res) {
             });
         } else {
             req.session.cart = cart;
-
             cart.editProductfromCart(productId, qty, cart);
             console.log("Following items in session cart");
-            console.log(req.session.cart);
-            res.json({
-                status: 200,
-                message: "Product Edit successfully",
-                data: req.session.cart,
-            })
+            console.log("Before ", req.session.cart.totalPrice);
+            if (req.session.cart.totalPrice <= 0) {
+                req.session.cart.totalPrice = ((req.session.cart.totalPrice / 100) * (100 + req.session.cart.codPrice))
+                res.json({
+                    status: 200,
+                    message: "Product Edit successfully",
+                    data: cart,
+                })
+            } else {
+                res.json({
+                    status: 200,
+                    message: "Product Edit successfully",
+                    data: cart,
+                })
+            }
+            console.log("After ", req.session.cart.totalPrice);
+
         }
     })
 }
@@ -302,7 +312,6 @@ exports.deleteShoppingCartController = function (req, res) {
 
     */
     var cart = new Cart(req.session.cart ? req.session.cart : {});
-
     var product = new Product();
     var productId = Number(req.query.productId);
     var price_1 = req.query.price_1;
@@ -317,11 +326,21 @@ exports.deleteShoppingCartController = function (req, res) {
             cart.deleteProductfromCart(productId, price_1, req.session.cart);
             console.log("Following items in session cart");
             console.log(req.session.cart);
-            res.json({
-                status: 200,
-                message: "Product deleted successfully",
-                data: req.session.cart,
-            })
+            if (req.session.cart.totalPrice <= 0) {
+                req.session.cart.totalPrice = ((req.session.cart.totalPrice / 100) * (100 + req.session.cart.codPrice))
+                res.json({
+                    status: 200,
+                    message: "Product Edit successfully",
+                    data: cart,
+                })
+            } else {
+                res.json({
+                    status: 200,
+                    message: "Product deleted successfully",
+                    data: cart,
+                })
+            }
+
         }
     })
 }
@@ -330,15 +349,15 @@ exports.checkCoupunController = function (req, res) {
     var coupun = req.query.coupun;
     var cart = new Cart(req.session.cart);
     var products = new Product();
-    
-    console.log("cart before  in ", req.session.cart )
+
+    console.log("cart before  in ", req.session.cart)
     products.checkCoupun(coupun, async function (err, result) {
         if (err) {
             res.json({
                 status: 500,
                 message: err
             });
-        } else { 
+        } else {
             if (result != 0) {
                 if (result[0].reduction_type == 'fixed') {
                     if (result[0].reduction_amount > cart.totalPrice) {
@@ -346,14 +365,14 @@ exports.checkCoupunController = function (req, res) {
                             status: 200,
                             message: "Coupun Amount Exceed, No Coupun Apply",
                         })
-                    } else{     
+                    } else {
                         var priceInNumber = Number(result[0].reduction_amount);
-                        var temp = await cart.addCoupun(result[0].code,priceInNumber);
-                        req.session.cart.totalPrice  = cart.totalPrice -  result[0].reduction_amount; 
-                        req.session.cart.codType= result[0].code;
+                        var temp = await cart.addCoupun(result[0].code, priceInNumber);
+                        req.session.cart.totalPrice = cart.totalPrice - result[0].reduction_amount;
+                        req.session.cart.codType = result[0].code;
                         req.session.cart.codPrice = result[0].reduction_amount;
                         console.log("cart before ", req.session.cart)
-                       res.json({
+                        res.json({
                             status: 200,
                             message: "Coupun matched fixed",
                             data: result[0].reduction_amount,
@@ -363,8 +382,8 @@ exports.checkCoupunController = function (req, res) {
                 if (result[0].reduction_type == 'percent') {
                     req.session.cart.totalPrice = cart.totalPrice - ((cart.totalPrice / 100) * result[0].reduction_amount);
                     var priceInNumber = Number(result[0].reduction_amount);
-                    var temp = await cart.addCoupun(result[0].code,priceInNumber);
-                    req.session.cart.codType= result[0].code;
+                    var temp = await cart.addCoupun(result[0].code, priceInNumber);
+                    req.session.cart.codType = result[0].code;
                     req.session.cart.codPrice = result[0].reduction_amount;
                     res.json({
                         status: 200,

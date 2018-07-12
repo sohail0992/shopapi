@@ -15,9 +15,9 @@ class product {
                 connection.release()
                 console.log(rows);
                 callback(err, rows[0]); //Passing results to callback function
-            });
+            }); 
         }); 
-    }
+    } 
 
     getSubCatProd(subCategoryId, callback) {
         var query = "SELECT id,slug, name, model, arabic_name, quantity, price_1, images,sku as discount_price \
