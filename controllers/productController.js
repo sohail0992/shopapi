@@ -134,7 +134,7 @@ exports.getAllCountriesAndSities = function (req, res) {
         res.json({
             status: 200,
             data: catAndTheirSubCat
-        });
+        }); 
     });
 
 }
@@ -616,10 +616,8 @@ exports.getMyOrderdetails = function (req, res) {
                     message: "No previous orders",
                 })
             }
-
         }
     })
-
 }
 
 exports.getMyOrderdetailsproductwise = function (req, res) {

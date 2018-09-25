@@ -30,7 +30,7 @@ router.get('/offers-details', function (req, res) {
 });
 router.get('/myOrder', function (req, res) {
     productsController.getMyOrderdetails(req,res);
-});
+}); 
 router.get('/myOrderDetails', function (req, res) {
     productsController.getMyOrderdetailsproductwise(req,res);
 });

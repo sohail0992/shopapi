@@ -59,7 +59,6 @@ class category{
             })
         });
     }
-
     /*
         This Function will return categories
         that does'nt have any parent id

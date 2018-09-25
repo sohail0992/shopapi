@@ -18,11 +18,11 @@ class Order {
                     orderItemsArray.push(newItem);
                 }
             }
-            var newItem = [orderedId, 0, 1,"Flat Rate", "", "", "", 0.00,FlatRateConverstion,"",0,1,1,0,"shipping",codPrice,codType];
+            var newItem = [orderedId, 0, 1,"Flat Rate", "", "", "", FlatRateConverstion,0.00,"",0,1,1,0,"shipping",codPrice,codType];
             orderItemsArray.push(newItem);
-            var newItem1 = [orderedId, 0, 1,"vat_rate", "", "", "", 0.00,vat_difference,"",0,0,1,0,"vat",codPrice,codType];
+            var newItem1 = [orderedId, 0, 1,"vat_rate", "", "", "", vat_difference,0.00,"",0,0,1,0,"vat",codPrice,codType];
             orderItemsArray.push(newItem1);
-            var newItem2 = [orderedId, 0, 1,"Cash on Delivery Charges:", "", "", "", 0.00,COD,"",0,0,1,0,"tax",codPrice,codType];
+            var newItem2 = [orderedId, 0, 1,"Cash on Delivery Charges:", "", "", "", COD,0.00,"",0,0,1,0,"tax",codPrice,codType];
             orderItemsArray.push(newItem2);
             let paymentData = {
                 order_id: orderedId,
