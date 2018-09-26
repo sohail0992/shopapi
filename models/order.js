@@ -135,10 +135,10 @@ class Order {
         console.log("Inside add New Order model");
         var productsInCart = cart.generateArray();
         addressRow = JSON.stringify(addressRow);
-        cargoType = JSON.stringify(cargoType);
+        cargoType = cargoType;
         var micTime = microtime.now();
-        var newOrderQuery = "INSERT INTO saidalia_js.gc_orders (shipping_address_id,Type,shipping,vat,customer_id, order_number, order_status, total, subtotal, ordered_on, billing_address_id,address)\
-                             VALUES ("+ shippingId + "," + cargoType + "," + shippingRate + "," + temp2 + "," + userId + "," + micTime + "," + "'Pending'" + "," + cart_total + "," + cart.totalPrice + "," + Date.now() + "," + addressId + "," + addressRow + ")";
+        var newOrderQuery = "INSERT INTO saidalia_js.gc_orders (shipping_address_id,Type,shipping,vat,customer_id, order_number, order_status,status total, subtotal, ordered_on, billing_address_id,address)\
+                             VALUES ("+ shippingId + "," + cargoType + "," + shippingRate + "," + temp2 + "," + userId + "," + micTime + "," + "'Pending'" + "," + "'Confirmed By Admin'" + "," + cart_total + "," + cart.totalPrice + "," + Date.now() + "," + addressId + "," + addressRow + ")";
         /*
             Insert a new order and get the id of the row inserted in order table
             The id would be used to add order items in order items table
