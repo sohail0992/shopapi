@@ -2,7 +2,7 @@ var Product = require('../models/product');
 var Cart = require('../models/cart');
 var User = require('../models/user');
 var Order = require('../models/order');
-
+var sub_total = "";
 exports.addToCartController = function (req, res) {
     console.log("Inside add to cart controller");
     //req.assert("");
@@ -144,6 +144,7 @@ exports.shoppingCartController = async function (req, res) {
     console.log("Shopping Cart ", cart)
 
     var sub = cart.totalPrice;
+    sub_total =cart.totalPrice;
     var flatRate = await cart.getFlatRate();
     var Shipping = await cart.getShippingRate();
     var FlatRateConverstion = 0;
@@ -238,7 +239,7 @@ exports.finalCheckoutController = function (req, res) {
             // cart.totalPrice = cart.totalPrice + shippingRate;
             // cart.totalPrice+=COD;
             // var cart_total = cart.totalPrice + ((cart.totalPrice / 100) * temp2);
-            order.addNewOrder(COD, FlatRateConverstion, vat_difference, cart_total, cart, req.user.id, addressId, checkType, temp2, FlatRateConverstion, addressRow[0].address1, shippingId, req.session.cart.codPrice, req.session.cart.codType, async function (err) {
+            order.addNewOrder(COD, FlatRateConverstion, vat_difference, cart_total, cart, req.user.id, addressId, checkType, temp2, FlatRateConverstion, addressRow[0].address1, shippingId, req.session.cart.codPrice, req.session.cart.codType,sub_total, async function (err) {
                 if (err) {
                     res.json({
                         status: 500,

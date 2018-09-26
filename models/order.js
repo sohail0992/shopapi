@@ -127,18 +127,18 @@ class Order {
     //     });
     // }
 
-    addNewOrder(COD,FlatRateConverstion,vat_difference, cart_total, cart, userId, addressId, cargoType, temp2, shippingRate, addressRow, shippingId,codPrice,codType, callback) {
+    addNewOrder(COD,FlatRateConverstion,vat_difference, cart_total, cart, userId, addressId, cargoType, temp2, shippingRate, addressRow, shippingId,codPrice,codType,sub, callback) {
         /*
             The generate array in Cart class would return
             all the products present in the cart.
         */
-        console.log("Inside add New Order model");
+        console.log("Inside add New Order model",sub);
         var productsInCart = cart.generateArray();
         addressRow = JSON.stringify(addressRow);
         cargoType = JSON.stringify(cargoType);
         var micTime = microtime.now();
         var newOrderQuery = "INSERT INTO saidalia_js.gc_orders (shipping_address_id,Type,shipping,vat,customer_id, order_number, order_status,status, total, subtotal, ordered_on, billing_address_id,address)\
-                             VALUES ("+ shippingId + "," + cargoType + "," + shippingRate + "," + temp2 + "," + userId + "," + micTime + "," + "'Pending'" + "," + "'Confirmed By Admin'" + "," + cart_total + "," + cart.totalPrice + "," + Date.now() + "," + addressId + "," + addressRow + ")";
+                             VALUES ("+ shippingId + "," + cargoType + "," + shippingRate + "," + temp2 + "," + userId + "," + micTime + "," + "'Pending'" + "," + "'Confirmed By Admin'" + "," + cart_total + "," + sub + "," + Date.now() + "," + addressId + "," + addressRow + ")";
         /*
             Insert a new order and get the id of the row inserted in order table
             The id would be used to add order items in order items table
