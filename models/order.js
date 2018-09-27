@@ -132,13 +132,18 @@ class Order {
             The generate array in Cart class would return
             all the products present in the cart.
         */
-        console.log("Inside add New Order model",sub);
+        console.log("Inside add New Order model");
+        var now = new Date(); 
+        var datetime = now.getFullYear()+'/'+(now.getMonth()+1)+'/'+now.getDate(); 
+        datetime += ' '+now.getHours()+':'+now.getMinutes()+':'+now.getSeconds(); 
+        console.log("datetime",datetime);
+        datetime=JSON.stringify(datetime);
         var productsInCart = cart.generateArray();
         addressRow = JSON.stringify(addressRow);
         cargoType = JSON.stringify(cargoType);
         var micTime = microtime.now();
         var newOrderQuery = "INSERT INTO saidalia_js.gc_orders (shipping_address_id,Type,shipping,vat,customer_id, order_number, order_status,status, total, subtotal, ordered_on, billing_address_id,address)\
-                             VALUES ("+ shippingId + "," + cargoType + "," + shippingRate + "," + temp2 + "," + userId + "," + micTime + "," + "'Pending'" + "," + "'Confirmed By Admin'" + "," + cart_total + "," + sub + "," + micTime + "," + addressId + "," + addressRow + ")";
+                             VALUES ("+ shippingId + "," + cargoType + "," + shippingRate + "," + temp2 + "," + userId + "," + micTime + "," + "'Pending'" + "," + "'Confirmed By Admin'" + "," + cart_total + "," + sub + "," + datetime + "," + addressId + "," + addressRow + ")";
         /*
             Insert a new order and get the id of the row inserted in order table
             The id would be used to add order items in order items table
