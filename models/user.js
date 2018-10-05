@@ -104,10 +104,41 @@ class user{
             });
         });
     } 
+    getCityId(name){
+        return new Promise(function (resolve) {
+            var query = `SELECT id from saidalia_js.gc_country_zones  WHERE name = ${name}`;
+            mySql.getConnection(function (err, connection){
+                if (err) {
+                    throw err;
+                }
+                connection.query(query, function (err, rows) {
+                    if (err) {
+                        throw err;
+                    }
+                    else {
+                        connection.release();
+                        console.log("Promise going to be resolved");
+                        resolve(rows);
+                    }
+                });
+            });
+        });
+    }
+    // getCityId(name, callback){
+    //     mySql.getConnection(function(err, connection){
+    //         if(err){
+    //             throw err;
+    //         }
+    //         connection.query(query, function(err, rows){
+    //             connection.release()
+    //             callback(err, rows); //Passing results to callback function
+    //         });
+    //     });
+    // } 
     addUserAddress(userId, addressData, callback){
         var query = "INSERT INTO saidalia_js.gc_customers_address_bank\
-                     (country_id,city,country,customer_id, latitude, longitude,addressDesc,address1)\
-                     VALUES (" + addressData.country_id + "," + addressData.city + ","+ addressData.country + ","+ userId + "," + addressData.latitude + "," + addressData.longitude 
+                     (country_id,zone_id,city,country,customer_id, latitude, longitude,addressDesc,address1)\
+                     VALUES (" + addressData.country_id + "," + addressData.zone_id + "," + addressData.city + ","+ addressData.country + ","+ userId + "," + addressData.latitude + "," + addressData.longitude 
                      + "," +addressData.locName + "," + "\"" + addressData.addressDesc + "\"" + ")";
          
         mySql.getConnection(function(err, connection){

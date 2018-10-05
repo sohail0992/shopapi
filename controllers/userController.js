@@ -25,10 +25,14 @@ exports.getUserAddressController = function(req, res){
     }) 
 }
 
-exports.addUserAddressController = function(req, res){
+exports.addUserAddressController =async function(req, res){
 
     var user = new User();
     
+    var name = JSON.stringify(req.body.city);
+    console.log("city",req.body.city);
+    let cityId= await user.getCityId(name);
+    console.log("c",cityId,cityId[0].id);
     var addressData = {
         latitude: req.body.latitude,
         longitude: req.body.longitude,
@@ -37,13 +41,12 @@ exports.addUserAddressController = function(req, res){
         city:JSON.stringify(req.body.city),
         country:JSON.stringify(req.body.country),
         country_id:req.body.country_id,
+        zone_id:JSON.stringify(cityId[0].id),
     }
-    
-    console.log("Printing req.user.id" + req.user.id);
     user.addUserAddress(req.user.id, addressData, function(err, result){
         if(err){
             res.json({
-                status: 500,
+                status: 500,  
                 message: err
             });
         } else {

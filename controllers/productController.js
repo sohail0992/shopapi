@@ -63,7 +63,6 @@ async function getCountryAndCity(parentCategories) {
 function getOffersWithImages(offers) {
     return new Promise(async function (resolve) {
         var products = new product();
-
         for (var i = 0; i < offers.length; ++i) {
             //Convert time remaining into minuites and hours
             var timeRemaining = offers[i].time_remaining;
