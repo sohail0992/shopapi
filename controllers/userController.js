@@ -28,7 +28,6 @@ exports.getUserAddressController = function(req, res){
 exports.addUserAddressController =async function(req, res){
 
     var user = new User();
-    
     var name = JSON.stringify(req.body.city);
     console.log("city",req.body.city);
     let cityId= await user.getCityId(name);
@@ -57,6 +56,33 @@ exports.addUserAddressController =async function(req, res){
         }
     })
 }
+
+exports.addUserCityCountry =async function(req, res){
+    var user = new User();
+    var name = JSON.stringify(req.body.city);
+    console.log("city",req.body.city);
+    let cityId= await user.getCityId(name);
+    console.log("c",cityId,cityId[0].id);
+    var addressData = {
+        address1: req.body.adressDesc,
+        city:JSON.stringify(req.body.city),
+        country:JSON.stringify(req.body.country)
+    }
+    user.addCityCountry(req.user.id, addressData, function(err, result){
+        if(err){
+            res.json({
+                status: 500,  
+                message: err
+            });
+        } else {
+            res.json({
+                status: 200,
+                message: "Address added successfully"
+            });
+        }
+    })
+}
+
 exports.EditAccountInformation = function(req, res){
     var user = new User();
     var addressData = {
@@ -110,7 +136,7 @@ exports.forgotPassController = function(req, res){
                         return console.log(err);
                     }
                     console.log("Sending mail")
-                    mailSubject+= "Sadaliah Password Reset Request";
+                    mailSubject+= "Password Reset Request";
                     mailText += "You are recieving this email because you (or someone else) has requested the reset of the password for" + 
                                 "your account. Please Use the following link, or paste it in your browser to set new password \n" +
                                 "http://" + req.headers.host + "/reset/" + userResult[0].id + "/" + resetPassToken + "\n\n" +

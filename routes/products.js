@@ -38,13 +38,9 @@ router.post('/product-review', function (req, res) {
     console.log("Inside product review route");
     req.assert("review", "Write any review to submit").notEmpty();
     req.assert("productId", "Enter a Product Id").notEmpty();
-
     var error = req.validationErrors(true);
-
     var errorValues = Object.keys(error);
-
     console.log("error length " + errorValues.length);
-
     if (errorValues.length > 0) {
         console.log("inside if");
         return res.json({

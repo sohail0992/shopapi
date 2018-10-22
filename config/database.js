@@ -4,11 +4,11 @@ const mySql = require('mysql');
 
 var pool = mySql.createPool({
     connectionLimit: 30,
-    host: "192.185.81.246",
-    user: "saidalia_mirza1",
-    password: "Learnfor@99",
-    database: "saidalia_js",
-    port:"3306"
+    host: "localhost",
+    user: "super",
+    password: "sohail",
+    database: "cement",
+    port:"3307"
 });
 
 module.exports = pool;

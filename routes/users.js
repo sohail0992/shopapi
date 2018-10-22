@@ -9,63 +9,65 @@ var Product = require('../models/product');
 
 
 /* GET users listing. */
-router.get('/register', function (req, res) {
+router.get('/register', function(req, res) {
     res.render('signup', {});
 });
 
-router.post('/register', function(req, res, next){
-
-    req.checkBody("name", "Enter a valid user name").matches(/^[a-zA-Z\s]*$/).notEmpty();
-    req.checkBody("password", "Enter a valid password").notEmpty();
-    req.assert("email", "Enter a valid email").isEmail().notEmpty();
+router.post('/register', function(req, res, next) {
+    req.checkBody("first_name", "Enter a valid user name").matches(/^[a-zA-Z\s]*$/).notEmpty();
+    req.checkBody("last_name", "Enter a valid user name").matches(/^[a-zA-Z\s]*$/).notEmpty();
     req.assert("mobile", "Enter a valid mobile no").matches(/^[0-9]*$/);
-    req.assert("companyNumber", "Enter a valid company number").matches(/^[0-9]*$/);
-    console.log("Inside errors2");
-    
+    req.assert("email", "Enter a valid email").isEmail().notEmpty();
+    req.checkBody("company_name", "Enter Valid company name").matches(/^[a-zA-Z\s]*$/)
+    req.checkBody("password", "Enter a valid password").notEmpty();
+    req.checkBody("c_password", "Enter a valid password").notEmpty();
+    if (req.body.password != req.body.c_password) {
+        return res.json({
+            status: 422,
+            message: "Password didn't match",
+            errors: error
+        });
+    }
     var error = req.validationErrors(true);
-
     var errorValues = Object.keys(error);
-    
     console.log("error length " + errorValues.length);
 
-    if(errorValues.length > 0){
+    if (errorValues.length > 0) {
         console.log("inside if");
         return res.json({
             status: 422,
             message: "Validation errors",
             errors: error
         });
-    }
-    else{
-        passport.authenticate('local-register', function(err, user, info){
-            console.log("Inside user-register post route");   
-                if(err){
+    } else {
+        passport.authenticate('local-register', function(err, user, info) {
+            if (err) {
+                return res.json({
+                    status: 500,
+                    message: err
+                });
+            }
+            if (!user) {
+                return res.json({
+                    status: 500,
+                    message: info.message
+                });
+            }
+
+            req.logIn(user, function(err) {
+                if (err) {
                     return res.json({
-                        status:500,
+                        status: 500,
                         message: err
                     });
                 }
-                if (!user) { 
-                    return res.json({
-                        status:500,
-                        message: info.message
-                    });
-                }
-        
-                req.logIn(user, function(err){
-                    if(err){
-                        return res.json({
-                            status: 500,
-                            message: err
-                        });
-                    }
-                    return res.json({
-                        status:200,
-                        message: "User successfully logged in",
-                        user: user
-                    })
-                });
-            })(req, res, next);
+                return res.json({
+                    status: 200,
+                    message: "User successfully logged in",
+                    user: user
+                })
+            });
+        })(req, res, next);
     }
 
 });
@@ -77,31 +79,30 @@ router.post('/register', passport.authenticate('local-register',{
     failureFlash: false
 }));
 */
-router.get('/signin', function(req, res){
+router.get('/signin', function(req, res) {
     res.render('signin', {});
 });
 
-router.post('/signin', function(req, res, next){
-    
+router.post('/signin', function(req, res, next) {
+
     req.assert("password", "Password field cannot be empty").notEmpty();
     req.assert("email", "Enter a valid email").isEmail().notEmpty();
 
     var error = req.validationErrors(true);
 
     var errorValues = Object.keys(error);
-    
+
     console.log("error length " + errorValues.length);
 
-    if(errorValues.length > 0){
+    if (errorValues.length > 0) {
         console.log("inside if");
         return res.json({
             status: 422,
             message: "Validation errors",
             errors: error
         });
-    }
-    else{
-        passport.authenticate('local-signin', function(err, user, info){
+    } else {
+        passport.authenticate('local-signin', function(err, user, info) {
             console.log("Authentication");
             if (err) {
                 console.log("Inside first if");
@@ -110,7 +111,7 @@ router.post('/signin', function(req, res, next){
                     message: err
                 });
             }
-            
+
             if (!user) {
                 console.log("Inside second if");
                 return res.json({
@@ -118,9 +119,9 @@ router.post('/signin', function(req, res, next){
                     message: info.message
                 });
             }
-    
-            req.logIn(user, function(err1){
-                if(err1){
+
+            req.logIn(user, function(err1) {
+                if (err1) {
                     console.log("Inside error");
                     return res.json({
                         status: 500,
@@ -128,118 +129,157 @@ router.post('/signin', function(req, res, next){
                     });
                 }
                 return res.json({
-                    status:200,
+                    status: 200,
                     message: "Successful login",
-                    user: req.user  
+                    user: req.user
                 })
             });
         })(req, res, next);
     }
-    
+
 });
 
-router.get('/logout', function(req, res){
+router.get('/logout', function(req, res) {
     req.logout();
     res.json({
-        status:200,
+        status: 200,
         message: "User logged out successfully"
     });
 });
 
-router.get('/addresses', isLoggedIn, function(req, res){
-    userController.getUserAddressController(req, res);    
+router.get('/addresses', isLoggedIn, function(req, res) {
+    userController.getUserAddressController(req, res);
 });
 
-router.post('/addresses', isLoggedIn, function(req, res){
+router.post('/addresses', isLoggedIn, function(req, res) {
     userController.addUserAddressController(req, res);
 });
 
-router.post('/accountUpdate', isLoggedIn, function(req, res){
+router.post('/addCityCountryaddresses', isLoggedIn, function(req, res) {
+    userController.addUserCityCountry(req, res);
+});
+
+router.post('/accountUpdate', isLoggedIn, function(req, res) {
     userController.EditAccountInformation(req, res);
 });
 
-router.get('/forgot', function(req, res){
+router.get('/forgot', function(req, res) {
     res.render('forgetPasswordMain', {});
 });
 
-router.post('/forgot', function(req, res){
+router.post('/forgot', function(req, res) {
     userController.forgotPassController(req, res);
 });
 
-router.get('/reset/:id/:token', function(req, res){
+router.get('/reset/:id/:token', function(req, res) {
     var user = new User();
-    user.findById(id, function(err, resultUser){
-        if(err)
+    user.findById(id, function(err, resultUser) {
+        if (err)
             throw err;
-        if(resultUser[0].resetPasswordToken != req.params.token) {
+        if (resultUser[0].resetPasswordToken != req.params.token) {
             res.json({
                 status: 500,
                 message: "Incorrect Token Entered"
             });
-        }
-        else if (resultUser[0].resetPasswordDate < Date.now()){
+        } else if (resultUser[0].resetPasswordDate < Date.now()) {
             res.json({
                 status: 500,
                 message: "Token has been expired"
             })
-        } 
-        else {
+        } else {
             res.redirect("/users/reset-password/" + resultUser[0].id + "/" + resultUser[0].resetPasswordToken);
         }
     });
 });
 
-router.get('/reset-password/:id/:token', function(req, res){
+router.get('/reset-password/:id/:token', function(req, res) {
     var user = new User();
-    user.findById(id, function(err, resultUser){
-        if(err)
+    user.findById(id, function(err, resultUser) {
+        if (err)
             throw err;
-        if(resultUser[0].resetPasswordToken != req.params.token) {
+        if (resultUser[0].resetPasswordToken != req.params.token) {
             res.json({
                 status: 500,
                 message: "Incorrect Token Entered"
             });
-        }
-        else if (resultUser[0].resetPasswordDate < Date.now()){
+        } else if (resultUser[0].resetPasswordDate < Date.now()) {
             res.json({
                 status: 500,
                 message: "Token has been expired"
             })
-        } 
-        else {
+        } else {
             res.redirect("/users/reset-password/" + resultUser[0].id + "/" + resultUser[0].resetPasswordToken);
         }
     });
 });
 
-router.post('/reset-password/:id/:token', function(req, res){
+router.post('/reset-password/:id/:token', function(req, res) {
     var user = new User();
-    if((req.body.password == null) || (req.body.confirmPassword == null)){
+    if ((req.body.password == null) || (req.body.confirmPassword == null)) {
         res.json({
             status: 500,
             message: "Password fields cannot be empty"
         })
-    } 
+    }
 
-    user.findById(id, function(err, userResult){
-        if(err)
+    user.findById(id, function(err, userResult) {
+        if (err)
             throw err;
         var passwordHash = user.generatePasswordHash(req.body.password);
-        user.setUserPassword(userResult[0].id, passwordHash, function(err, result){
-            if(err)
+        user.setUserPassword(userResult[0].id, passwordHash, function(err, result) {
+            if (err)
                 throw err;
             res.redirect("/users/sign")
-        })        
+        })
     });
 });
 
-router.get('/verification', function(req, res){
+router.post('/update_password', function(req, res) {
+    var user = new User();
+    if ((req.body.email == null) || (req.body.oldpass == null) || (req.body.newpass == null)) {
+        res.json({
+            status: 500,
+            message: "Required fields are email , oldpass and newpass"
+        })
+    }
+    var email = req.body.email
+    var newpass = req.body.newpass
+    var oldpass = req.body.oldpass
+    user.findByEmail(email, function(err, userResult) {
+        if (err)
+            throw err;
+        console.log(userResult, 'user')
+        var oldPasswordHash = user.generatePasswordHash(oldpass);
+        // console.log(oldPasswordHash, 'pass')
+        if (oldPasswordHash === userResult[0].password) {
+            var newPasswordHash = user.generatePasswordHash(newpass);
+            user.setUserPassword(userResult[0].id, newPasswordHash, function(err, result) {
+                if (err)
+                    throw err;
+                res.json({
+                    status: 200,
+                    message: "Password updated successfully"
+                })
+            })
+            console.log('done')
+        } else {
+            res.json({
+                status: 500,
+                message: "Old Pass is Incorrect"
+            })
+
+        }
+
+    });
+});
+
+router.get('/verification', function(req, res) {
     res.render('verification', {});
 });
 
-router.post('/verification', verificationMiddleWare, function(req, res, next){
+router.post('/verification', verificationMiddleWare, function(req, res, next) {
     console.log("Inside verification post");
-    passport.authenticate('local-signin', function(err, user, info){
+    passport.authenticate('local-signin', function(err, user, info) {
         console.log("Inside passport authenticate callback");
         if (err) {
             return res.json({
@@ -254,28 +294,27 @@ router.post('/verification', verificationMiddleWare, function(req, res, next){
             });
         }
 
-        req.logIn(user, function(err){
-            if(err){
+        req.logIn(user, function(err) {
+            if (err) {
                 return res.json({
                     status: 500,
                     message: err
                 });
             }
             return res.json({
-                status:200,
+                status: 200,
                 message: "User successfully logged in"
             })
         });
     })(req, res, next);
 });
 
-function isLoggedIn(req, res, next){
-    if(req.isAuthenticated()){
-        console.log("user",req.user.id);
+function isLoggedIn(req, res, next) {
+    if (req.isAuthenticated()) {
+        console.log("user", req.user.id);
         next();
-    }
-    else{
-        console.log("no user id found not logged in user",req.user);
+    } else {
+        console.log("no user id found not logged in user", req.user);
         res.json({
             status: 200,
             message: "User must be logged in"
@@ -283,57 +322,56 @@ function isLoggedIn(req, res, next){
     }
 }
 
-function verificationMiddleWare(req, res, next){
+function verificationMiddleWare(req, res, next) {
     var email = req.body.email;
     var password = req.body.password;
     var verificationCode = req.body.code;
 
     var user = new User();
-    user.findByEmail(email, function(err, userResult){
+    user.findByEmail(email, function(err, userResult) {
         console.log("The email entered " + email);
-        if(err){
+        if (err) {
             res.json({
                 status: 500,
                 message: "Incorrect User Email"
             });
         }
-        if(user.validPassword(req.body.password, userResult[0].password)){
+        if (user.validPassword(req.body.password, userResult[0].password)) {
             console.log("The user feteched " + userResult[0].id);
             console.log("Verification Code " + verificationCode);
             console.log("User database code " + userResult[0].verification_code);
-            if(userResult[0].verification_code == verificationCode){
+            if (userResult[0].verification_code == verificationCode) {
                 console.log("Verification code is correct");
                 console.log("Verification Status" + userResult[0].verification_status);
-                user.updateVerificationStatus(userResult[0].id, true, function(err, result){
+                user.updateVerificationStatus(userResult[0].id, true, function(err, result) {
                     //After the verification status is set true
                     //Use the signin strategy for user login
-                    if(err)
+                    if (err)
                         throw err;
                     console.log("Verification status updated");
                     next();
                 });
-                          
-            }    
+
+            }
         } else {
             res.json({
                 status: 500,
                 message: "Incorrect Password"
             });
         }
-        
+
     });
 }
 
-function isVerified(req, res, next){
+function isVerified(req, res, next) {
     var user = new User();
-    user.findByEmail(req.body.email, function(err, user){
+    user.findByEmail(req.body.email, function(err, user) {
         console.log("user retrieved in middleware");
-        if(user[0].verification_status == true){
+        if (user[0].verification_status == true) {
             next();
-        }
-        else{
+        } else {
             res.json({
-                status:500,
+                status: 500,
                 message: "User Not Verified"
             });
         }

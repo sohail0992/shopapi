@@ -1,5 +1,4 @@
 var mySql = require("../config/database");
-
 var category = require("../models/category");
 var product = require("../models/product");
 

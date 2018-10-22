@@ -42,15 +42,14 @@ passport.use('local-register', new localStrategy({
             var verificationCode = Math.floor((Math.random() * 10000) + 1); 
             //Data of the new user
             var newUser = {
-                    name: req.body.name,
+                    first_name: req.body.first_name,
+                    last_name: req.body.last_name,
                     mobile: req.body.mobile,
-                    fax: req.body.fax,
                     email: req.body.email,
                     password: user.generatePasswordHash(req.body.password),
                     verificationCode: verificationCode,
                     verificationStatus: false,
-                    company: req.body.company,
-                    companyNumber: req.body.companyNumber,
+                    company_name: req.body.company_name,
                     active:1,
                     confirmed:1,
             }        
@@ -94,10 +93,8 @@ passport.use('local-signin', new localStrategy({
 }, 
 function(req, username, password, done){
     console.log("Inside passport Strategy");
-
     var user = new User();
     user.findByEmail(username, function(err, result){
-        
         if(err){
             console.log(err);
             return done(err);
