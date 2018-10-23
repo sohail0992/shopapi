@@ -489,6 +489,26 @@ class product {
             });
         });
     }
+
+    getOrdersAll(callback) {
+        var query = "select id,order_status,order_started ,order_number,status from cement.gc_orders";
+        mySql.getConnection(function (err, connection) {
+            if (err) {
+                throw err;
+            }
+            connection.query(query, function (err, results) {
+                if (err) {
+                    console.log(err);
+                    throw err;
+                }
+                else {
+                    connection.release();
+                    console.log(results);
+                    callback(err, results);
+                }
+            });
+        });
+    }
     getOrderDetailHistory(Id, callback) {
         // var query = 'select o.Type ,o.subtotal,o.total as Grand_total,d.images,o.shipping as ShippingAmount,o.vat as VAT, o.order_number,o.address,o.order_started,d.quantity as product_quantity,d.price as product_price,d.total_price as product_total,d.name,d.description,d.arabic_name,d.arabic_description ' +
         //     '  from cement.gc_orders o' +

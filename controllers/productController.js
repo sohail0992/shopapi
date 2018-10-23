@@ -618,6 +618,34 @@ exports.getMyOrderdetails = function (req, res) {
     })
 }
 
+exports.getAllOrders = function (req, res) {
+    var products = new product();
+    products.getOrdersAll( function (err, result) {
+        if (err) {
+            res.json({
+                status: 500,
+                message: "err", err,
+            });
+        } else {
+            if (result != 0) {
+                // for(var i=0 ;i<result.length;i++){
+                //     result[i].order_status="Pending";
+                // }
+                res.json({
+                    status: 200,
+                    data: result,
+                })
+            }
+            else {
+                res.json({
+                    status: 200,
+                    message: "No orders",
+                })
+            }
+        }
+    })
+}
+
 exports.getMyOrderdetailsproductwise = function (req, res) {
     console.log("inside controller");
     var products = new product();

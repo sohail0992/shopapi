@@ -192,7 +192,6 @@ exports.finalCheckoutController = function (req, res) {
     var CountryRate = 0;
     var CityRate = 0;
     var COD = 0
-
     var cart = new Cart(req.session.cart);
     user.getUserAddressById(addressId, async function (err, addressRow) {
         console.log("address", addressRow);
@@ -224,6 +223,7 @@ exports.finalCheckoutController = function (req, res) {
             var temp2 = Number(temp.setting);
             var vat_difference = 0;
             cart.totalPrice += COD;
+            var sub_total = cart.totalPrice
             var cart_total = cart.totalPrice + ((cart.totalPrice / 100) * temp2);
             vat_difference = cart_total - cart.totalPrice;
             if (shippingRate > cart_total) {
