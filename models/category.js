@@ -8,7 +8,7 @@ class category{
     getSubCatPromise(parentCategory){
         return new Promise(function(resolve){
             var query = "SELECT id, name, arabic_name\
-                     FROM saidalia_js.gc_categories \
+                     FROM jeddahsp_cement.gc_categories \
                      WHERE parent_id = " + parentCategory;
             
             mySql.getConnection(function(err, connection){
@@ -28,7 +28,7 @@ class category{
     */
    getCategories(callback) {
     var query = "SELECT id, name, arabic_name, image,arabic_image as arabic_images\
-                 FROM saidalia_js.gc_categories\
+                 FROM jeddahsp_cement.gc_categories\
                  WHERE parent_id = 0 ";
     mySql.getConnection(function(err, connection){
         if(err){
@@ -45,7 +45,7 @@ class category{
     getCity(parentCategory){
         return new Promise(function(resolve){
             var query = "SELECT name,tax\
-                     FROM saidalia_js.gc_country_zones \
+                     FROM jeddahsp_cement.gc_country_zones \
                      WHERE country_id = " + parentCategory;
             
             mySql.getConnection(function(err, connection){
@@ -65,7 +65,7 @@ class category{
     */
     getCountries(callback) {
         var query = "SELECT id,name,tax\
-                     FROM saidalia_js.gc_countries\
+                     FROM jeddahsp_cement.gc_countries\
                      WHERE enabled = 1";
 
         mySql.getConnection(function(err, connection){
@@ -86,7 +86,7 @@ class category{
    
     getSubCategories(parentCategory, callback) {
         var query = "SELECT id, name, arabic_name\
-                     FROM saidalia_js.gc_categories \
+                     FROM jeddahsp_cement.gc_categories \
                      WHERE parent_id = " + parentCategory;
 
         mySql.getConnection(function(err, connection){

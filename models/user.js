@@ -8,9 +8,8 @@ class user{
     }
 
     findById(id, callback){
-
         var query = "SELECT id, firstname, lastname, email, phone, password \
-                     FROM cement.gc_customers\
+                     FROM jeddahsp_cement.gc_customers\
                      WHERE id = " + "\"" + id + "\"";
 
         mySql.getConnection(function(err, connection){
@@ -19,13 +18,13 @@ class user{
             }
             connection.query(query, function(err, rows){
                 connection.release()
-                callback(err, rows); //Passing results to callback function
+                callback(err, rows); //Passing results to casllback function
             });
         });
     }
  
     updateVerificationStatus(userId, status, callback){
-        var query = "UPDATE cement.gc_customers SET verification_status = " + status + " WHERE id = " + userId; //+ userId;
+        var query = "UPDATE jeddahsp_cement.gc_customers SET verification_status = " + status + " WHERE id = " + userId; //+ userId;
 
         mySql.getConnection(function(err, connection){
             if(err){
@@ -39,9 +38,8 @@ class user{
     }
 
     findByEmail(email, callback){
-
         var query = "SELECT id, firstname, lastname, email, phone, password, verification_code, verification_status \
-                     FROM cement.gc_customers\
+                     FROM jeddahsp_cement.gc_customers\
                      WHERE email = " + "\"" + email + "\"";
 
         mySql.getConnection(function(err, connection){
@@ -62,7 +60,7 @@ class user{
     setNewUser(userData, callback){
         console.log("inside set new user");
         console.log(userData);
-        var query = "INSERT into cement.gc_customers" +   
+        var query = "INSERT into jeddahsp_cement.gc_customers" +   
                     "(active,confirmed,firstname, lastname, email, phone, password, company_name, verification_status, verification_code)" +
                     "VALUES" + "(" + "\"" + userData.active + "\"" + "," + "\"" + userData.confirmed + "\"" + ","+ "\"" + userData.first_name + "\"" + "," + "\"" + userData.last_name  + "\"" + "," + "\"" + userData.email + "\"" + "," + "\"" + userData.mobile + "\"" + "," + "\"" + userData.password + "\"" + "," + "\"" + userData.company_name + "\"" + "," + "\"" + userData.verificationStatus + "\"" + ","+ userData.verificationCode +")";
         
@@ -89,8 +87,8 @@ class user{
     }
     getUserAddresses(userId, callback){
         var query = "SELECT address.id, address.latitude, address.longitude, address.address1,address.addressDesc\
-                     FROM cement.gc_customers_address_bank AS address\
-                     INNER JOIN cement.gc_customers AS customers\
+                     FROM jeddahsp_cement.gc_customers_address_bank AS address\
+                     INNER JOIN jeddahsp_cement.gc_customers AS customers\
                      ON customers.id = address.customer_id\
                      WHERE address.customer_id =  " + userId;
        
@@ -106,7 +104,7 @@ class user{
     } 
     getCityId(name){
         return new Promise(function (resolve) {
-            var query = `SELECT id from cement.gc_country_zones WHERE name = ${name}`;
+            var query = `SELECT id from jeddahsp_cement.gc_country_zones WHERE name = ${name}`;
             mySql.getConnection(function (err, connection){
                 if (err) {
                     throw err;
@@ -136,7 +134,7 @@ class user{
     //     });
     // } 
     addUserAddress(userId, addressData, callback){
-        var query = "INSERT INTO cement.gc_customers_address_bank\
+        var query = "INSERT INTO jeddahsp_cement.gc_customers_address_bank\
                      (country_id,zone_id,city,country,customer_id, latitude, longitude,addressDesc,address1)\
                      VALUES (" + addressData.country_id + "," + addressData.zone_id + "," + addressData.city + ","+ addressData.country + ","+ userId + "," + addressData.latitude + "," + addressData.longitude 
                      + "," +addressData.locName + "," + "\"" + addressData.addressDesc + "\"" + ")";
@@ -154,7 +152,7 @@ class user{
     }
 
     addCityCountry(userId, addressData, callback){
-        var query = "INSERT INTO cement.gc_customers_address_bank\
+        var query = "INSERT INTO jeddahsp_cement.gc_customers_address_bank\
                      (city,country,customer_id,address1)\
                      VALUES (" + addressData.city + ","+ addressData.country + ","+ userId + "," + "\"" + addressData.address1 + "\"" + ")";
          
@@ -174,7 +172,7 @@ class user{
 
     addUserShippingAddress(shippingId) {
         return new Promise(function (resolve) {
-            var query = "SELECT address1 FROM cement.gc_customers_address_bank\
+            var query = "SELECT address1 FROM jeddahsp_cement.gc_customers_address_bank\
             WHERE id = " + shippingId;
              mySql.getConnection(function (err, connection) {
                 if (err) {
@@ -199,7 +197,7 @@ class user{
             if(err){
                 throw err;
             }
-            connection.query('update cement.gc_customers set ? where id = ?', [addressData,userId], function(err, rows){
+            connection.query('update jeddahsp_cement.gc_customers set ? where id = ?', [addressData,userId], function(err, rows){
                 connection.release()
                 console.log(rows);
                 callback(err, rows); //Passing results to callback function
@@ -208,7 +206,7 @@ class user{
     }
     getUserAddressById(addressId, callback){
         console.log("Inside get user address model123");
-        var query = "SELECT address1 FROM cement.gc_customers_address_bank\
+        var query = "SELECT address1 FROM jeddahsp_cement.gc_customers_address_bank\
                      WHERE id = " + addressId;
         console.log("Above query executed");
 
@@ -224,7 +222,7 @@ class user{
     }
     getUserCountry(addressId) {
         return new Promise(function (resolve) {
-            var query = "SELECT city,country_id FROM cement.gc_customers_address_bank\
+            var query = "SELECT city,country_id FROM jeddahsp_cement.gc_customers_address_bank\
             WHERE id = " + addressId;
              mySql.getConnection(function (err, connection) {
                 if (err) {
@@ -245,7 +243,7 @@ class user{
     }
 GetCountryAmount(addressId) {
         return new Promise(function (resolve) {
-            var query = "SELECT tax FROM cement.gc_countries\
+            var query = "SELECT tax FROM jeddahsp_cement.gc_countries\
             WHERE id = " + addressId;
              mySql.getConnection(function (err, connection) {
                 if (err) {
@@ -268,7 +266,7 @@ GetCountryAmount(addressId) {
         return new Promise(function (resolve) {
             console.log(name);
             name=JSON.stringify(name);
-            var query = "SELECT tax FROM cement.gc_country_zones\
+            var query = "SELECT tax FROM jeddahsp_cement.gc_country_zones\
             WHERE name = " + name;
              mySql.getConnection(function (err, connection) {
                 if (err) {
@@ -292,7 +290,7 @@ GetCountryAmount(addressId) {
         console.log(typeof time);
         console.log(typeof userId);
 
-        var query = "UPDATE  cement.gc_customers SET resetPasswordToken = " + "\"" + token + "\"" + "," + "resetPasswordDate = " + time + " WHERE id = " + userId;
+        var query = "UPDATE  jeddahsp_cement.gc_customers SET resetPasswordToken = " + "\"" + token + "\"" + "," + "resetPasswordDate = " + time + " WHERE id = " + userId;
 
         mySql.getConnection(function(err, connection){
             if(err){
@@ -306,7 +304,7 @@ GetCountryAmount(addressId) {
     }
 
     setUserPassword(id, password, callback){
-        var query = "UPDATE  cement.gc_customers SET password = " + "\"" + password + "\"" + " WHERE id = " + id;
+        var query = "UPDATE  jeddahsp_cement.gc_customers SET password = " + "\"" + password + "\"" + " WHERE id = " + id;
 
         mySql.getConnection(function(err, connection){
             if(err){

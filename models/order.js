@@ -38,9 +38,9 @@ class Order {
             }
               console.log(orderItemsArray);
             // console.log("inside add order items function");
-            var query = "INSERT INTO cement.gc_order_items (order_id, product_id, quantity, name,arabic_name,description,arabic_description,total_price,price,images,shippable,taxable,fixed_quantity,track_stock,type,coupon_discount,coupon_code) VALUES ?";
-            var paymentQuery = "INSERT INTO cement.gc_payments set ?";
-            var transactions = "insert into cement.gc_transactions set ?";
+            var query = "INSERT INTO jeddahsp_cement.gc_order_items (order_id, product_id, quantity, name,arabic_name,description,arabic_description,total_price,price,images,shippable,taxable,fixed_quantity,track_stock,type,coupon_discount,coupon_code) VALUES ?";
+            var paymentQuery = "INSERT INTO jeddahsp_cement.gc_payments set ?";
+            var transactions = "insert into jeddahsp_cement.gc_transactions set ?";
             mySql.getConnection(function (err, connection) {
                 if (err) {
                     throw err;
@@ -56,7 +56,7 @@ class Order {
                             transaction_id: rows2.insertId,
                         }
                         connection.query(transactions, transaction, async function (err, rows3, fields3) {
-                            connection.query(`update cement.gc_orders set ? where id =?`, [data, orderedId], function (err, rows, fields3) {
+                            connection.query(`update jeddahsp_cement.gc_orders set ? where id =?`, [data, orderedId], function (err, rows, fields3) {
                                 connection.release()
                                 console.log("query order items",query);
                                 console.log("query order items",rows1,fields1);
@@ -112,13 +112,13 @@ class Order {
     // setPaymentTable(cart,user_id,address_id,checkType){
     //     return new Promise(function(resolve){
     //         // var query = "SELECT id, name, arabic_name\
-    //         //          FROM cement.gc_categories \
+    //         //          FROM jeddahsp_cement.gc_categories \
     //         //          WHERE parent_id = " + parentCategory;
     //         var productsInCart = cart.generateArray();
     //         let values={
     //             order_id
     //         }
-    //         var query = `insert into cement.gc_payment set ?` 
+    //         var query = `insert into jeddahsp_cement.gc_payment set ?` 
     //         mySql.getConnection(function(err, connection){
     //             if(err){
     //                 throw err;
@@ -147,7 +147,7 @@ class Order {
         addressRow = JSON.stringify(addressRow);
         cargoType = JSON.stringify(cargoType);
         var micTime = microtime.now();
-        var newOrderQuery = "INSERT INTO cement.gc_orders (shipping_address_id,Type,shipping,vat,customer_id, order_number, order_status,status, total, subtotal, ordered_on, billing_address_id,address)\
+        var newOrderQuery = "INSERT INTO jeddahsp_cement.gc_orders (shipping_address_id,Type,shipping,vat,customer_id, order_number, order_status,status, total, subtotal, ordered_on, billing_address_id,address)\
                              VALUES ("+ shippingId + "," + cargoType + "," + shippingRate + "," + temp2 + "," + userId + "," + micTime + "," + "'Pending'" + "," + "'Confirmed By Admin'" + "," + cart_total + "," + sub + "," + datetime + "," + addressId + "," + addressRow + ")";
         /*
             Insert a new order and get the id of the row inserted in order table
@@ -161,6 +161,7 @@ class Order {
                 throw err;
             }
             connection.query(newOrderQuery, function (err, result) {
+                if(err) callback(err)
                 var id = result.insertId
                 connection.release()
                 if (err) {

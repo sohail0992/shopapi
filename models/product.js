@@ -5,7 +5,7 @@ class product {
     }
     findById(id, callback) {
         var query = "SELECT id, name,description,images, arabic_name,arabic_description, price_1\
-                     FROM cement.gc_products\
+                     FROM jeddahsp_cement.gc_products\
                      WHERE id =  " + id;
         mySql.getConnection(function (err, connection) {
             if (err) {
@@ -21,7 +21,7 @@ class product {
 
     getSubCatProd(subCategoryId, callback) {
         var query = "SELECT id,slug, name, model, arabic_name, quantity, price_1, images,sku as discount_price \
-                     FROM cement.gc_products \
+                     FROM jeddahsp_cement.gc_products \
                      WHERE secondary_category = " + subCategoryId;
         mySql.getConnection(function (err, connection) {
             if (err) {
@@ -42,7 +42,7 @@ class product {
                     FROM  gc_products a\
                     Right join gc_brands b on a.brand = b.id \
                     WHERE a.id = " + productId;
-        console.log(", cement.gc_brands b ")
+        console.log(", jeddahsp_cement.gc_brands b ")
         mySql.getConnection(function (err, connection) {
             if (err) {
                 throw err;
@@ -56,7 +56,7 @@ class product {
     }
     getReviewOnProduct(productId) {
         return new Promise(function (resolve) {
-            var query = `select rating,Review from cement.gc_review where productId = ${productId}`
+            var query = `select rating,Review from jeddahsp_cement.gc_review where productId = ${productId}`
             mySql.getConnection(function (err, connection) {
                 if (err) {
                     throw err;
@@ -76,7 +76,7 @@ class product {
     }
     getCheck(productId) {
         return new Promise(function (resolve) {
-            var query = `select setting from cement.gc_settings where setting_key="allow_os_purchase"`
+            var query = `select setting from jeddahsp_cement.gc_settings where setting_key="allow_os_purchase"`
             mySql.getConnection(function (err, connection) {
                 if (err) {
                     throw err;
@@ -100,7 +100,7 @@ class product {
         var query = `select id,name,model,arabic_name,
                     description,arabic_description,slug,
                     quantity,images,price_1,arabic_images
-                    from cement.gc_products where name like ${searchWord} or arabic_name like ${searchWord} or description like ${searchWord} or slug like ${searchWord} or arabic_description like ${searchWord}`;
+                    from jeddahsp_cement.gc_products where name like ${searchWord} or arabic_name like ${searchWord} or description like ${searchWord} or slug like ${searchWord} or arabic_description like ${searchWord}`;
         mySql.getConnection(function (err, connection) {
             if (err) {
                 throw err;
@@ -116,9 +116,9 @@ class product {
     getOfferImagePromise(offerId) {
         return new Promise(function (resolve) {
             var query = "SELECT products.images\
-                     FROM cement.gc_promotions as promotions\
-                     INNER JOIN cement.gc_promotions_products as promo_prods ON  promotions.id = promo_prods.on_offer_product_id \
-                     INNER JOIN cement.gc_products as products ON promo_prods.product_id = products.id  \
+                     FROM jeddahsp_cement.gc_promotions as promotions\
+                     INNER JOIN jeddahsp_cement.gc_promotions_products as promo_prods ON  promotions.id = promo_prods.on_offer_product_id \
+                     INNER JOIN jeddahsp_cement.gc_products as products ON promo_prods.product_id = products.id  \
                      WHERE promotions.id = " + offerId;
 
             mySql.getConnection(function (err, connection) {
@@ -152,7 +152,7 @@ class product {
         });
     }
     getAllOffers(callback) {
-        var query = `SELECT * FROM cement.gc_promotions WHERE end_date >= NOW() and enabled_1=1`;
+        var query = `SELECT * FROM jeddahsp_cement.gc_promotions WHERE end_date >= NOW() and enabled_1=1`;
         // console.log("query", query);
 
         mySql.getConnection(function (err, connection) {
@@ -173,7 +173,7 @@ class product {
     }
     getallofferforSearch(productId) {
         return new Promise(function (resolve) {
-            var query = `SELECT * FROM cement.gc_promotions WHERE end_date >= NOW() and enabled_1=1 `;
+            var query = `SELECT * FROM jeddahsp_cement.gc_promotions WHERE end_date >= NOW() and enabled_1=1 `;
             mySql.getConnection(function (err, connection){
                 if (err) {
                     throw err;
@@ -193,7 +193,7 @@ class product {
     }
     getAllCategoryWiseData(productId) {
         return new Promise(function (resolve) {
-            var query = `SELECT * FROM cement.gc_promotions WHERE end_date >= NOW() and enabled_1=1 and offer_name = category_wise`;
+            var query = `SELECT * FROM jeddahsp_cement.gc_promotions WHERE end_date >= NOW() and enabled_1=1 and offer_name = category_wise`;
             mySql.getConnection(function (err, connection){
                 if (err) {
                     throw err;
@@ -213,7 +213,7 @@ class product {
     }
     getAllOffersData(Subcategory_id) { 
         return new Promise(function (resolve) {
-            var query = `SELECT reduction_amount,reduction_type,start_date as days,whole_order_coupon as Hours,max_product_instances as Minutes,max_uses as seconds,end_date FROM cement.gc_promotions WHERE end_date >= NOW() and enabled_1=1 and secondary_category=${Subcategory_id}`;
+            var query = `SELECT reduction_amount,reduction_type,start_date as days,whole_order_coupon as Hours,max_product_instances as Minutes,max_uses as seconds,end_date FROM jeddahsp_cement.gc_promotions WHERE end_date >= NOW() and enabled_1=1 and secondary_category=${Subcategory_id}`;
            
             mySql.getConnection(function (err, connection){
                 if (err) {
@@ -283,17 +283,17 @@ class product {
             if (reduction_type === 'percent') {
                 query = "SELECT products.id,products.slug,products.excerpt as days,products.enable_date as Hours,products.disable_date as Minutes, products.name, products.model as seconds, products.arabic_name, products.description, products.arabic_description,\
                         products.quantity,promotions.reduction_amount as Reduction_Percentage, products.images, COALESCE(products.price_1 - ((products.price_1/100) * promotions.reduction_amount)) AS discount_price, products.arabic_images, products.price_1 AS actual_price\
-                        FROM cement.gc_promotions as promotions\
-                        INNER JOIN cement.gc_promotions_products as promo_prods ON  promotions.id = promo_prods.coupon_id\
-                        INNER JOIN cement.gc_products as products ON promo_prods.product_id = products.id\
+                        FROM jeddahsp_cement.gc_promotions as promotions\
+                        INNER JOIN jeddahsp_cement.gc_promotions_products as promo_prods ON  promotions.id = promo_prods.coupon_id\
+                        INNER JOIN jeddahsp_cement.gc_products as products ON promo_prods.product_id = products.id\
                         WHERE promotions.id = " + offerId;
             }
             if (reduction_type === 'fixed') {
                 query = "SELECT products.id,products.excerpt as days,products.enable_date as Hours,products.disable_date as Minutes, products.name, products.model as seconds, products.arabic_name, products.description, products.arabic_description,\
                             products.quantity,products.slug,promotions.reduction_amount as Reduction_Percentage, products.images, COALESCE(products.price_1 - promotions.reduction_amount) AS discount_price, products.arabic_images, products.price_1 AS actual_price\
-                            FROM cement.gc_promotions as promotions\
-                            INNER JOIN cement.gc_promotions_products as promo_prods ON  promotions.id = promo_prods.coupon_id\
-                            INNER JOIN cement.gc_products as products ON promo_prods.product_id = products.id\
+                            FROM jeddahsp_cement.gc_promotions as promotions\
+                            INNER JOIN jeddahsp_cement.gc_promotions_products as promo_prods ON  promotions.id = promo_prods.coupon_id\
+                            INNER JOIN jeddahsp_cement.gc_products as products ON promo_prods.product_id = products.id\
                             WHERE promotions.id = " + offerId;
             }
             var ehourData = new Date(end);
@@ -351,7 +351,7 @@ class product {
     getCategoryWiseOffers(end, subCategoryId, deductedAmount, reduction_type) {
         return new Promise(function (resolve) {
             var query = "SELECT p.id,p.slug,p.weight as Reduction_Percentage,p.excerpt as days,p.enable_date as Hours,p.disable_date as Minutes, p.name,b.name as brand_name,p.arabic_description,  p.model as seconds,p.description,p.fixed_quantity as discount_price, p.arabic_name, p.quantity,p.arabic_images, p.price_1 AS actual_price, p.images \
-                FROM cement.gc_products p inner join cement.gc_brands b on b.id = p.brand \
+                FROM jeddahsp_cement.gc_products p inner join jeddahsp_cement.gc_brands b on b.id = p.brand \
                 WHERE secondary_category = " + subCategoryId;
             var ehourData = new Date(end);
             var currentDates = new Date();
@@ -410,7 +410,7 @@ class product {
     getBrandWiseOffer(end, brand_id, deductedAmount, reduction_type) {
         return new Promise(function (resolve) {
             var query = "SELECT p.id,p.slug,p.weight as Reduction_Percentage,p.excerpt as days,p.enable_date as Hours,p.disable_date as Minutes, p.name,b.name as brand_name,p.arabic_description,  p.model as seconds,p.description,p.fixed_quantity as discount_price, p.arabic_name, p.quantity,p.arabic_images, p.price_1 AS actual_price, p.images \
-                FROM cement.gc_products p inner join cement.gc_brands b on b.id = p.brand \
+                FROM jeddahsp_cement.gc_products p inner join jeddahsp_cement.gc_brands b on b.id = p.brand \
                 WHERE p.brand = " + brand_id;
             var ehourData = new Date(end);
             var currentDates = new Date();
@@ -469,7 +469,7 @@ class product {
     getOrderHistory(Id, callback) {
 
         var query = 'select id,order_status,order_started ,order_number,status ' +
-            ' from cement.gc_orders ' +
+            ' from jeddahsp_cement.gc_orders ' +
             ' where customer_id = "' + Id + '" ';
         console.log("query", query);
         mySql.getConnection(function (err, connection) {
@@ -491,7 +491,7 @@ class product {
     }
 
     getOrdersAll(callback) {
-        var query = "select id,order_status,order_started ,order_number,status from cement.gc_orders";
+        var query = "select id,order_status,order_started ,order_number,status from jeddahsp_cement.gc_orders";
         mySql.getConnection(function (err, connection) {
             if (err) {
                 throw err;
@@ -511,12 +511,12 @@ class product {
     }
     getOrderDetailHistory(Id, callback) {
         // var query = 'select o.Type ,o.subtotal,o.total as Grand_total,d.images,o.shipping as ShippingAmount,o.vat as VAT, o.order_number,o.address,o.order_started,d.quantity as product_quantity,d.price as product_price,d.total_price as product_total,d.name,d.description,d.arabic_name,d.arabic_description ' +
-        //     '  from cement.gc_orders o' +
-        //     '  inner join cement.gc_order_items d on o.id= d.order_id' +
+        //     '  from jeddahsp_cement.gc_orders o' +
+        //     '  inner join jeddahsp_cement.gc_order_items d on o.id= d.order_id' +
         //     '  where o.id = "' + Id + '" ';
         var query = `select o.Type ,o.subtotal,o.total as Grand_total,d.images,o.shipping as ShippingAmount,o.vat as VAT, o.order_number,o.address,o.order_started,d.quantity as product_quantity,d.price as product_price,d.total_price as product_total,d.name,d.description,d.arabic_name,d.arabic_description 
-            from cement.gc_orders o
-            inner join cement.gc_order_items d on o.id= d.order_id
+            from jeddahsp_cement.gc_orders o
+            inner join jeddahsp_cement.gc_order_items d on o.id= d.order_id
             where o.id = ${Id} and d.product_id != 0`;
         console.log("query", query);
         mySql.getConnection(function (err, connection) {
@@ -544,9 +544,9 @@ class product {
         var query = `SELECT products.id, products.name, products.model, products.arabic_name, products.description, products.arabic_description,
                             products.quantity, products.images, COALESCE(products.price_1 - ((products.price_1/100) * promotions.reduction_amount)) AS price_1,
                             products.arabic_images, products.price_1 AS actual_price
-                            FROM cement.gc_promotions as promotions
-                            INNER JOIN cement.gc_promotions_products as promo_prods ON  promotions.id = promo_prods.coupon_id
-                            INNER JOIN cement.gc_products as products ON promo_prods.product_id = products.id
+                            FROM jeddahsp_cement.gc_promotions as promotions
+                            INNER JOIN jeddahsp_cement.gc_promotions_products as promo_prods ON  promotions.id = promo_prods.coupon_id
+                            INNER JOIN jeddahsp_cement.gc_products as products ON promo_prods.product_id = products.id
                             WHERE promotions.id = ${offerId} and promotions.end_date >= 2018-05-19`;
         console.log("query", query);
         mySql.getConnection(function (err, connection) {
@@ -567,8 +567,8 @@ class product {
     }
 
     insertReview(review, productId, rating, callback) {
-        //  var query = "INSERT INTO cement.gc_review (Review,productId) VALUES (" +review+ "," + productId +"")";
-        var query = "Insert INTO cement.gc_review set ?"
+        //  var query = "INSERT INTO jeddahsp_cement.gc_review (Review,productId) VALUES (" +review+ "," + productId +"")";
+        var query = "Insert INTO jeddahsp_cement.gc_review set ?"
         console.log("query", query);
         let data1 = {
             Review: review,
@@ -593,9 +593,9 @@ class product {
     }
     checkCoupun(coupun,callback) {
         var query = 'select reduction_amount,reduction_type,code' +
-            ' from cement.gc_coupons ' +
+            ' from jeddahsp_cement.gc_coupons ' +
             ' where code = "' + coupun + '" and end_date >=NOW()';
-        //  var query = `SELECT code from cement.gc_coupons where code = coupun 
+        //  var query = `SELECT code from jeddahsp_cement.gc_coupons where code = coupun 
         //  and end_date >=NOW()`;
         console.log("query", query);
         mySql.getConnection(function (err, connection) {
