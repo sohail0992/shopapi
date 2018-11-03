@@ -133,6 +133,11 @@ class user{
     //         });
     //     });
     // } 
+
+    addPayments(callback){
+
+    }
+    
     addUserAddress(userId, addressData, callback){
         var query = "INSERT INTO jeddahsp_cement.gc_customers_address_bank\
                      (country_id,zone_id,city,country,customer_id, latitude, longitude,addressDesc,address1)\
