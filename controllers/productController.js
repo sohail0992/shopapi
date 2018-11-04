@@ -3,8 +3,8 @@ var category = require("../models/category");
 var product = require("../models/product");
 
 /*
-    This is an asynchronous function that fetch subcategories
-    for each parent category. THe fetching of sub categories is synchronous
+This is an asynchronous function that fetch subcategories
+for each parent category. THe fetching of sub categories is synchronous
 */
 async function getMainAndSubCat(parentCategories) {
   var mainCatImages = ["/sadaliaCats/Medicines&Treatments.png",
@@ -82,8 +82,8 @@ function getOffersWithImages(offers) {
   });
 }
 /*
-    This controller returns all the parent categories
- */
+This controller returns all the parent categories
+*/
 exports.getCategoryController = function(req, res) {
   var mainCatImages = ["/sadaliaCats/Beauty&Care.png",
     "/sadaliaCats/Care.png",
@@ -106,10 +106,10 @@ exports.getCategoryController = function(req, res) {
   });
 }
 /*
-    This controller takes the parent category id and
-    return all the ssub categories that are in the parent
-    category
- */
+This controller takes the parent category id and
+return all the ssub categories that are in the parent
+category
+*/
 exports.getAllCategoriesController = function(req, res) {
   var categories = new category();
   categories.getCategories(async function(err, result) {
@@ -141,9 +141,9 @@ exports.getAllCountriesAndSities = function(req, res) {
 }
 // Working Example
 /*
-    This controller takes the sub category id of a category
-    and return all the products that are in the sub category
- */
+This controller takes the sub category id of a category
+and return all the products that are in the sub category
+*/
 // exports.getSubCatProductsController = function (req, res) {
 //     var products = new product();
 //     products.getSubCatProd(req.query.subCategoryId, function (err, result) {
@@ -162,15 +162,15 @@ exports.getAllCountriesAndSities = function(req, res) {
 //                     var productImageObj = result[i].images;
 //                     //Parse the productImageObj
 //                     console.log("Image", result[i].images)
-//                     if (result[i].images){
-//                         var productImageObj = JSON.parse(productImageObj);
-//                         //Get the value of first property from image object
-//                         var imageFirstProp = productImageObj[Object.keys(productImageObj)[0]]
-//                         //Extract image filename from image first property object
-//                         var imageLink = imageFirstProp.filename;
-//                         //Concatenate image name with remote repository url
-//                         result[i].images = "http://www.saidaliah.com/uploads/images/full/" + imageLink;
-//                     }
+// if (result[i].images){
+//     var productImageObj = JSON.parse(productImageObj);
+//     //Get the value of first property from image object
+//     var imageFirstProp = productImageObj[Object.keys(productImageObj)[0]]
+//     //Extract image filename from image first property object
+//     var imageLink = imageFirstProp.filename;
+//     //Concatenate image name with remote repository url
+//     result[i].images = "http://www.saidaliah.com/uploads/images/full/" + imageLink;
+// }
 //                 }
 //                 res.json({
 //                     status: 200,
@@ -265,9 +265,9 @@ async function getReviewData(productId, result) {
 }
 
 /*
-    This controller takes a single product id
-    and returns all the details of that product
- */
+This controller takes a single product id
+and returns all the details of that product
+*/
 exports.getProductDetailsController = function(req, res) {
   var products = new product();
   var review_details = "";
@@ -307,7 +307,26 @@ exports.getAll = function(req, res) {
         message: err
       });
     } else {
-      if (result.length != 0) {
+      if (result.products.length != 0) {
+        for (var i = 0; i < result.products.length; ++i) {
+          //Data object contains the list of products
+          //Replace [0] with the iterating variable through which you are listing all products
+
+          var productImageObj = result.products[i].images;
+          // console.log(productImageObj,'img obj')
+          //Parse the productImageObj
+          console.log("Image", result.products[i].images)
+          if (result.products[i].images) {
+            var productImageObj = JSON.parse(productImageObj);
+            //Get the value of first property from image object
+            var imageFirstProp = productImageObj[Object.keys(productImageObj)[0]]
+            //Extract image filename from image first property object
+            var imageLink = imageFirstProp.filename;
+
+            //Concatenate image name with remote repository url
+            result.products[i].images = "https://jeddah.space/cement/uploads/images/medium/" + imageLink;
+          }
+        }
         res.json({
           status: 200,
           data: result,
@@ -684,11 +703,24 @@ exports.getMyOrderdetailsproductwise = function(req, res) {
         err,
       });
     } else {
-      console.log("after", result);
       if (result != 0) {
-        // for(var i=0 ;i<result.length;i++){
-        //     result[i].order_status="Pending";
-        // }
+        for (var i = 0; i < result.length; ++i) {
+          //Data object contains the list of products
+          //Replace [0] with the iterating variable through which you are listing all products
+
+          var productImageObj = result[i].images;
+          //Parse the productImageObj
+          console.log("Image", result[i].images)
+          if (result[i].images) {
+            var productImageObj = JSON.parse(productImageObj);
+            //Get the value of first property from image object
+            var imageFirstProp = productImageObj[Object.keys(productImageObj)[0]]
+            //Extract image filename from image first property object
+            var imageLink = imageFirstProp.filename;
+            //Concatenate image name with remote repository url
+            result[i].images = "https://jeddah.space/cement/uploads/images/medium/" + imageLink;
+          }
+        }
         res.json({
           status: 200,
           data: result,

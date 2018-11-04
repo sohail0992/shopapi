@@ -57,7 +57,7 @@ getProuducts(callback) {
                 products : products,
                 bags : bags
               }
-              callback(erorr, data);
+              callback(err, data);
             }
           })
         }
