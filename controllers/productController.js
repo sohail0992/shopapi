@@ -310,7 +310,7 @@ exports.getAll = function(req, res) {
       if (result.length != 0) {
         res.json({
           status: 200,
-          Products: result,
+          data: result,
         });
       } else {
         res.json({

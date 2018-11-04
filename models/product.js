@@ -35,6 +35,8 @@ class product {
   }
 
 getProuducts(callback) {
+    var products = ""
+    var bags = ""
     var query = "SELECT * FROM  jeddahsp_cement.gc_products";
     mySql.getConnection(function(err, connection) {
       if (err) {
@@ -44,8 +46,20 @@ getProuducts(callback) {
         if (err) {
           throw err;
         } else {
+          products = results;
           connection.release();
-          callback(err, results);
+          var squery = "SELECT * FROM jeddahsp_cement.gc_bags";
+          connection.query(squery,function(erorr,resul){
+            if(erorr) throw erorr;
+            if(resul){
+              bags = resul;
+              var data = {
+                products : products,
+                bags : bags
+              }
+              callback(erorr, data);
+            }
+          })
         }
       });
     });

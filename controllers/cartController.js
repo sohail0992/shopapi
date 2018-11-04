@@ -6,17 +6,19 @@ var sub_total = "";
 exports.addToCartController = function (req, res) {
     console.log("Inside add to cart controller");
     //req.assert("");
-
     var productId = req.query.id;
     var quantity = Number(req.query.quantity);
     var price = Number(req.query.price);
+    var noOfbags = Number(req.query.bags);
+    var totalBags = quantity * noOfbags;
+    console.log(totalBags,'totalBags')
     if (!(/^[0-9]+$/.test(quantity))) {
         return res.json({
             status: 500,
             message: "Invalid quantity"
         })
     }
-    console.log("The value of product id is" + productId);
+    // console.log("The value of product id is" + productId);
     /*
       If cart is already present in session then pass that old cart
       into the new Cart obj. Else create a new cart and pass it to 
@@ -33,8 +35,14 @@ exports.addToCartController = function (req, res) {
                 message: err
             });
         } else {
+            if(!prod){
+               return res.json({
+                    status: 500,
+                    message: "No Product found against this id"
+                });
+            }
             try {
-                cart.addProductToCart(prod, productId, req.query.quantity, price);
+                cart.addProductToCart(prod, productId, totalBags, price);
             }
             catch (e) {
                 if (e == 1) {
@@ -176,7 +184,7 @@ exports.finalCheckoutController = function (req, res) {
     var addressId = req.body.addressId;
     var shippingId = req.body.shippingId;
     var checkType = req.body.type;
-    var Country = req.query.country;
+    var Country = '';
     var user = new User();
     var order = new Order();
     console.log("executed 1");
