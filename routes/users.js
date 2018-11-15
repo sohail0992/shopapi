@@ -30,8 +30,7 @@ router.post('/register', function(req, res, next) {
     }
     var error = req.validationErrors(true);
     var errorValues = Object.keys(error);
-    console.log("error length " + errorValues.length);
-
+    // console.log("error length " + errorValues.length);
     if (errorValues.length > 0) {
         console.log("inside if");
         return res.json({

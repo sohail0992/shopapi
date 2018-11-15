@@ -25,7 +25,6 @@ class user{
  
     updateVerificationStatus(userId, status, callback){
         var query = "UPDATE jeddahsp_cement.gc_customers SET verification_status = " + status + " WHERE id = " + userId; //+ userId;
-
         mySql.getConnection(function(err, connection){
             if(err){
                 throw err;
