@@ -83,14 +83,10 @@ router.get('/signin', function(req, res) {
 });
 
 router.post('/signin', function(req, res, next) {
-
     req.assert("password", "Password field cannot be empty").notEmpty();
     req.assert("email", "Enter a valid email").isEmail().notEmpty();
-
     var error = req.validationErrors(true);
-
     var errorValues = Object.keys(error);
-
     console.log("error length " + errorValues.length);
 
     if (errorValues.length > 0) {
@@ -220,7 +216,6 @@ router.post('/reset-password/:id/:token', function(req, res) {
             message: "Password fields cannot be empty"
         })
     }
-
     user.findById(id, function(err, userResult) {
         if (err)
             throw err;
@@ -241,12 +236,20 @@ router.post('/update_password', function(req, res) {
             message: "Required fields are email , oldpass and newpass"
         })
     }
-    var email = req.body.email
-    var newpass = req.body.newpass
-    var oldpass = req.body.oldpass
+    var email = req.body.email;
+    var newpass = req.body.newpass;
+    var oldpass = req.body.oldpass;
     user.findByEmail(email, function(err, userResult) {
         if (err)
             throw err;
+        if (!Array.isArray(userResult) || !userResult.length) {
+            return res.json({
+                status: 500,
+                message: "No User found against this emial"
+            })
+              // array does not exist, is not an array, or is empty
+        }
+
         console.log(userResult, 'user')
         var oldPasswordHash = user.generatePasswordHash(oldpass);
         // console.log(oldPasswordHash, 'pass')
