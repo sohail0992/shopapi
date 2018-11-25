@@ -20,14 +20,14 @@ router.post('/register', function(req, res, next) {
     req.assert("email", "Enter a valid email").isEmail().notEmpty();
     req.checkBody("company_name", "Enter Valid company name").matches(/^[a-zA-Z\s]*$/)
     req.checkBody("password", "Enter a valid password").notEmpty();
-    req.checkBody("c_password", "Enter a valid password").notEmpty();
-    if (req.body.password != req.body.c_password) {
-        return res.json({
-            status: 422,
-            message: "Password didn't match",
-            errors: error
-        });
-    }
+        // req.checkBody("c_password", "Enter a valid password").notEmpty();
+        // if (req.body.password != req.body.c_password) {
+        //     return res.json({
+        //         status: 422,
+        //         message: "Password didn't match",
+        //         errors: error
+        //     });
+        // }
     var error = req.validationErrors(true);
     var errorValues = Object.keys(error);
     // console.log("error length " + errorValues.length);
