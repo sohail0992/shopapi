@@ -145,9 +145,9 @@ exports.forgotPassController = function(req, res){
                     //Instantiating Mail object
                     var mail = new Mail();
                     //Initializing mail transporter
-                    var transporter = mail.getTransporter("gmail", "sadaliahiksaudi@gmail.com", "SadaliaH789");
+                    var transporter = mail.getTransporter("gmail", "cementapp93@gmail.com", "PasswordPassword");
                     //Sending mail using the instantiated transporter
-                    mail.sendMail(userResult[0].email, "sadaliahiksaudi@gmail.com", "Sadaliah Verification Code", mailText, transporter);
+                    mail.sendMail(userResult[0].email, "sadaliahiksaudi@gmail.com", "Cement Verification Code", mailText, transporter);
                     //Set the authentication to false since user has to verify it registration
                     console.log("Mail has been send");
                     res.json({
