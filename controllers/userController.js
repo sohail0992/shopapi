@@ -26,7 +26,6 @@ exports.getUserAddressController = function(req, res){
 }
 
 exports.addUserAddressController =async function(req, res){
-
     var user = new User();
     var name = JSON.stringify(req.body.city);
     console.log("city",req.body.city);
@@ -115,7 +114,6 @@ exports.forgotPassController = function(req, res){
     var mail = new Mail();
     var mailSubject = "";
     var mailText = "";
-
     //Fetch the user using email
     user.findByEmail(userEmail, function(err, userResult){
             if(err){

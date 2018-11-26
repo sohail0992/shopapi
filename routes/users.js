@@ -168,9 +168,15 @@ router.post('/forgot', function(req, res) {
 
 router.get('/reset/:id/:token', function(req, res) {
     var user = new User();
-    user.findById(id, function(err, resultUser) {
+    user.findById(req.params.id, function(err, resultUser) {
         if (err)
             throw err;
+        if (!Array.isArray(resultUser) || !resultUser.length) {
+            return res.json({
+                status: 500,
+                message: "No User found against this id"
+            })
+        }
         if (resultUser[0].resetPasswordToken != req.params.token) {
             res.json({
                 status: 500,
@@ -189,10 +195,18 @@ router.get('/reset/:id/:token', function(req, res) {
 
 router.get('/reset-password/:id/:token', function(req, res) {
     var user = new User();
-    user.findById(id, function(err, resultUser) {
+    // console.log('hey',id)
+    console.log('no',req.params)
+    user.findById(req.params/id, function(err, resultUser) {
         if (err)
             throw err;
-        if (resultUser[0].resetPasswordToken != req.params.token) {
+       if (!Array.isArray(resultUser) || !resultUser.length) {
+        return res.json({
+            status: 500,
+            message: "No User found against this id"
+        })
+       }
+       if (resultUser[0].resetPasswordToken != req.params.token) {
             res.json({
                 status: 500,
                 message: "Incorrect Token Entered"
