@@ -120,11 +120,16 @@ exports.forgotPassController = function(req, res){
     //Fetch the user using email
     user.findByEmail(userEmail, function(err, userResult){
             if(err){
-                res.json({
+               return res.json({
                     status: 500,
                     message: err
                 });
-                return;
+            }
+            if (!Array.isArray(userResult) || !userResult.length) {
+                return res.json({
+                    status: 500,
+                    message: "No User found against this email"
+                })
             }
             //Generate Reset Password Token
             var resetPassToken = null;
