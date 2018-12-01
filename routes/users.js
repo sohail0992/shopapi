@@ -300,6 +300,8 @@ router.get('/verification', function(req, res) {
 });
 
 router.post('/verification', verificationMiddleWare, function(req, res, next) {
+    console.log(req.body)
+    return
     console.log("Inside verification post");
     passport.authenticate('local-signin', function(err, user, info) {
         console.log("Inside passport authenticate callback");
@@ -345,6 +347,9 @@ function isLoggedIn(req, res, next) {
 }
 
 function verificationMiddleWare(req, res, next) {
+    if(!req.body.email || ! req.body.password || !req.body.code) {
+        return res.status(500).send("Make sure to provide all paramerter email,password and code")
+    }
     var email = req.body.email;
     var password = req.body.password;
     var verificationCode = req.body.code;
@@ -358,6 +363,14 @@ function verificationMiddleWare(req, res, next) {
                 message: "Incorrect User Email"
             });
         }
+
+        if (!Array.isArray(userResult) || !userResult.length) {
+            return res.json({
+                status: 500,
+                message: "No User found against this email"
+            })
+        }
+
         if (user.validPassword(req.body.password, userResult[0].password)) {
             console.log("The user feteched " + userResult[0].id);
             console.log("Verification Code " + verificationCode);
@@ -371,7 +384,10 @@ function verificationMiddleWare(req, res, next) {
                     if (err)
                         throw err;
                     console.log("Verification status updated");
-                    next();
+                    return res.json({
+                        status: 200,
+                        message: "verfied login"
+                    });
                 });
 
             }
