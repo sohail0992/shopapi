@@ -168,6 +168,7 @@ router.post('/forgot', function(req, res) {
 
 router.get('/reset/:id/:token', function(req, res) {
     var user = new User();
+    console.log(req.params,'par')
     user.findById(req.params.id, function(err, resultUser) {
         if (err)
             throw err;
@@ -188,6 +189,7 @@ router.get('/reset/:id/:token', function(req, res) {
                 message: "Token has been expired"
             })
         } else {
+            console.log('userController')
             res.redirect("/users/reset-password/" + resultUser[0].id + "/" + resultUser[0].resetPasswordToken);
         }
     });
@@ -197,7 +199,7 @@ router.get('/reset-password/:id/:token', function(req, res) {
     var user = new User();
     // console.log('hey',id)
     console.log('no',req.params)
-    user.findById(req.params/id, function(err, resultUser) {
+    user.findById(req.params.id, function(err, resultUser) {
         if (err)
             throw err;
        if (!Array.isArray(resultUser) || !resultUser.length) {
@@ -221,6 +223,10 @@ router.get('/reset-password/:id/:token', function(req, res) {
         }
     });
 });
+
+
+//jeddahsp_mirza
+//Learn@99
 
 router.post('/reset-password/:id/:token', function(req, res) {
     var user = new User();
