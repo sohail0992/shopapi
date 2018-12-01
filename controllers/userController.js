@@ -109,6 +109,9 @@ exports.EditAccountInformation = function(req, res){
 
 
 exports.forgotPassController = function(req, res){
+    if(!req.body.email) {
+        return res.status(500).send("Please Provide email");
+    }
     var user = new User();
     var userEmail = req.body.email;
     var mail = new Mail();
