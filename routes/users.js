@@ -197,8 +197,6 @@ router.get('/reset/:id/:token', function(req, res) {
 
 router.get('/reset-password/:id/:token', function(req, res) {
     var user = new User();
-    // console.log('hey',id)
-    console.log('no',req.params)
     user.findById(req.params.id, function(err, resultUser) {
         if (err)
             throw err;
@@ -236,7 +234,7 @@ router.post('/reset-password/:id/:token', function(req, res) {
             message: "Password fields cannot be empty"
         })
     }
-    user.findById(id, function(err, userResult) {
+    user.findById(req.params.id, function(err, userResult) {
         if (err)
             throw err;
         var passwordHash = user.generatePasswordHash(req.body.password);
