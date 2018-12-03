@@ -87,7 +87,7 @@ class user{
     getUserAddresses(userId, callback){
         var query = "SELECT address.id, address.latitude, address.longitude, address.address1,address.addressDesc\
                      FROM jeddahsp_cement.gc_customers_address_bank AS address\
-                     INNER JOIN jeddahsp_cement.gc_customers AS customers\
+                     LEFT JOIN jeddahsp_cement.gc_customers AS customers\
                      ON customers.id = address.customer_id\
                      WHERE address.customer_id =  " + userId;
        
