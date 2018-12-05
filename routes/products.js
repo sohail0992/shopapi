@@ -1,6 +1,5 @@
 var express = require('express');
 var router = express.Router();
-
 var productsController = require('../controllers/productController');
 
 router.get('/category', function (req, res) {
